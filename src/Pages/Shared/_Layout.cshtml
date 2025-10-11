@@ -42,7 +42,20 @@
 
     <footer class="border-top footer text-muted bg-footer">
         <div class="container">
-            &copy; 2019 - ContosoCrafts.WebSite - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="~/assets/logoname.png" alt="Logo" style="height:200px;width:200px;" />
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex flex-column align-items-start">
+                        <div>Quick Links</div>
+                        <a asp-area="" asp-page="/Privacy">Privacy</a>
+                        <a asp-area="" asp-page="/Products">Products</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-2" />
+            &copy; 2019 - @DateTime.Now.Year | ContosoCrafts.WebSite
         </div>
     </footer>
 
