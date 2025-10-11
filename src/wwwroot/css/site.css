@@ -15,7 +15,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
 .card-columns .card-body {
     height: 100px;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Roboto', sans-serif;
     background: #fbfafd;
 }
 
@@ -47,7 +47,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
 a.navbar-brand {
     white-space: normal;
-    font-family: 'Yellowtail', cursive;
+    font-family: 'YellowTail', cursive;
     font-size: xx-large;
     text-align: center;
     word-break: break-all;
@@ -58,15 +58,26 @@ a {
    color: #0366d6;
 }
 
+.table {
+    font-family: 'Roboto', sans-serif;
+}
+
 .btn-primary {
+    font-family: 'Roboto', sans-serif;
     color: #fff;
     background-color: #252152;
     border-color: #252152;
 }
+
 .btn-primary:hover {
+    font-family: 'Roboto', sans-serif;
     color: #fff;
     background-color: #e9a8a6;
     border-color: #e9a8a6;
+}
+
+.navbar-nav .nav-link {
+    letter-spacing: 2px;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -80,6 +91,7 @@ a {
 html {
   font-size: 14px;
 }
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -110,17 +122,18 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    font-family: 'Roboto', sans-serif;
 }
 p {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
-h1 {
-    font-family: 'Nunito', sans-serif;
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif;
 }
 ul {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Orbitron', sans-serif;
 }
 .footer {
     position: absolute;
@@ -128,8 +141,9 @@ ul {
     width: 100%;
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Orbitron', sans-serif;
 }
+
 /*Backgrounds*/
 .bg-navbar {
     background: -webkit-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
