@@ -4,22 +4,21 @@
     ViewData["Title"] = "Index page";
 }
 
-<div class="container page-enter">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model.Products)
-            {
-                <tr>
-                    <td>@product.Title</td>
-                    <td><a asp-page="Read" asp-route-id="@product.Id">Read</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="page-enter">
+    @foreach (var product in Model.Products)
+    {
+        <div class="card mb-3 page-enter">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="@product.Image" class="img-fluid rounded-start" alt="@product.Image" />
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Title</h5>
+                        <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-primary">Read</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
