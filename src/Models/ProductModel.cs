@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,8 +16,18 @@ namespace ContosoCrafts.WebSite.Models
         public string Description { get; set; }
         public int[] Ratings { get; set; }
 
-        public override string ToString() => JsonSerializer.Serialize<ProductModel>(this);
+        [JsonPropertyName("Sub-Categories")]
+        public List<SubCategory> SubCategories { get; set; }
 
- 
+        public override string ToString() => JsonSerializer.Serialize<ProductModel>(this);
     }
+
+    public class SubCategory {
+        public string Id { get; set; }
+        public string Brand { get; set; }
+        public string ProductName { get; set; }
+        public string url { get; set; }
+
+    }
+
 }

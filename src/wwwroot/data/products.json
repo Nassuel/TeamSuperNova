@@ -1,10 +1,10 @@
 [
   {
-    "Id": "jenlooper-cactus",
+    "Id": "laptops",
     "Maker": "@jenlooper",
-    "img": "https://user-images.githubusercontent.com/41929050/61567048-13938600-aa33-11e9-9cfd-712191013192.jpeg",
+    "img": "https://image.lexica.art/full_webp/04870a6a-3de1-46ab-9d2b-dc7aad97b5a6",
     "Url": "https://www.hackster.io/agent-hawking-1/the-quantified-cactus-an-easy-plant-soil-moisture-sensor-e65393",
-    "Title": "The Quantified Cactus3: An Easy Plant Soil For Moisture Sensor",
+    "Title": "Laptops",
     "Description": "This project is a good learning project to get comfortable with soldering and programming an Arduino.",
     "Ratings": [
       5,
@@ -13,132 +13,207 @@
       2,
       1,
       5
+    ],
+    "Sub-Categories": [
+      {
+        "Id": "dell",
+        "Brand": "Dell",
+        "ProductName": "Dell 16 Plus",
+        "url": "https://www.dell.com/en-us/shop/dell-laptops/dell-16-plus-laptop/spd/dell-db16250-laptop"
+      },
+      {
+        "Id": "apple",
+        "Brand": "Apple",
+        "ProductName": "15-inch MacBook Air - Sky Blue",
+        "url": "https://www.apple.com/shop/buy-mac/macbook-air/15-inch-sky-blue-m4-chip-with-10-core-cpu-10-core-gpu-24gb-memory-512gb"
+      },
+      {
+        "Id": "rog_asus",
+        "Brand": "ROG Asus",
+        "ProductName": "ROG Strix SCAR 18 (2025) G835",
+        "url": "https://rog.asus.com/us/laptops/rog-strix/rog-strix-scar-18-2025/"
+      },
+      {
+        "Id": "razer",
+        "Brand": "Razer",
+        "ProductName": "Razer Blade 18",
+        "url": "https://www.razer.com/gaming-laptops/razer-blade-18/RZ09-05297ER3-R3U1"
+      }
     ]
   },
   {
-    "Id": "jenlooper-light",
+    "Id": "keyboard",
     "Maker": "jenlooper",
-    "img": "https://user-images.githubusercontent.com/41929050/61567049-13938600-aa33-11e9-9c69-a4184bf8e524.jpeg",
+    "img": "https://image.lexica.art/full_webp/79bb517d-1ca8-4f97-8fe3-216bb6abbf87",
     "Url": "https://www.hackster.io/agent-hawking-1/book-light-dee7e4",
-    "Title": "A beautiful switch-on book light36",
+    "Title": "Keyboards",
     "Description": "Use craft items you have around the house, plus two LEDs and a LilyPad battery holder, to create a useful book light for reading in the dark.",
-    "Ratings": null
+    "Ratings": null,
+    "Sub-Categories": [
+      {
+        "Id": "logitech",
+        "Brand": "Logitech",
+        "ProductName": "POP Keyboard",
+        "url": "https://www.logitech.com/en-us/shop/p/pop-keys-wireless-mechanical.920-010709"
+      },
+      {
+        "Id": "ducky",
+        "Brand": "Ducky",
+        "ProductName": "DOOM® Edition One 3 SF",
+        "url": "https://ducky.global/products/one-3-sf-doom%C2%AE-edition"
+      },
+      {
+        "Id": "razer",
+        "Brand": "Razer",
+        "ProductName": "Razer Pro Type Ultra",
+        "url": "https://www.razer.com/productivity/razer-pro-type-ultra"
+      },
+      {
+        "Id": "corsair",
+        "Brand": "Corsair",
+        "ProductName": "VANGUARD PRO 96 Hall Effect Gaming Keyboard",
+        "url": "https://www.corsair.com/us/en/p/keyboards/ch-91e911g-na/vanguard-pro-96-hall-effect-gaming-keyboard-ch-91e911g-na"
+      }
+    ]
   },
   {
-    "Id": "jenlooper-lightshow",
+    "Id": "mice",
     "Maker": "@jenlooper",
-    "img": "https://user-images.githubusercontent.com/41929050/61567053-13938600-aa33-11e9-9780-104fe4019659.png",
+    "img": "https://image.lexica.art/full_webp/5ac7eb20-315a-4987-a501-cb2e0b37d181",
     "Url": "https://www.hackster.io/agent-hawking-1/bling-your-laptop-with-an-internet-connected-light-show-30e4db",
-    "Title": "Bling your Laptop with an Internet-Connected Light Show",
+    "Title": "Mices",
     "Description": "Create a web-connected light-strip API controllable from your website, using the Particle.io.",
-    "Ratings": null
+    "Ratings": null,
+    "Sub-Categories": [
+      {
+        "Id": "apple",
+        "Brand": "Apple",
+        "ProductName": "Magic Mouse (USB‑C) - Black Multi-Touch Surface",
+        "url": "https://www.apple.com/shop/product/MXK63AM/A/magic-mouse-usb%E2%80%91c-black-multi-touch-surface?fnode=37a8dceadcd1bd0898498344d4e729a4951e0ed5624deb669a93be927a9df5e5b6e77e865537962505e265664f7719ab573948b74e3532cb06c7b9707084245f73be6b3bc6fc8f56c3b5804ea441647820bc422921372d2586029461e082ce2e"
+      },
+      {
+        "Id": "corsair",
+        "Brand": "Corsair",
+        "ProductName": "M75 WIRELESS Lightweight RGB Gaming Mouse – Glacier Blue",
+        "url": "https://www.corsair.com/us/en/p/gaming-mouse/CH-931D01G-NA/m75-wireless-lightweight-rgb-gaming-mouse-glacial-blue-ch-931d01g-na"
+      },
+      {
+        "Id": "razer",
+        "Brand": "Razer",
+        "ProductName": "Razer Pro Click V2 Vertical",
+        "url": "https://www.razer.com/productivity/razer-pro-click-v2-vertical-edition"
+      },
+      {
+        "Id": "logitech",
+        "Brand": "Logitech",
+        "ProductName": "G502 X PLUS",
+        "url": "https://www.logitech.com/en-us/shop/p/g502-x-plus-wireless-lightforce.910-006160"
+      }
+    ]
   },
   {
-    "Id": "jenlooper-survival",
+    "Id": "headset",
     "Maker": "jenlooper",
-    "img": "https://user-images.githubusercontent.com/41929050/61567051-13938600-aa33-11e9-8ae7-0b5c19aafab4.jpeg",
+    "img": "https://image.lexica.art/full_webp/02014c03-eb56-4f87-80b3-773ac8698f1f",
     "Url": "https://www.hackster.io/agent-hawking-1/create-a-compact-survival-kit-38bfdb",
-    "Title": "Create a Compact Survival Kit with LED Track Lighting",
+    "Title": "Headsets",
     "Description": "Use an Altoids tin with Chibitronics sticker LEDs to create a light-up compact that doubles as a survival kit for the young hipster",
-    "Ratings": null
+    "Ratings": null,
+    "Sub-Categories": [
+      {
+        "Id": "sennheiser",
+        "Brand": "Sennheiser",
+        "ProductName": "HD 490 PRO",
+        "url": "https://www.sennheiser.com/en-us/catalog/products/headphones/hd-490-pro/hd-490-pro-700286"
+      },
+      {
+        "Id": "sony",
+        "Brand": "Sony",
+        "ProductName": "WH-1000XM6 Best Wireless Noise Canceling Headphones | Platinum Silver",
+        "url": "https://electronics.sony.com/audio/headphones/headband/p/wh1000xm6-s"
+      },
+      {
+        "Id": "sony",
+        "Brand": "Sony",
+        "ProductName": "WF-1000XM5 The Best Truly Wireless Noise Canceling Earbuds | Black",
+        "url": "https://electronics.sony.com/audio/headphones/truly-wireless-earbuds/p/wf1000xm5-b"
+      },
+      {
+        "Id": "bose",
+        "Brand": "Bose",
+        "ProductName": "Bose QuietComfort Ultra Headphones",
+        "url": "https://www.bose.com/p/headphones/bose-quietcomfort-ultra-headphones/QCUH-HEADPHONEARN.html?dwvar_QCUH-HEADPHONEARN_color=DEEP+PLUM&quantity=1"
+      }
+    ]
   },
   {
-    "Id": "sailorhg-bubblesortpic",
+    "Id": "vrheadsets",
     "Maker": "sailorhg",
-    "img": "https://user-images.githubusercontent.com/41929050/61567054-13938600-aa33-11e9-9163-eec98e239b7a.png",
+    "img": "https://image.lexica.art/full_webp/68a69ab9-f193-4763-95ef-55464e9ae0a3",
     "Url": "https://twitter.com/sailorhg/status/1090107740049952770",
-    "Title": "Bubblesort Visualization",
+    "Title": "VR Headset",
     "Description": "Visualization of sailor scouts sorted by bubblesort algorithm by their planet\u0027s distance from the sun",
-    "Ratings": null
+    "Ratings": null,
+    "Sub-Categories": [
+      {
+        "Id": "meta",
+        "Brand": "Meta",
+        "ProductName": "Meta Quest 3",
+        "url": "https://www.meta.com/quest/quest-3/buy-now/"
+      },
+      {
+        "Id": "vive",
+        "Brand": "Vive",
+        "ProductName": "Vive Pro 2 Headset",
+        "url": "https://www.vive.com/us/product/vive-pro2/overview/"
+      },
+      {
+        "Id": "playstation",
+        "Brand": "PlayStation",
+        "ProductName": "PlayStation VR2",
+        "url": "https://www.playstation.com/en-us/ps-vr2/"
+      },
+      {
+        "Id": "apple",
+        "Brand": "Apple",
+        "ProductName": "Apple Vision Pro",
+        "url": "https://www.apple.com/shop/buy-vision/apple-vision-pro"
+      }
+    ]
   },
   {
-    "Id": "sailorhg-corsage",
+    "Id": "3dprinter",
     "Maker": "sailorhg",
-    "img": "https://user-images.githubusercontent.com/41929050/61567055-142c1c80-aa33-11e9-96ff-9fbac6413625.png",
+    "img": "https://image.lexica.art/full_webp/0d8fb0b8-701c-413c-aecc-c6433058fda9",
     "Url": "https://twitter.com/sailorhg/status/1090113666911891456",
-    "Title": "Light-up Corsage",
+    "Title": "3D Printers",
     "Description": "Light-up corsage I made with my summer intern.",
-    "Ratings": null
-  },
-  {
-    "Id": "sailorhg-kit",
-    "Maker": "sailorhg",
-    "img": "https://user-images.githubusercontent.com/41929050/61567056-142c1c80-aa33-11e9-8682-10065d338145.png",
-    "Url": "https://twitter.com/sailorhg/status/1090122822007963648",
-    "Title": "Pastel hardware kit",
-    "Description": "Pastel hardware kits complete with custom manufactured pastel alligator clips.",
-    "Ratings": null
-  },
-  {
-    "Id": "sailorhg-led",
-    "Maker": "sailorhg",
-    "img": "https://user-images.githubusercontent.com/41929050/61567052-13938600-aa33-11e9-9a88-cd842073ba44.jpg",
-    "Url": "https://twitter.com/sailorhg/status/1090117277540745216",
-    "Title": "Heart-shaped LED",
-    "Description": "custom molded heart shaped LED with sprinkles.",
-    "Ratings": null
-  },
-  {
-    "Id": "selinazawacki-soi-shirt",
-    "Maker": "selinazawacki",
-    "img": "https://user-images.githubusercontent.com/41929050/61567060-142c1c80-aa33-11e9-8188-5a4803844a9e.png",
-    "Url": "https://www.instagram.com/p/BNvESj-j8PI/",
-    "Title": "Black Sweatshirt",
-    "Description": "Black sweatshirt hoody with the Sick of the Internet logo.",
-    "Ratings": null
-  },
-  {
-    "Id": "selinazawacki-soi-pins",
-    "Maker": "selinazawacki",
-    "img": "https://user-images.githubusercontent.com/41929050/61567059-142c1c80-aa33-11e9-939b-2ecf4492786d.png",
-    "Url": "https://www.instagram.com/p/BNm6hZzDoEF/",
-    "Title": "Sick of the Internet Pins",
-    "Description": "Still some time to enter the pin/sticker giveaway! ",
-    "Ratings": null
-  },
-  {
-    "Id": "vogueandcode-hipster-dev-bro",
-    "Maker": "vogueandcode",
-    "img": "https://user-images.githubusercontent.com/41929050/61567061-14c4b300-aa33-11e9-9fee-63ff2c0c9823.png",
-    "Url": "https://www.vogueandcode.com/shop/hipster-dev-bro",
-    "Title": "Hipster Dev",
-    "Description": "Hipster Dev is busy coding away while styled in a camo jacket and orange beanie.",
-    "Ratings": null
-  },
-  {
-    "Id": "vogueandcode-pretty-girls-code-tee",
-    "Maker": "vogueandcode",
-    "img": "https://user-images.githubusercontent.com/41929050/61567062-14c4b300-aa33-11e9-9dcd-8bfed4ece810.png",
-    "Url": "https://www.vogueandcode.com/shop/pretty-girls-code-tee",
-    "Title": "Pretty Girls Code Tee",
-    "Description": "Everyone\u2019s favorite design is finally here on a tee! The Pretty Girls Code crew-neck tee is available in a soft pink with red writing.",
-    "Ratings": null
-  },
-  {
-    "Id": "vogueandcode-ruby-sis-2",
-    "Maker": "vogueandcode",
-    "img": "https://user-images.githubusercontent.com/41929050/61567063-14c4b300-aa33-11e9-8515-bcb866da9ea3.png",
-    "Url": "https://www.vogueandcode.com/shop/ruby-sis-2",
-    "Title": "Ruby Sis",
-    "Description": "Styled in a dashiki, Ruby Sis is listening to music while coding in her favorite language, Ruby!",
-    "Ratings": null
-  },
-  {
-    "Id": "selinazawacki-moon",
-    "Maker": "selinazawacki",
-    "img": "https://user-images.githubusercontent.com/41929050/61567057-142c1c80-aa33-11e9-9781-9e442418eaab.png",
-    "Url": "https://www.instagram.com/p/BFktVYPinKQ/",
-    "Title": "Holographic Dark Moon Necklace",
-    "Description": "Not sure if I\u0027ll be making more, get it while I have it in the store.",
-    "Ratings": null
-  },
-  {
-    "Id": "selinazawacki-shirt",
-    "Maker": "selinazawacki",
-    "img": "https://user-images.githubusercontent.com/41929050/61567058-142c1c80-aa33-11e9-89fb-b4f30d84d69d.png",
-    "Url": "https://www.instagram.com/p/BEXlpiZCnJ3",
-    "Title": "Floppy Crop",
-    "Description": "Used up the Diskette fabric today to make 2 of these crops.",
-    "Ratings": null
+    "Ratings": null,
+    "Sub-Categories": [
+      {
+        "Id": "bambustore",
+        "Brand": "Bambu Store",
+        "ProductName": "Bambu Lab H2D",
+        "url": "https://us.store.bambulab.com/products/h2d?srsltid=AfmBOopoTqSUERALdJFluHOkTohIdvoEiOV6nvHuiuhMbbVREc7HDJ7U"
+      },
+      {
+        "Id": "prusa",
+        "Brand": "Prusa",
+        "ProductName": "Prusa Core One",
+        "url": "https://www.prusa3d.com/product/prusa-core-one/"
+      },
+      {
+        "Id": "creality",
+        "Brand": "Creality",
+        "ProductName": "K1C",
+        "url": "https://www.creality.com/products/k1c-carbon-3d-printer"
+      },
+      {
+        "Id": "flashforge",
+        "Brand": "FlashForge",
+        "ProductName": "FlashForge Adventurer 5M",
+        "url": "https://www.flashforge.com/products/adventurer-5m-3d-printer?srsltid=AfmBOoqPhunATTqmkhWcvMcKDNEmTQ7u2F3jlqdXrzaOaURWGcGh1BGK"
+      }
+    ]
   }
 ]
