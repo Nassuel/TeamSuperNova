@@ -14,7 +14,7 @@
       1,
       5
     ],
-    "Sub-Categories": [
+    "SubCategories": [
       {
         "Id": "dell",
         "Brand": "Dell",
@@ -53,7 +53,7 @@
     "Title": "Keyboards",
     "Description": "Precision-engineered keyboards for seamless typing and gaming.",
     "Ratings": null,
-    "Sub-Categories": [
+    "SubCategories": [
       {
         "Id": "logitech",
         "Brand": "Logitech",
@@ -92,7 +92,7 @@
     "Title": "Mices",
     "Description": "Ergonomic and responsive mice for ultimate control and comfort.",
     "Ratings": null,
-    "Sub-Categories": [
+    "SubCategories": [
       {
         "Id": "apple",
         "Brand": "Apple",
@@ -131,7 +131,7 @@
     "Title": "Headsets",
     "Description": "Crystal-clear sound and deep bass for music, gaming, and more.",
     "Ratings": null,
-    "Sub-Categories": [
+    "SubCategories": [
       {
         "Id": "sennheiser",
         "Brand": "Sennheiser",
@@ -170,7 +170,7 @@
     "Title": "VR Headset",
     "Description": "Dive into immersive virtual worlds with cutting-edge VR headsets.",
     "Ratings": null,
-    "Sub-Categories": [
+    "SubCategories": [
       {
         "Id": "meta",
         "Brand": "Meta",
@@ -210,7 +210,7 @@
     "Title": "3D Printers",
     "Description": "Bring your ideas to life with high-performance 3D printing solutions.",
     "Ratings": null,
-    "Sub-Categories": [
+    "SubCategories": [
       {
         "Id": "bambustore",
         "Brand": "Bambu Store",
