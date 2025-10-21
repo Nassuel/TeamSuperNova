@@ -32,6 +32,12 @@ for details on configuring this project to bundle and minify static web assets. 
   opacity: .8;
 }
 
+.card-img-product {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
 .modal .card-img {
   height: 500px;
   vertical-align: bottom;
