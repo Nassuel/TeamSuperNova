@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorAnimate" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\data\products.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
