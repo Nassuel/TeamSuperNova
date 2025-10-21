@@ -9,11 +9,19 @@
 
 <h1 class="text-white">Read</h1>
 
-<div class="content">
-    <h5 class="title text-white" id="productTitle">@Model.Product.Title</h5>
-
-    <img class="card-img" src='@Model.Product.Image' alt='Image for @Model.Product.Title'>
-
-    <p class="card-text text-white">@Model.Product.Description</p>
-
+<div class="content"
+    style="background-image: url('@Model.Product.Image');
+           height: 100vh;
+           background-position: center;
+           background-repeat: no-repeat;
+           object-fit: cover;
+          ">
+    <div class="text-white" style="background-color: rgba(0, 0, 0, 0.8); height: 100%;">
+        <div class="container d-flex align-items-center justify-content-center text-center h-100">
+            <div>
+                <h5 class="mb-5" id="productTitle">@Model.Product.Title</h5>
+                <p>@Model.Product.Description</p>
+            </div>
+        </div>
+    </div>
 </div>
