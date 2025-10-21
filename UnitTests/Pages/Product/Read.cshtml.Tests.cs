@@ -91,11 +91,11 @@ namespace UnitTests.Pages.Product.Read
             // Arrange 
 
             // Act
-            pageModel.OnGet("mike-cloud");
+            pageModel.OnGet("laptops");
 
             // Assert
             Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual("Cloud Costume", pageModel.Product.Title);
+            Assert.AreEqual("Laptops", pageModel.Product.Title);
 
             // Reset
 

@@ -39,10 +39,10 @@ namespace UnitTests.Pages.Product
             // Arrange
 
             // Act
-            pageModel.OnGet("mike-clown");
+            pageModel.OnGet("laptops");
             // Assert
             Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual("Amazon", pageModel.Product.Maker);
+            Assert.AreEqual("@jenlooper", pageModel.Product.Maker);
 
             // Reset
             // This should remove the error we added
@@ -80,7 +80,7 @@ namespace UnitTests.Pages.Product
             // Arrange
 
             // Act
-            pageModel.OnGet("mike-clown");
+            pageModel.OnGet("laptops");
             Assert.AreEqual(true, pageModel.ModelState.IsValid);
             var originalMaker = pageModel.Product.Maker;
 
@@ -92,11 +92,11 @@ namespace UnitTests.Pages.Product
             Assert.AreEqual(true, pageModel.ModelState.IsValid);
 
             // Read it to see if it changed
-            pageModel.OnGet("mike-clown");
+            pageModel.OnGet("laptops");
 
             // Assertions to verify
             Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual("Microsoft", pageModel.Product.Maker);
+            Assert.AreEqual("@jenlooper", pageModel.Product.Maker);
 
             // Reset it back
             pageModel.Product.Maker = originalMaker;
@@ -144,7 +144,7 @@ namespace UnitTests.Pages.Product
             // Arrange
 
             // Act
-            pageModel.OnGet("mike-clown");
+            pageModel.OnGet("laptops");
             Assert.AreEqual(true, pageModel.ModelState.IsValid);
 
             pageModel.Product.Id = "mike-clown2"; // post with an invalid id
