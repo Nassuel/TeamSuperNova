@@ -2,7 +2,7 @@
   {
     "Id": "laptops",
     "Maker": "@jenlooper",
-    "img": "https://image.lexica.art/full_webp/04870a6a-3de1-46ab-9d2b-dc7aad97b5a6",
+    "img": "/assets/laptop_img.png",
     "Url": "https://www.hackster.io/agent-hawking-1/the-quantified-cactus-an-easy-plant-soil-moisture-sensor-e65393",
     "Title": "Laptops",
     "Description": "Powerful and portable laptops for work, play, and everything in between",
@@ -48,7 +48,7 @@
   {
     "Id": "keyboard",
     "Maker": "jenlooper",
-    "img": "https://image.lexica.art/full_webp/79bb517d-1ca8-4f97-8fe3-216bb6abbf87",
+    "img": "/assets/keyboard_img.png",
     "Url": "https://www.hackster.io/agent-hawking-1/book-light-dee7e4",
     "Title": "Keyboards",
     "Description": "Precision-engineered keyboards for seamless typing and gaming.",
@@ -87,7 +87,7 @@
   {
     "Id": "mice",
     "Maker": "@jenlooper",
-    "img": "https://image.lexica.art/full_webp/5ac7eb20-315a-4987-a501-cb2e0b37d181",
+    "img": "/assets/mice_img.png",
     "Url": "https://www.hackster.io/agent-hawking-1/bling-your-laptop-with-an-internet-connected-light-show-30e4db",
     "Title": "Mices",
     "Description": "Ergonomic and responsive mice for ultimate control and comfort.",
@@ -126,7 +126,7 @@
   {
     "Id": "headset",
     "Maker": "jenlooper",
-    "img": "https://image.lexica.art/full_webp/02014c03-eb56-4f87-80b3-773ac8698f1f",
+    "img": "/assets/headset_img.png",
     "Url": "https://www.hackster.io/agent-hawking-1/create-a-compact-survival-kit-38bfdb",
     "Title": "Headsets",
     "Description": "Crystal-clear sound and deep bass for music, gaming, and more.",
@@ -147,11 +147,11 @@
         "ProductDescription": "What's In The Box: Carrying case, Headphone cable (approx. 1.2m), USB charging cable; Noise Canceling: Personal NC Optimizer, Adaptive NC Optimizer; Quick Attention: Yes; Ambient Sound Mode - Normal: Yes; Bluetooth® Version: BLUETOOTH Specification Version 5.3; Effective Range: Approx. 10 m; Frequency Range: 2.4 GHz band (2.4000 GHz - 2.4835 GHz); Profile: A2DP, AVRCP, HFP, HSP, TMAP, PBP; Supported Audio Formats: SBC, AAC, LDAC, LC3; Supported Content Protection: SCMS-T; Battery Charge Method: USB; Battery Life (Music Playback): Max. 30 hours (NC ON), Max. 40 hours (NC OFF); Battery Life (Communication Time): Max. 24 hours (NC ON), Max. 28 hours (NC OFF); Lithium Battery: Yes; Weight: Approx. 254 g; Frequency Response: 4 Hz - 40,000 Hz (JEITA); Cord Length: Approx. 1.2 m; Cord Type: Single-sided (detachable); Driver Unit: 30 mm; Impedance: 48 ohm (1 kHz, power ON), 16 ohm (1 kHz, power OFF); Magnet: Neodymium; Plug: Gold-plated L-shaped stereo mini plug; Sensitivities: 103 dB/mW (power ON), 102 dB/mW (power OFF); Wearing Style: Over Ear; Headphone Type: Closed; Frequency Response (Active): 4 Hz - 40,000 Hz (JEITA); Frequency Response (Bluetooth®): 20 Hz - 20,000 Hz (44.1 kHz), 20 Hz - 40,000 Hz (LDAC, 96 kHz, 990 kbps); Passive Operation: Yes; Ambient Sound Mode: Yes"
       },
       {
-          "Id": "sony",
-          "Brand": "Sony",
-          "ProductName": "WF-1000XM5 The Best Truly Wireless Noise Canceling Earbuds | Black",
-          "url": "https://electronics.sony.com/audio/headphones/truly-wireless-earbuds/p/wf1000xm5-b",
-          "ProductDescription": "Charging Case Dimension: Approx. 64.6 x 40.0 x 26.5 mm; Charging Case Weight: Approx. 39 g; Noise Canceling Ambient Sound Mode: Yes; Quick Attention: Yes; Bluetooth® Version: Bluetooth Specification Version 5.3; Effective Range: 10 m; Frequency Range: 2.4 GHz band (2.4000 GHz - 2.4835 GHz); Profile: A2DP, AVRCP, HFP, HSP, TMAP, CSIP, MCP, VCP, CCP; Supported Audio Formats: SBC, AAC, LDAC, LC3; Supported Content Protection: SCMS-T; Battery Charge Method: USB charger | Wireless charger (with case); Battery Life (Communication Time): Max. 6 hrs (NC ON) | Max. 7 hrs (NC OFF); Battery Life (Active Headphones): Max. 8 hrs (NC ON) | Max. 12 hrs (NC OFF); Earbud Weight: Approx. 5.9 g x 2 (including earbud tips (M)); Driver Unit: 8.4 mm; Wearing Style: Yes (IPX4 equivalent); Headphone Type: Closed, dynamic; Frequency Response (Bluetooth®): 20–20,000 Hz (44.1 kHz sampling) | 20–40,000 Hz (LDAC 96 kHz sampling 990 kbps); Ambient Sound Mode: Yes; General Features (Active Headphones): Yes"
+        "Id": "sony",
+        "Brand": "Sony",
+        "ProductName": "WF-1000XM5 The Best Truly Wireless Noise Canceling Earbuds | Black",
+        "url": "https://electronics.sony.com/audio/headphones/truly-wireless-earbuds/p/wf1000xm5-b",
+        "ProductDescription": "Charging Case Dimension: Approx. 64.6 x 40.0 x 26.5 mm; Charging Case Weight: Approx. 39 g; Noise Canceling Ambient Sound Mode: Yes; Quick Attention: Yes; Bluetooth® Version: Bluetooth Specification Version 5.3; Effective Range: 10 m; Frequency Range: 2.4 GHz band (2.4000 GHz - 2.4835 GHz); Profile: A2DP, AVRCP, HFP, HSP, TMAP, CSIP, MCP, VCP, CCP; Supported Audio Formats: SBC, AAC, LDAC, LC3; Supported Content Protection: SCMS-T; Battery Charge Method: USB charger | Wireless charger (with case); Battery Life (Communication Time): Max. 6 hrs (NC ON) | Max. 7 hrs (NC OFF); Battery Life (Active Headphones): Max. 8 hrs (NC ON) | Max. 12 hrs (NC OFF); Earbud Weight: Approx. 5.9 g x 2 (including earbud tips (M)); Driver Unit: 8.4 mm; Wearing Style: Yes (IPX4 equivalent); Headphone Type: Closed, dynamic; Frequency Response (Bluetooth®): 20–20,000 Hz (44.1 kHz sampling) | 20–40,000 Hz (LDAC 96 kHz sampling 990 kbps); Ambient Sound Mode: Yes; General Features (Active Headphones): Yes"
       },
       {
         "Id": "bose",
@@ -165,7 +165,7 @@
   {
     "Id": "vrheadsets",
     "Maker": "sailorhg",
-    "img": "https://image.lexica.art/full_webp/68a69ab9-f193-4763-95ef-55464e9ae0a3",
+    "img": "/assets/vrheadset_playstation_vr2.png",
     "Url": "https://twitter.com/sailorhg/status/1090107740049952770",
     "Title": "VR Headset",
     "Description": "Dive into immersive virtual worlds with cutting-edge VR headsets.",
@@ -205,7 +205,7 @@
   {
     "Id": "3dprinter",
     "Maker": "sailorhg",
-    "img": "https://image.lexica.art/full_webp/0d8fb0b8-701c-413c-aecc-c6433058fda9",
+    "img": "/assets/3dprinter_img.png",
     "Url": "https://twitter.com/sailorhg/status/1090113666911891456",
     "Title": "3D Printers",
     "Description": "Bring your ideas to life with high-performance 3D printing solutions.",
