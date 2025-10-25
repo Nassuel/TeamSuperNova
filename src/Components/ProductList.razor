@@ -17,6 +17,14 @@
                 <small class="text-muted"><button @onclick="(e => SelectProduct(product.Id))" 
                   data-toggle="modal" data-target="#productModal" class="btn btn-primary">More Info</button>
                 </small>
+                <small class="text-muted">
+                    <button @onclick="(e => SelectSubcategory(product.Id))"
+                            data-toggle="modal"
+                                data-target="#subCategoryModal"
+                            class="btn btn-primary">
+                        See Subcategory
+                    </button>
+                </small>
             </div>
         </div>
     }
@@ -64,6 +72,7 @@
               <span class="fa fa-star" @onclick="(e => SubmitRating(currentStar))"></span>
             }
           }
+           
         </div>
       </div>
     </div>
@@ -72,16 +81,81 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+@if (selectedProduct != null)
+{
+    <div class="modal fade" id="subCategoryModal" tabindex="-1" role="dialog" aria-labelledby="productTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productTitle">@selectedProduct.Title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var subcategory in subcategoryData)
+                    {
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-2">
+                                    <img src="@subcategory.Image" class="img-fluid rounded-start card-img-product" alt="@subcategory.Image" />
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@subcategory.SubCategory</h5>
+                                        <h6 class="card-text">@subcategory.ProductDescription</h6>
+                                        <a href="@subcategory.url" target="_blank" class="btn btn-primary float-right">Buy Now!</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    @if (voteCount == 0)
+                    {
+                        <span>Be the first to vote!</span>
+                    }
+                    else
+                    {
+                        <span>@voteCount @voteLabel</span>
+                    }
+                    @for (int i = 1; i < 6; i++)
+                    {
+                        var currentStar = i;
+                        if (i <= currentRating)
+                        {
+                            <span class="fa fa-star checked" @onclick="(e => SubmitRating(currentStar))"></span>
+                        }
+                        else
+                        {
+                            <span class="fa fa-star" @onclick="(e => SubmitRating(currentStar))"></span>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code 
 {
     ProductModel selectedProduct;
     string selectedProductId;
+    List<SubCategoryModel> subcategoryData = new List<SubCategoryModel>();
 
     void SelectProduct(string productId)
     {
-      selectedProductId = productId;
-      selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
-      GetCurrentRating();
+        selectedProductId = productId;
+        selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
+        GetCurrentRating();
+    }
+    void SelectSubcategory(string productId)
+    {
+        ///selectedProductId = productId;
+        selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
+        subcategoryData = selectedProduct.SubCategories;
     }
 
     int currentRating = 0;
