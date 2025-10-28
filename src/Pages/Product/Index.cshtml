@@ -18,7 +18,40 @@
                         <h6 class="card-text">@product.Description</h6>
                         <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-primary float-right">Read</a>
                     </div>
+                    @* Render subcategories if present *@
+                    @if (product.SubCategories != null && product.SubCategories.Any())
+                    {
+                        <div class="card-body pt-0">
+                            <h6 class="mb-2">Subcategories</h6>
+                            <div class="row">
+                                @foreach (var sub in product.SubCategories)
+                                {
+                                    <div class="col-6 col-sm-4 col-md-3 mb-3">
+                                        <div class="card h-100 subcategory-card">
+                                            @if (!string.IsNullOrEmpty(sub.Image))
+                                            {
+                                                <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
+                                            }
+                                            <div class="card-body p-2">
+                                                <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
+                                                <p class="card-text small text-muted mb-2">@sub.Brand</p>
+                                                @if (!string.IsNullOrEmpty(sub.url))
+                                                {
+                                                    <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted small">No link</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
                 </div>
+
             </div>
         </div>
     }
