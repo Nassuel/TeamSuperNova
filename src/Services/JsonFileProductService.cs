@@ -43,15 +43,22 @@ namespace ContosoCrafts.WebSite.Services
         {
             var products = GetProducts();
 
-            if(products.First(x => x.Id == productId).Ratings == null)
+            var product = products.FirstOrDefault(x => x.Id == productId);
+
+            if (product == null)
             {
-                products.First(x => x.Id == productId).Ratings = new int[] { rating };
+                return false;
+            }
+
+            if (product.Ratings == null)
+            {
+                product.Ratings = new int[] { rating };
             }
             else
             {
-                var ratings = products.First(x => x.Id == productId).Ratings.ToList();
+                var ratings = product.Ratings.ToList();
                 ratings.Add(rating);
-                products.First(x => x.Id == productId).Ratings = ratings.ToArray();
+                product.Ratings = ratings.ToArray();
             }
 
             using(var outputStream = File.OpenWrite(JsonFileName))
