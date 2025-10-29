@@ -4,55 +4,106 @@
     ViewData["Title"] = "Index page";
 }
 
-<div class="">
-    @foreach (var product in Model.Products)
-    {
-        <div class="card mb-3 page_enter">
-            <div class="row g-0">
-                <div class="col-md-2">
-                    <img src="@product.Image" class="img-fluid rounded-start card-img-product" alt="@product.Image" />
-                </div>
-                <div class="col-md-10">
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Title</h5>
-                        <h6 class="card-text">@product.Description</h6>
-                        <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-primary float-right">Read</a>
+    <div class="">
+        @foreach (var product in Model.Products)
+        {
+            <div class="card mb-3 page_enter">
+                <div class="row g-0">
+                    <div class="col-md-2">
+                        <img src="@product.Image" class="img-fluid rounded-start card-img-product" alt="@product.Image" />
                     </div>
-                    @* Render subcategories if present *@
-                    @if (product.SubCategories != null && product.SubCategories.Any())
-                    {
-                        <div class="card-body pt-0">
-                            <h6 class="mb-2">Subcategories</h6>
-                            <div class="row">
-                                @foreach (var sub in product.SubCategories)
-                                {
-                                    <div class="col-6 col-sm-4 col-md-3 mb-3">
-                                        <div class="card h-100 subcategory-card">
-                                            @if (!string.IsNullOrEmpty(sub.Image))
-                                            {
-                                                <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
-                                            }
-                                            <div class="card-body p-2">
-                                                <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
-                                                <p class="card-text small text-muted mb-2">@sub.Brand</p>
-                                                @if (!string.IsNullOrEmpty(sub.url))
-                                                {
-                                                    <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted small">No link</span>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Title</h5>
+                            <h6 class="card-text">@product.Description</h6>
+                            <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-primary float-right">Read</a>
                         </div>
-                    }
-                </div>
 
+                        @* Horizontal scroller for subcategories *@
+                        @if (product.SubCategories != null && product.SubCategories.Any())
+                        {
+                            <div class="card-body pt-0">
+                                <h6 class="mb-2">Subcategories</h6>
+
+                                <div class="d-flex align-items-center subcategories-controls">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary sub-seek-btn"
+                                            data-direction="prev"
+                                            data-target="scroller-@product.Id"
+                                            aria-label="Scroll left">
+                                        ‹
+                                    </button>
+
+                                    <div id="scroller-@product.Id" class="subcategories-scroller d-flex" tabindex="0" role="list" aria-label="Subcategories">
+                                        @foreach (var sub in product.SubCategories)
+                                        {
+                                            <div class="sub-item card me-2">
+                                                @if (!string.IsNullOrEmpty(sub.Image))
+                                                {
+                                                    <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
+                                                }
+
+                                                <div class="card-body p-2">
+                                                    <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
+                                                    <p class="card-text small text-muted mb-2">@sub.Brand</p>
+
+                                                    <div class="d-flex gap-2 mb-2">
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary modify-btn" data-target="#edit-@product.Id-@sub.Id">Modify</button>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-target="#confirm-@product.Id-@sub.Id">Delete</button>
+                                                    </div>
+
+                                                    
+
+                                                    @if (!string.IsNullOrEmpty(sub.url))
+                                                    {
+                                                        <div class="mt-2">
+                                                            <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary sub-seek-btn"
+                                            data-direction="next"
+                                            data-target="scroller-@product.Id"
+                                            aria-label="Scroll right">
+                                        ›
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+
+
+@section Scripts {
+    <script>
+            // Keyboard support for focused scroller
+            document.querySelectorAll('.subcategories-scroller').forEach(function (scroller) {
+                scroller.addEventListener('keydown', function (e) {
+                    var key = e.key;
+                    if (key === 'ArrowLeft') {
+                        scroller.scrollBy({ left: -200, behavior: 'smooth' });
+                        e.preventDefault();
+                    } else if (key === 'ArrowRight') {
+                        scroller.scrollBy({ left: 200, behavior: 'smooth' });
+                        e.preventDefault();
+                    } else if (key === 'Home') {
+                        scroller.scrollTo({ left: 0, behavior: 'smooth' });
+                        e.preventDefault();
+                    } else if (key === 'End') {
+                        scroller.scrollTo({ left: scroller.scrollWidth, behavior: 'smooth' });
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            
+    </script>
+}
