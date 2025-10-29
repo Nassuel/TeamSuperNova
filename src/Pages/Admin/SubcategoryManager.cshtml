@@ -1,0 +1,287 @@
+@page "/Admin/SubcategoryManager"
+@model ContosoCrafts.WebSite.Pages.Admin.SubcategoryManagerModel
+@{
+    ViewData["Title"] = "Manage Categories & Subcategories";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Manage Categories & Subcategories</h2>
+    <a class="btn btn-outline-secondary" href="/">Back to Products</a>
+</div>
+
+<div class="mb-3">
+    <button id="toggleCatCreate" class="btn btn-success me-2">+ Create Category</button>
+    <button id="toggleSubCreate" class="btn btn-primary">+ Create Subcategory</button>
+</div>
+
+<div id="catCreateForm" class="card p-3 mb-3" style="display:none;">
+    <form method="post" asp-page-handler="CreateCategory" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label">Category Id (optional)</label>
+                <input asp-for="NewCategory.Id" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Title</label>
+                <input asp-for="NewCategory.Title" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Image URL</label>
+                <input asp-for="NewCategory.ImageUrl" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-8">
+                <label class="form-label">Description</label>
+                <textarea asp-for="NewCategory.Description" class="form-control"></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Or upload image</label>
+                <input asp-for="NewCategoryImage" type="file" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Create Category</button>
+            <button type="button" id="cancelCatCreate" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<div id="subCreateForm" class="card p-3 mb-3" style="display:none;">
+    <form method="post" asp-page-handler="CreateSubcategory" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <label class="form-label">Product Name</label>
+                <input asp-for="NewSub.ProductName" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Brand</label>
+                <input asp-for="NewSub.Brand" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Subcategory Image URL</label>
+                <input asp-for="NewSub.ImageUrl" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <label class="form-label">Description</label>
+                <textarea asp-for="NewSub.ProductDescription" class="form-control"></textarea>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Or upload subcategory image</label>
+                <input asp-for="NewSubImage" type="file" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Nest under Category</label>
+                <select asp-for="NewSub.ParentProductId" class="form-select" id="parentSelect">
+                    <option value="">-- Select --</option>
+                    @foreach (var p in Model.Products)
+                    {
+                        <option value="@p.Id">@p.Title</option>
+                    }
+                    <option value="__new__">Create new category</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="newCategoryFields" style="display:none;" class="mt-2">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">New Category Id (optional)</label>
+                    <input asp-for="NewSub.NewCategoryId" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">New Category Title</label>
+                    <input asp-for="NewSub.NewCategoryTitle" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">New Category Description</label>
+                    <input asp-for="NewSub.NewCategoryDescription" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Create Subcategory</button>
+            <button type="button" id="cancelSubCreate" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<hr />
+
+@if ((Model.Products?.Any() ?? false) == false)
+{
+    <div>No categories found.</div>
+}
+@if (Model.Products?.Any() ?? false)
+{
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card p-2">
+                    <div class="d-flex align-items-start">
+                        <img src="@product.Image" alt="@product.Title" class="me-3 card-img-product" />
+                        <div class="flex-grow-1">
+                            <h5>@product.Title</h5>
+                            <div class="text-muted small mb-2">@product.Description</div>
+
+                            <div class="d-flex gap-2 mb-2">
+                                <button class="btn btn-sm btn-outline-primary edit-category-btn" data-target="#edit-cat-@product.Id">Edit Category</button>
+                                <button class="btn btn-sm btn-outline-danger delete-category-btn" data-target="#confirm-del-cat-@product.Id">Delete Category</button>
+                                <a class="btn btn-sm btn-outline-secondary" href="#sub-list-@product.Id">View Subcategories</a>
+                            </div>
+
+                            <div id="edit-cat-@product.Id" class="mt-2" style="display:none;">
+                                <form method="post" asp-page-handler="EditCategory" enctype="multipart/form-data">
+                                    <input type="hidden" name="EditCategoryId" value="@product.Id" />
+                                    <div class="mb-1"><input name="EditCategoryTitle" class="form-control form-control-sm" value="@product.Title" /></div>
+                                    <div class="mb-1"><input name="EditCategoryDescription" class="form-control form-control-sm" value="@product.Description" /></div>
+                                    <div class="mb-1"><input name="EditCategoryImageUrl" class="form-control form-control-sm" value="@product.Image" /></div>
+                                    <div class="mb-1"><input type="file" name="EditCategoryImageFile" class="form-control form-control-sm" /></div>
+                                    <div class="d-flex gap-2 mt-1">
+                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                        <button type="button" class="btn btn-sm btn-secondary cancel-edit-cat" data-target="#edit-cat-@product.Id">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="confirm-del-cat-@product.Id" class="mt-2" style="display:none;">
+                                <form method="post" asp-page-handler="DeleteCategory">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <div class="text-danger small">Delete this category and all its subcategories?</div>
+                                    <div class="mt-1">
+                                        <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
+                                        <button type="button" class="btn btn-sm btn-secondary cancel-del-cat" data-target="#confirm-del-cat-@product.Id">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sub-list-@product.Id" class="mt-3">
+                        <h6>Subcategories</h6>
+                        @if (product.SubCategories == null || !product.SubCategories.Any())
+                        {
+                            <div class="text-muted small">No subcategories</div>
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var sub in product.SubCategories)
+                                {
+                                    <div class="card p-2" style="width:220px;">
+                                        <img src="@sub.Image" class="card-img-top" />
+                                        <div class="card-body p-2">
+                                            <div class="small fw-bold">@sub.ProductName</div>
+                                            <div class="small text-muted">@sub.Brand</div>
+
+                                            <div class="mt-2 d-flex gap-1">
+                                                <button class="btn btn-sm btn-outline-primary edit-sub-btn" data-target="#edit-sub-@product.Id-@sub.Id">Modify</button>
+                                                <button class="btn btn-sm btn-outline-danger delete-sub-btn" data-target="#confirm-del-sub-@product.Id-@sub.Id">Delete</button>
+                                            </div>
+
+                                            <div id="edit-sub-@product.Id-@sub.Id" class="mt-2" style="display:none;">
+                                                <form method="post" asp-page-handler="EditSubcategory" enctype="multipart/form-data">
+                                                    <input type="hidden" name="EditSub.ParentProductId" value="@product.Id" />
+                                                    <input type="hidden" name="EditSub.Id" value="@sub.Id" />
+                                                    <div class="mb-1"><input name="EditSub.ProductName" class="form-control form-control-sm" value="@sub.ProductName" /></div>
+                                                    <div class="mb-1"><input name="EditSub.Brand" class="form-control form-control-sm" value="@sub.Brand" /></div>
+                                                    <div class="mb-1"><input name="EditSub.ImageUrl" class="form-control form-control-sm" value="@sub.Image" /></div>
+                                                    <div class="mb-1"><input type="file" name="EditSubImageFile" class="form-control form-control-sm" /></div>
+                                                    <div class="mb-1"><textarea name="EditSub.ProductDescription" class="form-control form-control-sm">@sub.ProductDescription</textarea></div>
+                                                    <div class="d-flex gap-2 mt-1">
+                                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                        <button type="button" class="btn btn-sm btn-secondary cancel-edit-sub" data-target="#edit-sub-@product.Id-@sub.Id">Cancel</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div id="confirm-del-sub-@product.Id-@sub.Id" class="mt-2" style="display:none;">
+                                                <form method="post" asp-page-handler="DeleteSubcategory">
+                                                    <input type="hidden" name="productId" value="@product.Id" />
+                                                    <input type="hidden" name="subId" value="@sub.Id" />
+                                                    <div class="text-danger small">Confirm delete?</div>
+                                                    <div class="mt-1">
+                                                        <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
+                                                        <button type="button" class="btn btn-sm btn-secondary cancel-del-sub" data-target="#confirm-del-sub-@product.Id-@sub.Id">Cancel</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            // form toggles
+            document.getElementById('toggleCatCreate')?.addEventListener('click', e => {
+                const el = document.getElementById('catCreateForm');
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            });
+            document.getElementById('cancelCatCreate')?.addEventListener('click', e => document.getElementById('catCreateForm').style.display = 'none');
+
+            document.getElementById('toggleSubCreate')?.addEventListener('click', e => {
+                const el = document.getElementById('subCreateForm');
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            });
+            document.getElementById('cancelSubCreate')?.addEventListener('click', e => document.getElementById('subCreateForm').style.display = 'none');
+
+            // new category fields inside sub create
+            const parentSelect = document.getElementById('parentSelect');
+            const newCatFields = document.getElementById('newCategoryFields');
+            parentSelect?.addEventListener('change', function () {
+                newCatFields.style.display = parentSelect.value === '__new__' ? 'block' : 'none';
+            });
+
+            // edit/delete toggles (category & subcategory)
+            document.querySelectorAll('.edit-category-btn').forEach(btn => btn.addEventListener('click', () => {
+                const target = document.querySelector(btn.dataset.target);
+                if (target) target.style.display = target.style.display === 'none' ? 'block' : 'none';
+            }));
+            document.querySelectorAll('.cancel-edit-cat').forEach(btn => btn.addEventListener('click', () => {
+                const t = document.querySelector(btn.dataset.target); if (t) t.style.display = 'none';
+            }));
+
+            document.querySelectorAll('.delete-category-btn').forEach(btn => btn.addEventListener('click', () => {
+                const target = document.querySelector(btn.dataset.target); if (target) target.style.display = 'block';
+            }));
+            document.querySelectorAll('.cancel-del-cat').forEach(btn => btn.addEventListener('click', () => {
+                const t = document.querySelector(btn.dataset.target); if (t) t.style.display = 'none';
+            }));
+
+            document.querySelectorAll('.edit-sub-btn').forEach(btn => btn.addEventListener('click', () => {
+                const target = document.querySelector(btn.dataset.target); if (target) target.style.display = target.style.display === 'none' ? 'block' : 'none';
+            }));
+            document.querySelectorAll('.cancel-edit-sub').forEach(btn => btn.addEventListener('click', () => {
+                const t = document.querySelector(btn.dataset.target); if (t) t.style.display = 'none';
+            }));
+
+            document.querySelectorAll('.delete-sub-btn').forEach(btn => btn.addEventListener('click', () => {
+                const t = document.querySelector(btn.dataset.target); if (t) t.style.display = 'block';
+            }));
+            document.querySelectorAll('.cancel-del-sub').forEach(btn => btn.addEventListener('click', () => {
+                const t = document.querySelector(btn.dataset.target); if (t) t.style.display = 'none';
+            }));
+        })();
+    </script>
+}
