@@ -32,12 +32,18 @@ for details on configuring this project to bundle and minify static web assets. 
   opacity: .8;
 }
 
-.card-img-product {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+/* Thumbnail sizing: force 150x150 for product + sub thumbnails (overrides .img-fluid) */
+img.card-img-product,
+.sub-item img.card-img-top {
+  width: 150px !important;
+  height: 150px !important;
+  object-fit: cover !important;
+  display: block;
+  flex: 0 0 auto;
+  max-width: none !important; /* override img-fluid */
 }
 
+/* Modal background-style card image (keep as background, not an <img>) */
 .modal .card-img {
   height: 500px;
   vertical-align: bottom;
@@ -182,4 +188,57 @@ ul {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Horizontal subcategory scroller — append this to site.css */
+
+/* Container for the controls + scroller */
+.subcategories-controls {
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* The horizontal scroller */
+.subcategories-scroller {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    padding: 0.25rem 0;
+    /* hide vertical scrollbar on some browsers */
+    overflow-y: hidden;
+}
+
+    /* Thin scrollbar styling (WebKit) */
+    .subcategories-scroller::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .subcategories-scroller::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.18);
+        border-radius: 4px;
+    }
+
+/* Each item is fixed-width (prevents wrapping) */
+.sub-item {
+    min-width: 180px;
+    flex: 0 0 auto;
+}
+
+    /* Image sizing inside cards */
+    .sub-item .card-img-top {
+        height: 100px;
+        object-fit: cover;
+    }
+
+/* Smaller devices */
+@media (max-width: 575.98px) {
+    .sub-item {
+        min-width: 140px;
+    }
+
+        .sub-item .card-img-top {
+            height: 84px;
+        }
 }
