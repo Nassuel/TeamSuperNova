@@ -172,6 +172,15 @@ ul {
     background: -moz-linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
     background: linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
 }
+/* Adjusting Background image */
+.site-bg {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain; /* Show the full image (no cropping) */
+    background-attachment: fixed; /* keep background fixed during scroll */
+    min-height: 100vh; /* ensuring viewport-sized container so image is visible */
+    background-color: #000; /* filling the letterbox space */
+}
 
 /* Animations */
 .page_enter {
