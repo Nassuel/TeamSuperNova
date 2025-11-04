@@ -25,29 +25,27 @@
                         <div class="card-body pt-0">
                             <h6 class="mb-2">Subcategories</h6>
 
-                                <div id="scroller-@product.Id" class="subcategories-scroller d-flex" tabindex="0" role="list" aria-label="Subcategories">
-                                    @foreach (var sub in product.SubCategories)
-                                    {
-                                        <div class="sub-item card me-2">
-                                            @if (!string.IsNullOrEmpty(sub.Image))
-                                            {
-                                                <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
-                                            }
+                                @foreach (var sub in product.SubCategories)
+                                {
+                                    <div class="sub-item card me-2">
+                                        @if (!string.IsNullOrEmpty(sub.Image))
+                                        {
+                                            <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
+                                        }
 
-                                            <div class="card-body p-2">
-                                                <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
-                                                <p class="card-text small text-muted mb-2">@sub.Brand</p>
+                                        <div class="card-body p-2">
+                                            <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
+                                            <p class="card-text small text-muted mb-2">@sub.Brand</p>
                                                            
-                                                @if (!string.IsNullOrEmpty(sub.url))
-                                                {
-                                                    <div class="mt-2">
-                                                        <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
-                                                    </div>
-                                                }
-                                            </div>
+                                            @if (!string.IsNullOrEmpty(sub.url))
+                                            {
+                                                <div class="mt-2">
+                                                    <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
+                                                </div>
+                                            }
                                         </div>
-                                    }
-                                </div>
+                                    </div>
+                                }
                         </div>
                     }
                 </div>
