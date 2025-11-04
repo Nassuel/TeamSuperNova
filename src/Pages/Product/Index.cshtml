@@ -3,304 +3,55 @@
 @{
     ViewData["Title"] = "Index page";
 }
-<div class="mb-3">
-    <button id="toggleCreateBtn" class="btn btn-success">+ Create New Subcategory</button>
-</div>
-
-<div id="createForm" class="card p-3 mb-3" style="display:@(Model.ShowCreateForm ? "block" : "none")">
-    <form method="post" asp-page-handler="CreateSubcategory" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="mb-2">
-                    <label class="form-label">Product Name</label>
-                    <input asp-for="NewSub.ProductName" class="form-control" />
+                
+<div class="">
+    @foreach (var product in Model.Products)
+    {
+        <div class="card mb-3 page_enter">
+            <div class="row g-0">
+                <div class="col-md-2">
+                    <img src="@product.Image" class="img-fluid rounded-start card-img-product" alt="@product.Image" />
                 </div>
-                <div class="mb-2">
-                    <label class="form-label">Brand</label>
-                    <input asp-for="NewSub.Brand" class="form-control" />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Description</label>
-                    <textarea asp-for="NewSub.ProductDescription" class="form-control"></textarea>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="mb-2">
-                    <label class="form-label">Image URL</label>
-                    <input asp-for="NewSub.ImageUrl" class="form-control" />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Or upload image</label>
-                    <input asp-for="NewImageFile" type="file" class="form-control" />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">External product link</label>
-                    <input asp-for="NewSub.Url" class="form-control" />
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="mb-2">
-                    <label class="form-label">Nest under which Category</label>
-                    <select asp-for="NewSub.ParentProductId" id="parentSelect" class="form-select">
-                        <option value="">-- Select category --</option>
-                        @foreach (var p in Model.Products)
-                        {
-                            <option value="@p.Id">@p.Title</option>
-                        }
-                        <option value="__new__">Create new category</option>
-                    </select>
-                </div>
-
-                <div id="newCategoryInputs" style="display:@(Model.NewSub?.ParentProductId == "__new__" ? "block" : "none")">
-                    <div class="mb-2">
-                        <label class="form-label">New Category Id (optional)</label>
-                        <input asp-for="NewSub.NewCategoryId" class="form-control" />
+                <div class="col-md-10">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Title</h5>
+                        <h6 class="card-text">@product.Description</h6>
+                        <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-outline-primary float-right">Read</a>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label">New Category Title</label>
-                        <input asp-for="NewSub.NewCategoryTitle" class="form-control" />
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label">New Category Description</label>
-                        <textarea asp-for="NewSub.NewCategoryDescription" class="form-control"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="mt-3">
-            <button type="submit" class="btn btn-primary">Create</button>
-            <button type="button" id="cancelCreateBtn" class="btn btn-secondary">Cancel</button>
-        </div>
-    </form>
-</div>
+                    @* Horizontal scroller for subcategories *@
+                    @if (product.SubCategories != null && product.SubCategories.Any())
+                    {
+                        <div class="card-body pt-0">
+                            <h6 class="mb-2">Subcategories</h6>
 
-@if ((Model.Products?.Any() ?? false) == false)
-{
-    <div>No products found.</div>
-}
-@if (Model.Products?.Any() ?? false)
-{
-    <div class="">
-        @foreach (var product in Model.Products)
-        {
-            <div class="card mb-3 page_enter">
-                <div class="row g-0">
-                    <div class="col-md-2">
-                        <img src="@product.Image" class="img-fluid rounded-start card-img-product" alt="@product.Image" />
-                    </div>
-                    <div class="col-md-10">
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Title</h5>
-                            <h6 class="card-text">@product.Description</h6>
-                            <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-outline-primary float-right">Read</a>
-                        </div>
+                                <div id="scroller-@product.Id" class="subcategories-scroller d-flex" tabindex="0" role="list" aria-label="Subcategories">
+                                    @foreach (var sub in product.SubCategories)
+                                    {
+                                        <div class="sub-item card me-2">
+                                            @if (!string.IsNullOrEmpty(sub.Image))
+                                            {
+                                                <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
+                                            }
 
-                        @* Horizontal scroller for subcategories *@
-                        @if (product.SubCategories != null && product.SubCategories.Any())
-                        {
-                            <div class="card-body pt-0">
-                                <h6 class="mb-2">Subcategories</h6>
-
-                                <div class="d-flex align-items-center subcategories-controls">
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-secondary sub-seek-btn"
-                                            data-direction="prev"
-                                            data-target="scroller-@product.Id"
-                                            aria-label="Scroll left">
-                                        ‹
-                                    </button>
-
-                                    <div id="scroller-@product.Id" class="subcategories-scroller d-flex" tabindex="0" role="list" aria-label="Subcategories">
-                                        @foreach (var sub in product.SubCategories)
-                                        {
-                                            <div class="sub-item card me-2">
-                                                @if (!string.IsNullOrEmpty(sub.Image))
+                                            <div class="card-body p-2">
+                                                <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
+                                                <p class="card-text small text-muted mb-2">@sub.Brand</p>
+                                                           
+                                                @if (!string.IsNullOrEmpty(sub.url))
                                                 {
-                                                    <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
+                                                    <div class="mt-2">
+                                                        <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
+                                                    </div>
                                                 }
-
-                                                <div class="card-body p-2">
-                                                    <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
-                                                    <p class="card-text small text-muted mb-2">@sub.Brand</p>
-
-                                                    <div class="d-flex gap-2 mb-2">
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary modify-btn" data-target="#edit-@product.Id-@sub.Id">Modify</button>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-target="#confirm-@product.Id-@sub.Id">Delete</button>
-                                                    </div>
-
-                                                    @* Inline edit form (hidden until Modify clicked) *@
-                                                    <div id="edit-@product.Id-@sub.Id" class="mt-2 edit-form" style="display:@(Model.ShowEditProductId == product.Id && Model.ShowEditSubId == sub.Id ? "block" : "none")">
-                                                        <form method="post" asp-page-handler="EditSubcategory" enctype="multipart/form-data">
-                                                            <input type="hidden" name="EditSub.ParentProductId" value="@product.Id" />
-                                                            <input type="hidden" name="EditSub.Id" value="@sub.Id" />
-
-                                                            <div class="mb-1">
-                                                                <input type="text" name="EditSub.ProductName" class="form-control form-control-sm" value="@sub.ProductName" />
-                                                            </div>
-                                                            <div class="mb-1">
-                                                                <input type="text" name="EditSub.Brand" class="form-control form-control-sm" value="@sub.Brand" />
-                                                            </div>
-                                                            <div class="mb-1">
-                                                                <input type="text" name="EditSub.Url" class="form-control form-control-sm" value="@sub.url" />
-                                                            </div>
-                                                            <div class="mb-1">
-                                                                <textarea name="EditSub.ProductDescription" class="form-control form-control-sm">@sub.ProductDescription</textarea>
-                                                            </div>
-                                                            <div class="mb-1">
-                                                                <input type="text" name="EditSub.ImageUrl" class="form-control form-control-sm" value="@sub.Image" />
-                                                            </div>
-                                                            <div class="mb-1">
-                                                                <input type="file" name="EditImageFile" class="form-control form-control-sm" />
-                                                            </div>
-
-                                                            <div class="d-flex gap-2">
-                                                                <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                                                                <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn" data-target="#edit-@product.Id-@sub.Id">Cancel</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-
-                                                    @* Inline delete confirmation (hidden until Delete clicked) *@
-                                                    <div id="confirm-@product.Id-@sub.Id" class="mt-2 confirm-delete" style="display:@(Model.ShowDeleteProductId == product.Id && Model.ShowDeleteSubId == sub.Id ? "block" : "none")">
-                                                        <form method="post" asp-page-handler="DeleteSubcategory">
-                                                            <input type="hidden" name="productId" value="@product.Id" />
-                                                            <input type="hidden" name="subId" value="@sub.Id" />
-                                                            <div class="text-danger small">Are you sure you want to delete this subcategory?</div>
-                                                            <div class="mt-1">
-                                                                <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
-                                                                <button type="button" class="btn btn-sm btn-secondary cancel-delete-btn" data-target="#confirm-@product.Id-@sub.Id">Cancel</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-
-                                                    @if (!string.IsNullOrEmpty(sub.url))
-                                                    {
-                                                        <div class="mt-2">
-                                                            <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
-                                                        </div>
-                                                    }
-                                                </div>
                                             </div>
-                                        }
-                                    </div>
-
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-secondary sub-seek-btn"
-                                            data-direction="next"
-                                            data-target="scroller-@product.Id"
-                                            aria-label="Scroll right">
-                                        ›
-                                    </button>
+                                        </div>
+                                    }
                                 </div>
-                            </div>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
             </div>
-        }
-    </div>
-}
-@section Scripts {
-    <script>
-        (function () {
-            // Toggle create form
-            const toggleCreateBtn = document.getElementById('toggleCreateBtn');
-            const createForm = document.getElementById('createForm');
-            const cancelCreateBtn = document.getElementById('cancelCreateBtn');
-            const parentSelect = document.getElementById('parentSelect');
-            const newCategoryInputs = document.getElementById('newCategoryInputs');
-
-            toggleCreateBtn?.addEventListener('click', function () {
-                createForm.style.display = createForm.style.display === 'none' ? 'block' : 'none';
-            });
-            cancelCreateBtn?.addEventListener('click', function () {
-                createForm.style.display = 'none';
-            });
-
-            parentSelect?.addEventListener('change', function () {
-                if (parentSelect.value === '__new__') {
-                    newCategoryInputs.style.display = 'block';
-                } else {
-                    newCategoryInputs.style.display = 'none';
-                }
-            });
-
-            // Click handlers for prev/next buttons
-            document.querySelectorAll('.sub-seek-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var targetId = btn.getAttribute('data-target');
-                    var dir = btn.getAttribute('data-direction');
-                    var scroller = document.getElementById(targetId);
-                    if (!scroller) return;
-
-                    // Attempt to compute an item width (fallback to a fixed amount)
-                    var child = scroller.firstElementChild;
-                    var childWidth = child ? child.getBoundingClientRect().width : 200;
-                    var style = window.getComputedStyle(scroller);
-                    var gap = parseFloat(style.gap) || 8;
-
-                    // Scroll by 3 items (adjust as needed)
-                    var amount = (childWidth + gap) * 3;
-                    var delta = dir === 'next' ? amount : -amount;
-
-                    scroller.scrollBy({ left: delta, behavior: 'smooth' });
-                });
-            });
-            // Keyboard support for focused scroller
-            document.querySelectorAll('.subcategories-scroller').forEach(function (scroller) {
-                scroller.addEventListener('keydown', function (e) {
-                    var key = e.key;
-                    if (key === 'ArrowLeft') {
-                        scroller.scrollBy({ left: -200, behavior: 'smooth' });
-                        e.preventDefault();
-                    } else if (key === 'ArrowRight') {
-                        scroller.scrollBy({ left: 200, behavior: 'smooth' });
-                        e.preventDefault();
-                    } else if (key === 'Home') {
-                        scroller.scrollTo({ left: 0, behavior: 'smooth' });
-                        e.preventDefault();
-                    } else if (key === 'End') {
-                        scroller.scrollTo({ left: scroller.scrollWidth, behavior: 'smooth' });
-                        e.preventDefault();
-                    }
-                });
-            });
-                    // Toggle per-item edit / delete UI
-            document.querySelectorAll('.modify-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var target = document.querySelector(btn.getAttribute('data-target'));
-                    if (!target) return;
-                    target.style.display = target.style.display === 'none' ? 'block' : 'none';
-                });
-            });
-            document.querySelectorAll('.cancel-edit-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var target = document.querySelector(btn.getAttribute('data-target'));
-                    if (!target) return;
-                    target.style.display = 'none';
-                });
-            });
-
-            document.querySelectorAll('.delete-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var target = document.querySelector(btn.getAttribute('data-target'));
-                    if (!target) return;
-                    target.style.display = 'block';
-                });
-            });
-            document.querySelectorAll('.cancel-delete-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var target = document.querySelector(btn.getAttribute('data-target'));
-                    if (!target) return;
-                    target.style.display = 'none';
-                });
-            });
-        })();
-            
-    </script>
-}
+        </div>
+    }
+</div>
