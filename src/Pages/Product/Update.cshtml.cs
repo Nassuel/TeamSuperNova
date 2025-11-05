@@ -35,13 +35,20 @@ namespace ContosoCrafts.WebSite.Pages.Product
         /// Loads the Data
         /// </summary>
         /// <param name="id"></param>
-        public void OnGet(string id)
+        public IActionResult OnGet(string id)
         {
-            Product = ProductService.GetProducts().FirstOrDefault(m => m.Id.Equals(id));
+            if (string.IsNullOrEmpty(id))
+            {
+                return RedirectToPage("/Product/Index");
+            }
+
+            Product = ProductService.GetProducts().FirstOrDefault(x => x.Id.Equals(id));
             if (Product == null)
             {
-                this.ModelState.AddModelError("OnGet", "Update Onget Error");
+                return RedirectToPage("/Product/Index");
             }
+
+            return Page();
         }
 
         /// <summary>
@@ -53,19 +60,17 @@ namespace ContosoCrafts.WebSite.Pages.Product
         /// <returns></returns>
         public IActionResult OnPost()
         {
+            if (Product == null)
+            {
+                return RedirectToPage("/Product/Index");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            bool isValidUpdate = ProductService.UpdateData(Product);
-            if (isValidUpdate == false)
-            {
-                this.ModelState.AddModelError("bogus", "bogus error");
-                return Page(); // Probably should be an Error Page
-            }
-
-            return RedirectToPage("./Index");
+            ProductService.UpdateData(Product);
+            return RedirectToPage("/Product/Index");
         }
     }
 }
