@@ -23,7 +23,7 @@ namespace UnitTests.Pages.Product
         [SetUp]
         public void TestInitialize()
         {
-            pageModel = new IndexModel(TestHelper.ProductService)
+            pageModel = new IndexModel(TestHelper.ProductService, TestHelper.WebHostEnvironment)
             {
             };
         }
