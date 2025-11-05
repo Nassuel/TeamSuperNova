@@ -139,13 +139,13 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 350px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif !important;
 }
 p {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif !important;
 }
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Orbitron', sans-serif !important;
 }
 ul {
     font-family: 'Orbitron', sans-serif;
