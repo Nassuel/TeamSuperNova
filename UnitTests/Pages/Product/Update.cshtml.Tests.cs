@@ -96,7 +96,7 @@ namespace UnitTests.Pages.Product
 
             // Assertions to verify
             Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual("@jenlooper", pageModel.Product.Maker);
+            Assert.AreEqual("Microsoft", pageModel.Product.Maker);
 
             // Reset it back
             pageModel.Product.Maker = originalMaker;
