@@ -22,7 +22,7 @@ namespace UnitTests.Pages.Product
         /// </summary>
         public void TestInitialize()
         {
-            pageModel = new UpdateModel(TestHelper.ProductService)
+            pageModel = new UpdateModel(TestHelper.ProductService, TestHelper.WebHostEnvironment)
             {
             };
         }
