@@ -19,7 +19,7 @@ namespace ContosoCrafts.WebSite.Pages.Product
             {
                 Id = Guid.NewGuid().ToString(),
                 Brand = "New Product",
-                Description = "Default description",
+                ProductDescription = "Default description",
                 Url = "Enter the Url",
                 Image = "Upload Image",
             };
