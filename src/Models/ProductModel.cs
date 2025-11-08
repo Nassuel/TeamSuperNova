@@ -7,19 +7,15 @@ namespace ContosoCrafts.WebSite.Models
     public class ProductModel
     {
         public string Id { get; set; }
-        public string Maker { get; set; }
-        
-        [JsonPropertyName("img")]
-        public string Image { get; set; }
-        public string Url { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
         public int[] Ratings { get; set; }
-
-
-        public List<SubCategoryModel> SubCategories { get; set; }
-
-
+        public string Brand { get; set; }
+        public string ProductName { get; set; }
+        public string Type { get; set; }
+        public string url { get; set; }
+        public string ProductDescription { get; set; }
+        public string Category { get; set; }
+        public string SubCategory { get; set; }
+        public string Image { get; set; }
 
         public override string ToString() => JsonSerializer.Serialize<ProductModel>(this);
     }
