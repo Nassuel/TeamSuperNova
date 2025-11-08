@@ -13,7 +13,7 @@ namespace ContosoCrafts.WebSite.Models
         public ProductType Type { get; set; }
         public string Url { get; set; }
         public string ProductDescription { get; set; }
-        public string Category { get; set; }
+
         public string SubCategory { get; set; }
         public string Image { get; set; }
 
