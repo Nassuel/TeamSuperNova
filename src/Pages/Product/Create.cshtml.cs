@@ -18,7 +18,7 @@ namespace ContosoCrafts.WebSite.Pages.Product
             var newProduct = new ProductModel
             {
                 Id = Guid.NewGuid().ToString(),
-                Title = "New Product",
+                Brand = "New Product",
                 Description = "Default description",
                 Url = "Enter the Url",
                 Image = "Upload Image",
