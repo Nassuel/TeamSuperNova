@@ -13,6 +13,7 @@ namespace ContosoCrafts.WebSite.Pages.Product
         {
             ProductService = productService;
         }
+
         public IActionResult OnGet()
         {
             var newProduct = new ProductModel
