@@ -10,6 +10,11 @@
     float: right;
 }
 
+.nav-bar-img {
+    height: 60px !important;
+    width: 60px !important;
+}
+
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 .card-columns .card:hover .card-img {
@@ -62,8 +67,8 @@ img.card-img-product,
 
 a.navbar-brand {
     white-space: normal;
-    font-family: 'YellowTail', cursive;
-    font-size: xx-large;
+    font-family: 'YellowTail', cursive !important;
+    font-size: x-large;
     text-align: center;
     word-break: break-all;
 }
@@ -143,20 +148,6 @@ ul {
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
     font-family: 'Orbitron', sans-serif;
-}
-
-/*Backgrounds*/
-.bg-navbar {
-    background: -webkit-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
-    background: -o-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
-    background: -moz-linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
-    background: linear-gradient(110deg, #e9a8a6 60%, #252152 60%);
-}
-.bg-footer {
-    background: -webkit-linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
-    background: -o-linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
-    background: -moz-linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
-    background: linear-gradient(110deg, #252152 60%, #e9a8a6 60%);
 }
 
 /* Animations */
