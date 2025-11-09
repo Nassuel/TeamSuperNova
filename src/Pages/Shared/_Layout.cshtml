@@ -8,14 +8,15 @@
     <link rel="stylesheet" href="~/css/neumorphism.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 </head>
    <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-navbar border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">
-                    <img src="~/assets/logoname.png" alt="Logo" style="height:60px;width:60px;" />
+                    <img src="~/assets/logoname.png" alt="Logo" class="nav-bar-img" />
                     SuperNova</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -24,13 +25,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-light" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="./Product/Index">Products</a>
+                            <a class="nav-link text-light" asp-area="" asp-page="./Product/Index">Products</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/About">About</a>
+                            <a class="nav-link text-light" asp-area="" asp-page="/About">About</a>
                         </li>
 
                     </ul>
@@ -44,7 +45,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-footer">
+    <footer class="border-top footer text-muted bg-dark">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
@@ -53,14 +54,14 @@
                 <div class="col-md-6">
                     <div class="d-flex flex-column align-items-start">
                         <div>Quick Links</div>
-                        <a asp-area="" asp-page="/Privacy">Privacy</a>
-                        <a asp-area="" asp-page="/Products">Products</a>
-                        <a asp-area="" asp-page="/About">About</a>
+                        <a asp-area="" class="text-light" asp-page="/Privacy">Privacy</a>
+                        <a asp-area="" class="text-light" asp-page="/Products">Products</a>
+                        <a asp-area="" class="text-light" asp-page="/About">About</a>
                     </div>
                 </div>
             </div>
             <hr class="my-2" />
-            &copy; 2025 | SuperNova
+            &copy; @DateTime.Now.Year | SuperNova
         </div>
     </footer>
 
