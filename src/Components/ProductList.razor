@@ -22,14 +22,6 @@
                 <small class="text-muted"><button @onclick="(e => SelectProduct(product.Id))" 
                   data-toggle="modal" data-target="#productModal" class="btn btn-primary">More Info</button>
                 </small>
-                <small class="text-muted">
-                    <button @onclick="(e => SelectSubcategory(product.Id))"
-                            data-toggle="modal"
-                                data-target="#subCategoryModal"
-                            class="btn btn-primary">
-                        See Subcategory
-                    </button>
-                </small>
             </div>
         </div>
     }
@@ -152,19 +144,12 @@
 
     ProductModel selectedProduct;
     string selectedProductId;
-    // List<SubCategoryModel> subcategoryData = new List<SubCategoryModel>();
 
     void SelectProduct(string productId)
     {
         selectedProductId = productId;
         selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
         GetCurrentRating();
-    }
-    void SelectSubcategory(string productId)
-    {
-        ///selectedProductId = productId;
-        selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
-        // subcategoryData = selectedProduct.ProductName;
     }
 
     int currentRating = 0;
