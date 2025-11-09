@@ -1,12 +1,13 @@
 ﻿namespace ContosoCrafts.WebSite.Models
 {
-    public enum ProductType
+    public enum ProductTypeEnum
     {
-        Laptop,
-        Keyboard,
-        Mice,
-        Headset,
-        VrHeadsets,
-        Printer3D,
+        Undefined = 0, // Reserved for null cases
+        Laptop = 5,
+        Keyboard = 7,
+        Mice = 11,
+        Headset = 15,
+        VrHeadsets = 17,
+        Printer3D = 20,
     }
 }
