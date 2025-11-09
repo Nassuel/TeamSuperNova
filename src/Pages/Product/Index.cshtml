@@ -7,47 +7,18 @@
 <div class="">
     @foreach (var product in Model.Products)
     {
-        <div class="card mb-3 page_enter">
+        <div class="card bg-primary border-light shadow-soft mb-3 page_enter">
             <div class="row g-0">
                 <div class="col-md-2">
-                    <img src="@product.Image" class="img-fluid rounded-start card-img-product" alt="@product.Image" />
+                    <img src="@product.Image" class="card-img-top rounded" alt="@product.Image" />
                 </div>
                 <div class="col-md-10">
                     <div class="card-body">
-                        <h5 class="card-title">@product.Brand</h5>
+                        <h4 class="card-title">@product.Brand</h4>
+                        <h6 class="card-subtitle text-muted">@(((Models.ProductTypeEnum)product.ProductType))</h6>
                         <h6 class="card-text">@product.ProductDescription</h6>
-                        <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-outline-primary float-right">Read</a>
+                        <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-outline-primary float-right animate-up-2 btn-block mb-4">Read</a>
                     </div>
-
-                    @* Horizontal scroller for subcategories
-                    @if (product.SubCategories != null && product.SubCategories.Any())
-                    {
-                        <div class="card-body pt-0">
-                            <h6 class="mb-2">Subcategories</h6>
-
-                                @foreach (var sub in product.SubCategories)
-                                {
-                                    <div class="sub-item card me-2">
-                                        @if (!string.IsNullOrEmpty(sub.Image))
-                                        {
-                                            <img src="@sub.Image" class="card-img-top" alt="@sub.ProductName" />
-                                        }
-
-                                        <div class="card-body p-2">
-                                            <h6 class="card-title mb-1" title="@sub.ProductName">@sub.ProductName</h6>
-                                            <p class="card-text small text-muted mb-2">@sub.Brand</p>
-                                                           
-                                            @if (!string.IsNullOrEmpty(sub.url))
-                                            {
-                                                <div class="mt-2">
-                                                    <a href="@sub.url" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View</a>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                        </div>
-                    }*@
                 </div>
             </div>
         </div>
