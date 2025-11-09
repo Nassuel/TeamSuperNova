@@ -3,10 +3,10 @@
     public enum ProductType
     {
         Laptop,
-        keyboard,
-        mice,
-        headset,
-        vrheadsets,
-        printer3d,
+        Keyboard,
+        Mice,
+        Headset,
+        Vrheadsets,
+        Printer3D,
     }
 }
