@@ -77,20 +77,6 @@ a {
     font-family: 'Roboto', sans-serif;
 }
 
-.btn-primary {
-    font-family: 'Roboto', sans-serif;
-    color: #fff;
-    background-color: #252152;
-    border-color: #252152;
-}
-
-.btn-primary:hover {
-    font-family: 'Roboto', sans-serif;
-    color: #fff;
-    background-color: #e9a8a6;
-    border-color: #e9a8a6;
-}
-
 .navbar-nav .nav-link {
     letter-spacing: 2px;
 }
