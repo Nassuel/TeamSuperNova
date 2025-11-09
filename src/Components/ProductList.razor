@@ -15,7 +15,8 @@
             <div class="card-img" style="background-image: url('@product.Image');">
             </div>
             <div class="card-body">
-                <h5 class="card-title">@product.Brand</h5>
+                <h4 class="card-title">@product.Brand</h4>
+                <h6 class="card-subtitle text-muted">@(((ProductTypeEnum)product.ProductType).DisplayName())</h6>
             </div>
             <div class="card-footer">
                 <small class="text-muted"><button @onclick="(e => SelectProduct(product.Id))" 
