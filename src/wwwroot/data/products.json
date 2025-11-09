@@ -85,7 +85,7 @@
     "Ratings": null,
     "Brand": "Apple",
     "ProductName": "Magic Mouse (USB\u2011C) - Black Multi-Touch Surface",
-    "ProductType": "Mice",
+    "ProductType": 11,
     "Url": "https://www.apple.com/shop/product/MXK63AM/A/magic-mouse-usb%E2%80%91c-black-multi-touch-surface?fnode=37a8dceadcd1bd0898498344d4e729a4951e0ed5624deb669a93be927a9df5e5b6e77e865537962505e265664f7719ab573948b74e3532cb06c7b9707084245f73be6b3bc6fc8f56c3b5804ea441647820bc422921372d2586029461e082ce2e",
     "ProductDescription": "Overview: Wireless and rechargeable Magic Mouse with optimized foot design for smooth gliding and Multi-Touch surface for gestures like swiping and scrolling; Rechargeable battery lasts about a month between charges; USB-C port included with woven USB-C Charge Cable for charging and pairing; What\u2019s in the Box: Magic Mouse, USB-C Charge Cable; Size and Weight: Height 0.85 inch (2.16 cm), Width 2.25 inches (5.71 cm), Depth 4.47 inches (11.35 cm), Weight 0.22 lb (0.099 kg); General: Multi-Touch; Connections and Expansion: Bluetooth, USB-C port, Wireless; System Requirements: Mac with macOS 15.1 or later, iPad with iPadOS 18.1 or later",
     "Image": "/assets/mice_apple_magic_mouse_usb_c.png"
@@ -95,7 +95,7 @@
     "Ratings": null,
     "Brand": "Corsair",
     "ProductName": "M75 WIRELESS Lightweight RGB Gaming Mouse \u2013 Glacier Blue",
-    "ProductType": "Mice",
+    "ProductType": 11,
     "Url": "https://www.corsair.com/us/en/p/gaming-mouse/CH-931D01G-NA/m75-wireless-lightweight-rgb-gaming-mouse-glacial-blue-ch-931d01g-na",
     "ProductDescription": "Weight: 89 g; Sensor Type: Optical; Grip Type: Any; Battery Life: 2.4GHz SLIPSTREAM - Up to 105 hrs, Bluetooth\u00AE - Up to 210 hrs; On Board Memory Profiles: 1; Game Genre: FPS, MMO, Battle Royale; Sensor: MARKSMAN 26K; DPI: 26,000; Mouse Compatibility: PC or Mac\u00AE with USB 2.0 Type-A port, Windows\u00AE 10/11, macOS\u00AE 10.15 or later, Internet connection for iCUE software download",
     "Image": "/assets/mice_corsair_m75_wireless_lightweight.png"
@@ -105,7 +105,7 @@
     "Ratings": null,
     "Brand": "Razer",
     "ProductName": "Razer Pro Click V2 Vertical",
-    "ProductType": "Mice",
+    "ProductType": 11,
     "Url": "https://www.razer.com/productivity/razer-pro-click-v2-vertical-edition",
     "ProductDescription": "Form Factor: Right-handed; Connectivity: Razer HyperSpeed Wireless (2.4 GHz), Bluetooth \u2013 up to 3 hosts, USB-C wired; Battery Life: Up to 6 months; RGB Lighting: 18 zone underglow; Sensor: Razer Focus Pro Optical Sensor; Max Sensitivity (DPI): 30000; Max Speed (IPS): 550; Max Acceleration (G): 40; Programmable Buttons: 8; Switch Type: Mechanical switch; Switch Lifecycle: 60-million Clicks; On-board Memory Profiles: 1; Mouse Feet: 100% PTFE; Cable: 1.2 m USB-A to USB-C cable for charging and wired usage; Tilt Scroll Wheel: None; Size (L x W x H): 111.0 mm / 4.37 in x 88.0 mm / 3.46 in x 79.0 mm / 3.11 in; Weight: Approx. 150 g; Accessory Compatibility: None; Box Contents: Razer Pro Click V2 Vertical Edition, Razer HyperSpeed Wireless Dongle, USB Type A to USB Type C cable, Important Product Information Guide",
     "Image": "/assets/mice_razer_pro_click_v2_vertical_edition.png"
@@ -115,7 +115,7 @@
     "Ratings": null,
     "Brand": "Logitech",
     "ProductName": "G502 X PLUS",
-    "ProductType": "Mice",
+    "ProductType": 11,
     "Url": "https://www.logitech.com/en-us/shop/p/g502-x-plus-wireless-lightforce.910-006160",
     "ProductDescription": "Dimensions - Height: 1.62 in (41.1 mm); Width: 3.12 in (79.2 mm); Length: 5.17 in (131.4 mm); Weight: 3.74 in (106 g); USB-C Charging: Black - Yes; 106 grams: Black - Yes; Low-friction PTFE feet: Black - Yes; System Requirements: USB port, Internet access for optional software download; Platform Compatibility: Windows\u00AE 10 or later, Mac 10.14 or later; Warranty: 2-Year Limited Hardware Warranty; Part Number: Black - 910-006160, White - 910-006169",
     "Image": "/assets/mice_logitech_g502_x_plus_wireless.png"
@@ -125,7 +125,7 @@
     "Ratings": null,
     "Brand": "Sennheiser",
     "ProductName": "HD 490 PRO",
-    "ProductType": "Headset",
+    "ProductType": 15,
     "Url": "https://www.sennheiser.com/en-us/catalog/products/headphones/hd-490-pro/hd-490-pro-700286",
     "ProductDescription": "Weight: 260 gr. (w/o cable); Max. sound pressure level: 128 dBSPL (1 kHz @ 5% THD); Power consumption: 300 mW (100 h, noise IEC 60268); Sensitivity: 105 dBSPL (1 kHz/1 Vrms), 96 dBSPL (1 kHz/1 mW); Transducer type: Dynamic; Wearing style: Over-ear; Connection: Wired; Connectors: 3.5mm, 6.3mm",
     "Image": "/assets/headset_sennheiser_hd_490_pro.png"
@@ -135,7 +135,7 @@
     "Ratings": null,
     "Brand": "Sony",
     "ProductName": "WH-1000XM6 Best Wireless Noise Canceling Headphones | Platinum Silver",
-    "ProductType": "Headset",
+    "ProductType": 15,
     "Url": "https://electronics.sony.com/audio/headphones/headband/p/wh1000xm6-s",
     "ProductDescription": "What\u0027s In The Box: Carrying case, Headphone cable (approx. 1.2m), USB charging cable; Noise Canceling: Personal NC Optimizer, Adaptive NC Optimizer; Quick Attention: Yes; Ambient Sound Mode - Normal: Yes; Bluetooth\u00AE Version: BLUETOOTH Specification Version 5.3; Effective Range: Approx. 10 m; Frequency Range: 2.4 GHz band (2.4000 GHz - 2.4835 GHz); Profile: A2DP, AVRCP, HFP, HSP, TMAP, PBP; Supported Audio Formats: SBC, AAC, LDAC, LC3; Supported Content Protection: SCMS-T; Battery Charge Method: USB; Battery Life (Music Playback): Max. 30 hours (NC ON), Max. 40 hours (NC OFF); Battery Life (Communication Time): Max. 24 hours (NC ON), Max. 28 hours (NC OFF); Lithium Battery: Yes; Weight: Approx. 254 g; Frequency Response: 4 Hz - 40,000 Hz (JEITA); Cord Length: Approx. 1.2 m; Cord Type: Single-sided (detachable); Driver Unit: 30 mm; Impedance: 48 ohm (1 kHz, power ON), 16 ohm (1 kHz, power OFF); Magnet: Neodymium; Plug: Gold-plated L-shaped stereo mini plug; Sensitivities: 103 dB/mW (power ON), 102 dB/mW (power OFF); Wearing Style: Over Ear; Headphone Type: Closed; Frequency Response (Active): 4 Hz - 40,000 Hz (JEITA); Frequency Response (Bluetooth\u00AE): 20 Hz - 20,000 Hz (44.1 kHz), 20 Hz - 40,000 Hz (LDAC, 96 kHz, 990 kbps); Passive Operation: Yes; Ambient Sound Mode: Yes",
     "Image": "/assets/headset_sony_wh-1000xm6_noise_cancellation.png"
@@ -145,7 +145,7 @@
     "Ratings": null,
     "Brand": "Sony",
     "ProductName": "WF-1000XM5 The Best Truly Wireless Noise Canceling Earbuds | Black",
-    "ProductType": "Headset",
+    "ProductType": 15,
     "Url": "https://electronics.sony.com/audio/headphones/truly-wireless-earbuds/p/wf1000xm5-b",
     "ProductDescription": "Charging Case Dimension: Approx. 64.6 x 40.0 x 26.5 mm; Charging Case Weight: Approx. 39 g; Noise Canceling Ambient Sound Mode: Yes; Quick Attention: Yes; Bluetooth\u00AE Version: Bluetooth Specification Version 5.3; Effective Range: 10 m; Frequency Range: 2.4 GHz band (2.4000 GHz - 2.4835 GHz); Profile: A2DP, AVRCP, HFP, HSP, TMAP, CSIP, MCP, VCP, CCP; Supported Audio Formats: SBC, AAC, LDAC, LC3; Supported Content Protection: SCMS-T; Battery Charge Method: USB charger | Wireless charger (with case); Battery Life (Communication Time): Max. 6 hrs (NC ON) | Max. 7 hrs (NC OFF); Battery Life (Active Headphones): Max. 8 hrs (NC ON) | Max. 12 hrs (NC OFF); Earbud Weight: Approx. 5.9 g x 2 (including earbud tips (M)); Driver Unit: 8.4 mm; Wearing Style: Yes (IPX4 equivalent); Headphone Type: Closed, dynamic; Frequency Response (Bluetooth\u00AE): 20\u201320,000 Hz (44.1 kHz sampling) | 20\u201340,000 Hz (LDAC 96 kHz sampling 990 kbps); Ambient Sound Mode: Yes; General Features (Active Headphones): Yes",
     "Image": "/assets/headset_sony_wf_1000xm5_truly_wireless_earbuds.png"
@@ -155,7 +155,7 @@
     "Ratings": null,
     "Brand": "Bose",
     "ProductName": "Bose QuietComfort Ultra Headphones",
-    "ProductType": "Headset",
+    "ProductType": 15,
     "Url": "https://www.bose.com/p/headphones/bose-quietcomfort-ultra-headphones/QCUH-HEADPHONEARN.html?dwvar_QCUH-HEADPHONEARN_color=DEEP\u002BPLUM\u0026quantity=1",
     "ProductDescription": "Headphone Fit: Around Ear Circumaural; Headband: On Head Adjustable; Cushions: Removable Cushion; Microphones: Built-in Microphone; Noise Cancelling: Yes; Noise Control Type: Active Noise Cancelling, Echo Reduction, Adjustable Noise Cancelling; Audio cable included: No; Case: Carry; Headphone Dimensions: 7.7\u0022 H x 5.5\u0022 W x 2.0\u0022 D (0.560 lb); Product Material: Plastic, Aluminum, Leather (Protein); Product Case Material: Plastic (Hard); Ear Cushion Material: Protein Leather; Rechargeable: Yes; Battery Life: 24 hours; Battery Charge Time: 3 hours; Charging Accessory included: Yes; Charging Interface(s): USB C PORT; Wireless Connectivity: Bluetooth, A2DP Bluetooth Audio Streaming, HFP Bluetooth, AVRCP Bluetooth, Bluetooth Low Energy; Bose App: Bose App",
     "Image": "/assets/headset_bose_quitecomfort_ultra.png"
