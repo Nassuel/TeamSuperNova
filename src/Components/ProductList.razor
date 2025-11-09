@@ -97,23 +97,20 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    @foreach (var subcategory in subcategoryData)
-                    {
-                        <div class="card mb-3">
-                            <div class="row g-0">
-                                <div class="col-md-2">
-                                    <img src="@subcategory.Image" class="img-fluid rounded-start card-img-product" alt="@subcategory.Image" />
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@subcategory.SubCategory</h5>
-                                        <h6 class="card-text">@subcategory.ProductDescription</h6>
-                                        <a href="@subcategory.url" target="_blank" class="btn btn-primary float-right">Buy Now!</a>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="card">
+                        <!-- Product image -->
+                        <div class="card-img" style="background-image: url('@selectedProduct.Image');"></div>
+                        <!-- Product information -->
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2">@selectedProduct.ProductName</h6>
+                            <p class="card-text">@selectedProduct.ProductDescription</p>
+                            <!-- Display View Product button if URL exists -->
+                            @if (string.IsNullOrEmpty(selectedProduct.Url) == false)
+                            {
+                                <a href="@selectedProduct.Url" target="_blank" class="btn btn-primary">View Product</a>
+                            }
                         </div>
-                    }
+                    </div>
                 </div>
                 <div class="modal-footer">
                     @if (voteCount == 0)
@@ -154,7 +151,7 @@
 
     ProductModel selectedProduct;
     string selectedProductId;
-    List<SubCategoryModel> subcategoryData = new List<SubCategoryModel>();
+    // List<SubCategoryModel> subcategoryData = new List<SubCategoryModel>();
 
     void SelectProduct(string productId)
     {
@@ -166,7 +163,7 @@
     {
         ///selectedProductId = productId;
         selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
-        subcategoryData = selectedProduct.SubCategories;
+        // subcategoryData = selectedProduct.ProductName;
     }
 
     int currentRating = 0;
