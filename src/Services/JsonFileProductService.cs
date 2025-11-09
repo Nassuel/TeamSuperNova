@@ -87,7 +87,6 @@ namespace ContosoCrafts.WebSite.Services
                 if (index < 0) return false;
 
                 var existing = products[index];
-                data.SubCategories ??= existing.SubCategories;
                 data.Ratings ??= existing.Ratings;
 
                 products[index] = data;
@@ -110,38 +109,6 @@ namespace ContosoCrafts.WebSite.Services
                     return false;
                 }
 
-                // Ensure each subcategory in the new product has an Id and SubCategory set
-                if (newProduct.SubCategories != null && newProduct.SubCategories.Count > 0)
-                {
-                    var existingIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                    foreach (var prod in products)
-                    {
-                        if (prod.SubCategories == null) continue;
-                        foreach (var s in prod.SubCategories)
-                        {
-                            if (!string.IsNullOrWhiteSpace(s.Id))
-                                existingIds.Add(s.Id);
-                        }
-                    }
-
-                    var usedIdsInNew = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                    foreach (var sub in newProduct.SubCategories)
-                    {
-                        var baseId = string.IsNullOrWhiteSpace(sub.Id) ? MakeSafeId(sub.ProductName) : MakeSafeId(sub.Id);
-                        var candidate = baseId;
-                        var idx = 1;
-                        while (string.IsNullOrWhiteSpace(candidate) || usedIdsInNew.Contains(candidate) || existingIds.Contains(candidate))
-                        {
-                            candidate = $"{baseId}_{idx++}";
-                        }
-
-                        sub.Id = candidate;
-                        // set SubCategory if missing (default to Brand)
-                        sub.SubCategory ??= sub.Brand;
-                        usedIdsInNew.Add(candidate);
-                    }
-                }
-
                 products.Add(newProduct);
                 SaveData(products);
                 return true;
@@ -161,7 +128,6 @@ namespace ContosoCrafts.WebSite.Services
                 if (idx < 0) return false;
 
                 var existing = products[idx];
-                updatedProduct.SubCategories ??= existing.SubCategories;
                 updatedProduct.Ratings ??= existing.Ratings;
 
                 products[idx] = updatedProduct;
@@ -182,165 +148,6 @@ namespace ContosoCrafts.WebSite.Services
                 var removed = products.RemoveAll(p => string.Equals(p.Id, productId, StringComparison.OrdinalIgnoreCase));
                 if (removed == 0) return false;
                 SaveData(products);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public bool AddSubCategory(string productId, SubCategoryModel sub)
-        {
-            try
-            {
-                var products = GetProducts().ToList();
-                var product = products.FirstOrDefault(p => string.Equals(p.Id, productId, StringComparison.OrdinalIgnoreCase));
-                if (product == null)
-                {
-                    return false;
-                }
-
-                product.SubCategories ??= new List<SubCategoryModel>();
-
-                var baseId = string.IsNullOrWhiteSpace(sub.Id) ? MakeSafeId(sub.ProductName) : sub.Id;
-                var candidate = baseId;
-                var idx = 1;
-                while (product.SubCategories.Any(s => string.Equals(s.Id, candidate, StringComparison.OrdinalIgnoreCase)))
-                {
-                    candidate = $"{baseId}_{idx++}";
-                }
-
-                sub.Id = candidate;
-
-                // ensure SubCategory property exists (default to Brand)
-                sub.SubCategory ??= sub.Brand;
-
-                product.SubCategories.Add(sub);
-                SaveData(products);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public bool UpdateSubCategory(string productId, SubCategoryModel updatedSub)
-        {
-            try
-            {
-                var products = GetProducts().ToList();
-                var product = products.FirstOrDefault(p => string.Equals(p.Id, productId, StringComparison.OrdinalIgnoreCase));
-                if (product == null || product.SubCategories == null)
-                {
-                    return false;
-                }
-
-                // if SubCategory missing set to Brand (keeps consistency)
-                updatedSub.SubCategory ??= updatedSub.Brand;
-
-                var index = product.SubCategories.FindIndex(s => string.Equals(s.Id, updatedSub.Id, StringComparison.OrdinalIgnoreCase));
-                if (index < 0)
-                {
-                    return false;
-                }
-
-                product.SubCategories[index] = updatedSub;
-                SaveData(products);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public bool DeleteSubCategory(string productId, string subId)
-        {
-            try
-            {
-                var products = GetProducts().ToList();
-                var product = products.FirstOrDefault(p => string.Equals(p.Id, productId, StringComparison.OrdinalIgnoreCase));
-                if (product == null || product.SubCategories == null)
-                {
-                    return false;
-                }
-
-                var removed = product.SubCategories.RemoveAll(s => string.Equals(s.Id, subId, StringComparison.OrdinalIgnoreCase));
-                if (removed == 0)
-                {
-                    return false;
-                }
-
-                SaveData(products);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// One-off helper: finds any subcategories missing an Id or SubCategory and assigns stable values, then persists.
-        /// </summary>
-        public bool EnsureSubCategoryIds()
-        {
-            try
-            {
-                var products = GetProducts().ToList();
-                var changed = false;
-
-                var globalIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var p in products)
-                {
-                    if (p.SubCategories == null) continue;
-                    foreach (var s in p.SubCategories)
-                    {
-                        if (!string.IsNullOrWhiteSpace(s.Id))
-                            globalIds.Add(s.Id);
-                    }
-                }
-
-                foreach (var p in products)
-                {
-                    if (p.SubCategories == null) continue;
-                    var usedInProduct = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                    foreach (var s in p.SubCategories)
-                    {
-                        // ensure SubCategory value exists
-                        if (string.IsNullOrWhiteSpace(s.SubCategory))
-                        {
-                            s.SubCategory = s.Brand;
-                            changed = true;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(s.Id))
-                        {
-                            var baseId = MakeSafeId(s.ProductName);
-                            var candidate = baseId;
-                            var idx = 1;
-                            while (string.IsNullOrWhiteSpace(candidate) || globalIds.Contains(candidate) || usedInProduct.Contains(candidate))
-                            {
-                                candidate = $"{baseId}_{idx++}";
-                            }
-
-                            s.Id = candidate;
-                            globalIds.Add(candidate);
-                            usedInProduct.Add(candidate);
-                            changed = true;
-                        }
-                        else
-                        {
-                            usedInProduct.Add(s.Id);
-                        }
-                    }
-                }
-
-                if (changed)
-                    SaveData(products);
-
                 return true;
             }
             catch
