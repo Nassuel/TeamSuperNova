@@ -25,7 +25,7 @@ namespace ContosoCrafts.WebSite.Models
                 ProductTypeEnum.Mice => "Mice",
                 ProductTypeEnum.Headset => "Headset",
                 ProductTypeEnum.VrHeadsets => "VR Headsets",
-                ProductTypeEnum.Printer3D => "Printer3D",
+                ProductTypeEnum.Printer3D => "3D Printer",
 
                 // Default, Unknown
                 _ => "",
