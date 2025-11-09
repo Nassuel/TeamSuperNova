@@ -6,7 +6,7 @@
         Keyboard,
         Mice,
         Headset,
-        Vrheadsets,
+        VrHeadsets,
         Printer3D,
     }
 }
