@@ -10,7 +10,7 @@ namespace ContosoCrafts.WebSite.Models
         public int[] Ratings { get; set; }
         public string Brand { get; set; }
         public string ProductName { get; set; }
-        public ProductType Type { get; set; }
+        public int ProductType { get; set; }
         public string Url { get; set; }
         public string ProductDescription { get; set; }
         public string Image { get; set; }
