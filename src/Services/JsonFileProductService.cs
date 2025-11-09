@@ -73,6 +73,15 @@ namespace ContosoCrafts.WebSite.Services
         {
             try
             {
+                // Validate input data exists and has valid ID
+                if (data == null)
+                {
+                    return false;
+                }
+                if (string.IsNullOrWhiteSpace(data.Id))
+                {
+                    return false;
+                }
                 var products = GetProducts().ToList();
                 var index = products.FindIndex(p => string.Equals(p.Id, data.Id, StringComparison.OrdinalIgnoreCase));
                 if (index < 0) return false;
