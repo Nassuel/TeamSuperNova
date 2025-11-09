@@ -15,9 +15,9 @@
                 <div class="col-md-10">
                     <div class="card-body">
                         <h4 class="card-title">@product.Brand</h4>
-                        <h6 class="card-subtitle text-muted">@(((Models.ProductTypeEnum)product.ProductType))</h6>
+                        <h6 class="card-subtitle text-muted mb-2">@(((Models.ProductTypeEnum)product.ProductType))</h6>
                         <h6 class="card-text">@product.ProductDescription</h6>
-                        <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-outline-primary float-right animate-up-2 btn-block mb-4">Read</a>
+                        <a asp-page="Read" asp-route-id="@product.Id" class="btn btn-secondary float-right animate-up-2 btn-block mb-4">Read</a>
                     </div>
                 </div>
             </div>
