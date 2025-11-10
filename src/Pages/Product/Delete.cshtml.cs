@@ -24,7 +24,7 @@ namespace ContosoCrafts.WebSite.Pages.Product
                 return RedirectToPage("/Product/Index");
             }
 
-            Product = ProductService.GetProducts().First(p => p.Id == id);
+            Product = ProductService.GetProductById(id);
             if (Product == null)
             {
                 return RedirectToPage("/Product/Index");
