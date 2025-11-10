@@ -1,20 +1,22 @@
+using ContosoCrafts.WebSite.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-
-using ContosoCrafts.WebSite.Models;
-
-using Microsoft.AspNetCore.Hosting;
+using System.Threading.Tasks;
 
 namespace ContosoCrafts.WebSite.Services
 {
     public class JsonFileProductService
     {
-        public JsonFileProductService(IWebHostEnvironment webHostEnvironment)
+        private readonly IWebHostEnvironment _env;
+        public JsonFileProductService(IWebHostEnvironment webHostEnvironment, IWebHostEnvironment env)
         {
             WebHostEnvironment = webHostEnvironment;
+            _env = env;
         }
 
         public IWebHostEnvironment WebHostEnvironment { get; }
@@ -166,6 +168,31 @@ namespace ContosoCrafts.WebSite.Services
                     products
                 );
             }
+        }
+
+        /// <summary>
+        /// Take in file, saves it to /assets/ folder and
+        /// returns the path as a string.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<string> SaveUploadedFileAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0) return null;
+
+            var uploads = Path.Combine(_env.WebRootPath, "assets");
+            if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+
+            var ext = Path.GetExtension(file.FileName);
+            var fileName = $"{Guid.NewGuid():N}{ext}";
+            var filePath = Path.Combine(uploads, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return $"~/assets/{fileName}";
         }
 
         private string MakeSafeId(string text)
