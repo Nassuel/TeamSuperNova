@@ -12,11 +12,9 @@ namespace ContosoCrafts.WebSite.Services
 {
     public class JsonFileProductService
     {
-        private readonly IWebHostEnvironment _env;
         public JsonFileProductService(IWebHostEnvironment webHostEnvironment, IWebHostEnvironment env)
         {
             WebHostEnvironment = webHostEnvironment;
-            _env = env;
         }
 
         public IWebHostEnvironment WebHostEnvironment { get; }
@@ -180,7 +178,7 @@ namespace ContosoCrafts.WebSite.Services
         {
             if (file == null || file.Length == 0) return null;
 
-            var uploads = Path.Combine(_env.WebRootPath, "assets");
+            var uploads = Path.Combine(WebHostEnvironment.WebRootPath, "assets");
             if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
 
             var ext = Path.GetExtension(file.FileName);
