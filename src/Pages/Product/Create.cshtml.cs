@@ -2,6 +2,7 @@ using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -18,7 +19,7 @@ namespace ContosoCrafts.WebSite.Pages.Product
         [BindProperty]
         public ProductModel Product { get; set; }
         [BindProperty]
-        public IFormFile NewCategoryImage { get; set; }
+        public IFormFile ImageFile { get; set; }
 
         private readonly IWebHostEnvironment _env;
         public CreateModel(JsonFileProductService productService, IWebHostEnvironment env)
@@ -29,7 +30,7 @@ namespace ContosoCrafts.WebSite.Pages.Product
 
         public IActionResult OnGet()
         {
-            var newProduct = new ProductModel
+            Product = new ProductModel
             {
                 Id = Guid.NewGuid().ToString(),
                 Brand = "New Product",
@@ -41,11 +42,6 @@ namespace ContosoCrafts.WebSite.Pages.Product
                 ProductType = 0
             };
 
-            //ProductService.AddCategory(newProduct);
-
-            //return RedirectToPage("/Product/Read", new { id = newProduct.Id });
-
-            Product = newProduct;
             if (Product == null)
             {
                 return RedirectToPage("/Product/Index");
@@ -61,7 +57,7 @@ namespace ContosoCrafts.WebSite.Pages.Product
         /// Then return to the index page
         /// </summary>
         /// <returns></returns>
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (Product == null)
             {
@@ -72,30 +68,13 @@ namespace ContosoCrafts.WebSite.Pages.Product
                 return Page();
             }
 
+            // Add image path after we have awaited for file to be saved
+            Product.Image = await ProductService.SaveUploadedFileAsync(ImageFile);
+            Console.WriteLine(Product);
+
             ProductService.AddCategory(Product);
-            //return RedirectToPage("/Product/Index");
 
             return RedirectToPage("/Product/Read", new { id = Product.Id });
-        }
-
-
-        public async Task<string> SaveUploadedFileAsync(IFormFile file)
-        {
-            if (file == null || file.Length == 0) return null;
-
-            var uploads = Path.Combine(_env.WebRootPath, "assets");
-            if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
-
-            var ext = Path.GetExtension(file.FileName);
-            var fileName = $"{Guid.NewGuid():N}{ext}";
-            var filePath = Path.Combine(uploads, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return $"~/assets/{fileName}";
         }
 
     }
