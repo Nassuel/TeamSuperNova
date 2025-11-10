@@ -1,4 +1,5 @@
 ﻿@page
+@using ContosoCrafts.WebSite.Models
 @model ContosoCrafts.WebSite.Pages.Product.DeleteModel
 @{
 }
@@ -8,15 +9,23 @@
 <form method="post">
     <input type="hidden" asp-for="Product.Id" />
     <div>
-        <label>Title:</label>
+        <label>Brand:</label>
+        <input asp-for="Product.Brand" readonly />
+    </div>
+    <div>
+        <label>Product Name:</label>
         <input asp-for="Product.ProductName" readonly />
     </div>
     <div>
         <label>Description:</label>
         <input asp-for="Product.ProductDescription" readonly />
     </div>
+    <div>
+        <label>Product Type:</label>
+        <input asp-for="Product.ProductType.DisplayName()" readonly />
+    </div>
 
     <p>Are you sure you want to delete this product?</p>
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-page="/Product/Index" class="btn btn-secondary">Cancel</a>
+    <a asp-page="/Product/Read" asp-route-id="@Model.Product.Id" class="btn btn-secondary">Cancel</a>
 </form>
