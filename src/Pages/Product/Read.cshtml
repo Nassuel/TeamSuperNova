@@ -17,11 +17,11 @@
            background-repeat: repeat;
            object-fit: cover;
           ">
-    <div class="text-white" style="background-color: rgba(0, 0, 0, 0.8); height: 100%;">
+    <div class="text-white bg-translucent-dark">
         <div class="container d-flex align-items-center justify-content-center text-center h-100">
             <div>
                 <h5 class="mb-2" id="productTitle">@Model.Product.Brand</h5>
-                <h5 class="mb-5">@(((ProductTypeEnum)@Model.Product.ProductType).DisplayName())</h5>
+                <h5 class="mb-5 text-muted">@(((ProductTypeEnum)@Model.Product.ProductType).DisplayName())</h5>
                 <p>@Model.Product.ProductDescription</p>
             </div>
         </div>
