@@ -16,7 +16,7 @@
             </div>
             <div class="card-body">
                 <h4 class="card-title">@product.Brand</h4>
-                <h6 class="card-subtitle text-muted">@(((ProductTypeEnum)product.ProductType).DisplayName())</h6>
+                <h6 class="card-subtitle text-muted">@(product.ProductType.DisplayName())</h6>
             </div>
             <div class="card-footer">
                 <small class="text-muted"><button @onclick="(e => SelectProduct(product.Id))" 
