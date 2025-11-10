@@ -19,9 +19,10 @@
     <div>
         <label>Product Name:</label>
         <input asp-for="Product.ProductName" class="form-control mb-2" />
+    </div>
     <div>
         <label>Upload Product Image:</label>
-        <input asp-for="Product.Image" type="file" class="form-control" />
+        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
     </div>
     <div>
         <label>Product Description:</label>
