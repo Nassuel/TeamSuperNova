@@ -1,15 +1,17 @@
-﻿@page
+﻿@page "{id}"
+@using ContosoCrafts.WebSite.Services
 @using ContosoCrafts.WebSite.Models
+@inject JsonFileProductService ProductService
 @model ContosoCrafts.WebSite.Pages.Product.DeleteModel
 @{
 }
 
-<h2>Delete Product</h2>
+<h1>Delete Product</h1>
 
 <form method="post">
     <input type="hidden" asp-for="Product.Id" />
     <div>
-        <label>Brand:</label>
+        <label>Product Brand:</label>
         <input asp-for="Product.Brand" readonly />
     </div>
     <div>
@@ -21,11 +23,15 @@
         <input asp-for="Product.ProductDescription" readonly />
     </div>
     <div>
+        <label>Product Url:</label>
+        <input asp-for="Product.Url" class="form-control mb-2"  readonly />
+    </div>
+    <div>
         <label>Product Type:</label>
         <input asp-for="Product.ProductType.DisplayName()" readonly />
     </div>
 
     <p>Are you sure you want to delete this product?</p>
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-page="/Product/Read" asp-route-id="@Model.Product.Id" class="btn btn-secondary">Cancel</a>
+    <a asp-page="Read" asp-route-id="Product.Id" class="btn btn-secondary">Cancel</a>
 </form>
