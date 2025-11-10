@@ -49,6 +49,10 @@
           </div>
         </div>
         <div class="modal-footer">
+          @if (string.IsNullOrEmpty(selectedProduct.Url) == false)
+          {
+              <a href="@selectedProduct.Url" target="_blank" class="btn btn-primary">View Product</a>
+          }
           @if(voteCount == 0)
           {
             <span>Be the first to vote!</span>
