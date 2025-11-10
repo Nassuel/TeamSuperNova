@@ -15,6 +15,11 @@
     width: 60px !important;
 }
 
+.bg-translucent-dark {
+    background-color: rgba(0, 0, 0, 0.8);
+    height: 100%;
+}
+
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 .card-columns .card:hover .card-img {
@@ -129,7 +134,7 @@ html {
 
 body {
     /* Margin bottom by footer height */
-    margin-bottom: 350px;
+    margin-bottom: 400px;
     font-family: 'Roboto', sans-serif !important;
 }
 p {
