@@ -20,12 +20,9 @@ namespace ContosoCrafts.WebSite.Pages.Product
         public ProductModel Product { get; set; }
         [BindProperty]
         public IFormFile ImageFile { get; set; }
-
-        private readonly IWebHostEnvironment _env;
-        public CreateModel(JsonFileProductService productService, IWebHostEnvironment env)
+        public CreateModel(JsonFileProductService productService)
         {
             ProductService = productService;
-            _env = env;
         }
 
         public IActionResult OnGet()
