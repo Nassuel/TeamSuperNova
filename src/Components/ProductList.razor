@@ -92,6 +92,14 @@
     </div>
 </BlazorAnimate.Animate>
 
+@* Message to inform if no matching products exists *@
+@if (CurrentProductList.Count() == 0)
+{
+    <div class="alert alert-info text-center mt-4" role="alert">
+        No products are found which matches your filters. Try adjusting your search criteria.
+    </div>
+}
+
 @if(selectedProduct != null)
 {
   <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productTitle" aria-hidden="true">
