@@ -41,6 +41,18 @@
                 }
             </select>
         </div>
+        <!-- Min Rating Filter -->
+        <div class="col-md-2 mb-2">
+            <label class="form-label">Min Rating</label>
+            <select class="form-select" @bind="minRating">
+                <option value="0">All Ratings</option>
+                <option value="1">1+ Stars</option>
+                <option value="2">2+ Stars</option>
+                <option value="3">3+ Stars</option>
+                <option value="4">4+ Stars</option>
+                <option value="5">5 Stars</option>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -126,6 +138,7 @@
     string searchTerm = string.Empty;
     string selectedProductType = string.Empty;
     string selectedBrand = string.Empty;
+    int minRating = 0;
 
     // IEnumerable<ProductModel> CurrentProductList =>
     //     string.IsNullOrWhiteSpace(searchTerm)
@@ -135,6 +148,9 @@
     // Modal state
     ProductModel selectedProduct;
     string selectedProductId;
+    int currentRating = 0;
+    int voteCount = 0;
+    string voteLabel;
 
 
     /// <summary>
@@ -148,6 +164,7 @@
             products = ApplySearchFilter(products);
             products = ApplyProductTypeFilter(products);
             products = ApplyBrandFilter(products);
+            products = ApplyRatingFilter(products);
             return products;
         }
     }
@@ -182,9 +199,6 @@
         GetCurrentRating();
     }
 
-    int currentRating = 0;
-    int voteCount = 0;
-    string voteLabel;
 
     void GetCurrentRating()
     {
@@ -245,5 +259,24 @@
 
         return products.Where(p =>
             p.Brand.Equals(selectedBrand, StringComparison.OrdinalIgnoreCase));
+    }
+
+    IEnumerable<ProductModel> ApplyRatingFilter(IEnumerable<ProductModel> products)
+    {
+        if (minRating == 0)
+        {
+            return products;
+        }
+
+        return products.Where(p =>
+        {
+            if (p.Ratings == null || p.Ratings.Length == 0)
+            {
+                return false;
+            }
+
+            var avgRating = p.Ratings.Sum() / p.Ratings.Length;
+            return avgRating >= minRating;
+        });
     }
 }
