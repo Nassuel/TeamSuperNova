@@ -18,6 +18,19 @@
                    @bind="searchTerm" />
         </div>
     </div>
+    <div class="row">
+        <!-- Product Type Filter - DYNAMICALLY POPULATED -->
+        <div class="col-md-3 mb-2">
+            <label class="form-label">Product Type</label>
+            <select class="form-select" @bind="selectedProductType">
+                <option value="">All Types</option>
+                @foreach (var productType in GetAllProductTypes())
+                {
+                    <option value="@productType">@productType.DisplayName()</option>
+                }
+            </select>
+        </div>
+    </div>
 </div>
 
 <BlazorAnimate.Animate Animation="BlazorAnimate.Animations.FadeUp" Duration="TimeSpan.FromSeconds(0.5)">
@@ -98,15 +111,44 @@
 
 @code 
 {
+    // Search and filter parameters
     string searchTerm = string.Empty;
+    string selectedProductType = string.Empty;
 
-    IEnumerable<ProductModel> CurrentProductList =>
-        string.IsNullOrWhiteSpace(searchTerm)
-            ? ProductService.GetProducts()
-            : ProductService.GetProducts().Where(p => p.Brand.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+    // IEnumerable<ProductModel> CurrentProductList =>
+    //     string.IsNullOrWhiteSpace(searchTerm)
+    //         ? ProductService.GetProducts()
+    //         : ProductService.GetProducts().Where(p => p.Brand.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
 
+    // Modal state
     ProductModel selectedProduct;
     string selectedProductId;
+
+
+    /// <summary>
+    /// Returns filtered and sorted product list based on current filter criteria
+    /// </summary>
+    IEnumerable<ProductModel> CurrentProductList
+    {
+        get
+        {
+            var products = ProductService.GetProducts();
+            products = ApplySearchFilter(products);
+            products = ApplyProductTypeFilter(products);
+            return products;
+        }
+    }
+
+    /// <summary>
+    /// Gets all ProductType enum values (excluding Undefined)
+    /// </summary>
+    /// <returns>Collection of all product types</returns>
+    IEnumerable<ProductTypeEnum> GetAllProductTypes()
+    {
+        return Enum.GetValues<ProductTypeEnum>()
+            .Where(pt => pt != ProductTypeEnum.Undefined)
+            .OrderBy(pt => pt.DisplayName());
+    }
 
     void SelectProduct(string productId)
     {
@@ -121,19 +163,18 @@
 
     void GetCurrentRating()
     {
-      if(selectedProduct.Ratings == null)
-      {
-        currentRating = 0;
-        voteCount = 0;
-      }
-      else
-      {
+        if (selectedProduct.Ratings == null)
+        {
+            currentRating = 0;
+            voteCount = 0;
+            return;
+        }
+
         voteCount = selectedProduct.Ratings.Count();
         voteLabel = voteCount > 1 ? "Votes" : "Vote";
         currentRating = selectedProduct.Ratings.Sum() / voteCount;
-      }
 
-      System.Console.WriteLine($"Current rating for {selectedProduct.Id}: {currentRating}");
+        System.Console.WriteLine($"Current rating for {selectedProduct.Id}: {currentRating}");
     }
 
     void SubmitRating(int rating)
@@ -141,5 +182,32 @@
       System.Console.WriteLine($"Rating received for {selectedProduct.Id}: {rating}");
       ProductService.AddRating(selectedProductId, rating);
       SelectProduct(selectedProductId);
+    }
+
+
+    IEnumerable<ProductModel> ApplySearchFilter(IEnumerable<ProductModel> products)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            return products;
+        }
+
+        return products.Where(p =>
+            p.Brand.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+    }
+
+    IEnumerable<ProductModel> ApplyProductTypeFilter(IEnumerable<ProductModel> products)
+    {
+        if (string.IsNullOrWhiteSpace(selectedProductType))
+        {
+            return products;
+        }
+
+        if (Enum.TryParse<ProductTypeEnum>(selectedProductType, out var productTypeEnum))
+        {
+            return products.Where(p => p.ProductType == productTypeEnum);
+        }
+
+        return products;
     }
 }
