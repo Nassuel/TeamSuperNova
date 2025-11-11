@@ -64,6 +64,10 @@
                 <option value="RatingLowHigh">Rating: Low-High</option>
             </select>
         </div>
+        <!-- Clear Filters Button -->
+        <div class="col-md-2 mb-2 d-flex align-items-end">
+            <button class="btn btn-secondary w-100" @onclick="ClearFilters">Clear All</button>
+        </div>
     </div>
 </div>
 
@@ -234,6 +238,15 @@
       System.Console.WriteLine($"Rating received for {selectedProduct.Id}: {rating}");
       ProductService.AddRating(selectedProductId, rating);
       SelectProduct(selectedProductId);
+    }
+
+    void ClearFilters()
+    {
+        searchTerm = string.Empty;
+        selectedProductType = string.Empty;
+        selectedBrand = string.Empty;
+        minRating = 0;
+        sortBy = string.Empty;
     }
 
 
