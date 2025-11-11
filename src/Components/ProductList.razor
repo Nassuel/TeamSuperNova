@@ -53,6 +53,17 @@
                 <option value="5">5 Stars</option>
             </select>
         </div>
+        <!-- Sort By -->
+        <div class="col-md-2 mb-2">
+            <label class="form-label">Sort By</label>
+            <select class="form-select" @bind="sortBy">
+                <option value="">Default</option>
+                <option value="BrandAZ">Brand: A-Z</option>
+                <option value="BrandZA">Brand: Z-A</option>
+                <option value="RatingHighLow">Rating: High-Low</option>
+                <option value="RatingLowHigh">Rating: Low-High</option>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -139,6 +150,7 @@
     string selectedProductType = string.Empty;
     string selectedBrand = string.Empty;
     int minRating = 0;
+    string sortBy = string.Empty;
 
     // IEnumerable<ProductModel> CurrentProductList =>
     //     string.IsNullOrWhiteSpace(searchTerm)
@@ -165,6 +177,7 @@
             products = ApplyProductTypeFilter(products);
             products = ApplyBrandFilter(products);
             products = ApplyRatingFilter(products);
+            products = ApplySorting(products);
             return products;
         }
     }
@@ -278,5 +291,36 @@
             var avgRating = p.Ratings.Sum() / p.Ratings.Length;
             return avgRating >= minRating;
         });
+    }
+    IEnumerable<ProductModel> ApplySorting(IEnumerable<ProductModel> products)
+    {
+        if (string.IsNullOrWhiteSpace(sortBy))
+        {
+            return products;
+        }
+
+        switch (sortBy)
+        {
+            case "BrandAZ":
+                return products.OrderBy(p => p.Brand);
+
+            case "BrandZA":
+                return products.OrderByDescending(p => p.Brand);
+
+            case "RatingHighLow":
+                return products.OrderByDescending(p =>
+                    p.Ratings == null || p.Ratings.Length == 0
+                        ? 0
+                        : p.Ratings.Sum() / p.Ratings.Length);
+
+            case "RatingLowHigh":
+                return products.OrderBy(p =>
+                    p.Ratings == null || p.Ratings.Length == 0
+                        ? 0
+                        : p.Ratings.Sum() / p.Ratings.Length);
+
+            default:
+                return products;
+        }
     }
 }
