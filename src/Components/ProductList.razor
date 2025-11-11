@@ -7,7 +7,7 @@
     <input type="text" placeholder="Search Brands..." @bind="searchTerm" />
 </div> *@
 
-<!-- Part 1: Search and Filter Input Section -->
+<!-- Search and Filter Input Section -->
 <div class="container mb-4">
     <div class="row">
         <!-- Search Box -->
@@ -27,6 +27,17 @@
                 @foreach (var productType in GetAllProductTypes())
                 {
                     <option value="@productType">@productType.DisplayName()</option>
+                }
+            </select>
+        </div>
+        <!-- Brand Filter - DYNAMICALLY POPULATED -->
+        <div class="col-md-3 mb-2">
+            <label class="form-label">Brand</label>
+            <select class="form-select" @bind="selectedBrand">
+                <option value="">All Brands</option>
+                @foreach (var brand in GetAllBrands())
+                {
+                    <option value="@brand">@brand</option>
                 }
             </select>
         </div>
@@ -114,6 +125,7 @@
     // Search and filter parameters
     string searchTerm = string.Empty;
     string selectedProductType = string.Empty;
+    string selectedBrand = string.Empty;
 
     // IEnumerable<ProductModel> CurrentProductList =>
     //     string.IsNullOrWhiteSpace(searchTerm)
@@ -135,6 +147,7 @@
             var products = ProductService.GetProducts();
             products = ApplySearchFilter(products);
             products = ApplyProductTypeFilter(products);
+            products = ApplyBrandFilter(products);
             return products;
         }
     }
@@ -148,6 +161,18 @@
         return Enum.GetValues<ProductTypeEnum>()
             .Where(pt => pt != ProductTypeEnum.Undefined)
             .OrderBy(pt => pt.DisplayName());
+    }
+
+    /// <summary>
+    /// Gets all unique brands from the product catalog
+    /// </summary>
+    /// <returns>Collection of unique brand names</returns>
+    IEnumerable<string> GetAllBrands()
+    {
+        return ProductService.GetProducts()
+            .Select(p => p.Brand)
+            .Distinct()
+            .OrderBy(b => b);
     }
 
     void SelectProduct(string productId)
@@ -209,5 +234,16 @@
         }
 
         return products;
+    }
+
+    IEnumerable<ProductModel> ApplyBrandFilter(IEnumerable<ProductModel> products)
+    {
+        if (string.IsNullOrWhiteSpace(selectedBrand))
+        {
+            return products;
+        }
+
+        return products.Where(p =>
+            p.Brand.Equals(selectedBrand, StringComparison.OrdinalIgnoreCase));
     }
 }
