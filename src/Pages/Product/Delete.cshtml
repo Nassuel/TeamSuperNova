@@ -4,31 +4,32 @@
 @inject JsonFileProductService ProductService
 @model ContosoCrafts.WebSite.Pages.Product.DeleteModel
 @{
+    ViewData["Title"] = "Delete page";
 }
 
 <h1>Delete Product</h1>
 
-<form method="post">
+ <form method="post">
     <input type="hidden" asp-for="Product.Id" />
     <div>
         <label>Product Brand:</label>
-        <input asp-for="Product.Brand" readonly />
+        <input asp-for="Product.Brand" readonly disabled />
     </div>
     <div>
         <label>Product Name:</label>
-        <input asp-for="Product.ProductName" readonly />
+        <input asp-for="Product.ProductName" readonly disabled />
     </div>
     <div>
         <label>Description:</label>
-        <input asp-for="Product.ProductDescription" readonly />
+        <input asp-for="Product.ProductDescription" readonly disabled />
     </div>
-    <div>
+     <div>
         <label>Product Url:</label>
-        <input asp-for="Product.Url" class="form-control mb-2"  readonly />
+        <input asp-for="Product.Url" class="form-control mb-2" readonly disabled />
     </div>
-    <div>
+     <div>
         <label>Product Type:</label>
-        <input asp-for="Product.ProductType.DisplayName()" readonly />
+        <input asp-for="Product.ProductType" readonly disabled />
     </div>
 
     <p>Are you sure you want to delete this product?</p>
