@@ -99,7 +99,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.ProductService;
 
             // Assert
-            Assert.AreEqual(MockProductService.Object, result);
+            Assert.That(result, Is.EqualTo(MockProductService.Object));
         }
 
         #endregion Constructor
@@ -119,7 +119,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<PageResult>(result);
+            Assert.That(result, Is.InstanceOf<PageResult>());
         }
 
         /// <summary>
@@ -135,9 +135,9 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual("test-laptop-1", PageModel.Product.Id);
-            Assert.AreEqual("TestBrand", PageModel.Product.Brand);
-            Assert.AreEqual("Test Laptop", PageModel.Product.ProductName);
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
+            Assert.That(PageModel.Product.Brand, Is.EqualTo("TestBrand"));
+            Assert.That(PageModel.Product.ProductName, Is.EqualTo("Test Laptop"));
         }
 
         /// <summary>
@@ -153,10 +153,10 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual("test-keyboard-1", PageModel.Product.Id);
-            Assert.AreEqual("KeyboardBrand", PageModel.Product.Brand);
-            Assert.AreEqual(ProductTypeEnum.Keyboard, PageModel.Product.ProductType);
-            Assert.AreEqual("/assets/keyboard.png", PageModel.Product.Image);
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-keyboard-1"));
+            Assert.That(PageModel.Product.Brand, Is.EqualTo("KeyboardBrand"));
+            Assert.That(PageModel.Product.ProductType, Is.EqualTo(ProductTypeEnum.Keyboard));
+            Assert.That(PageModel.Product.Image, Is.EqualTo("/assets/keyboard.png"));
         }
 
         /// <summary>
@@ -172,9 +172,9 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(3, PageModel.Product.Ratings.Length);
-            Assert.AreEqual(5, PageModel.Product.Ratings[0]);
-            Assert.AreEqual(4, PageModel.Product.Ratings[1]);
+            Assert.That(PageModel.Product.Ratings.Length, Is.EqualTo(3));
+            Assert.That(PageModel.Product.Ratings[0], Is.EqualTo(5));
+            Assert.That(PageModel.Product.Ratings[1], Is.EqualTo(4));
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(null, PageModel.Product.Ratings);
+            Assert.That(PageModel.Product.Ratings, Is.Null);
         }
 
         /// <summary>
@@ -206,9 +206,9 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual("test-mice-1", PageModel.Product.Id);
-            Assert.AreEqual("MiceBrand", PageModel.Product.Brand);
-            Assert.AreEqual(ProductTypeEnum.Mice, PageModel.Product.ProductType);
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-mice-1"));
+            Assert.That(PageModel.Product.Brand, Is.EqualTo("MiceBrand"));
+            Assert.That(PageModel.Product.ProductType, Is.EqualTo(ProductTypeEnum.Mice));
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.OnGet(productId) as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("./Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("./Index"));
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(null, PageModel.Product);
+            Assert.That(PageModel.Product, Is.Null);
         }
 
         /// <summary>
@@ -272,8 +272,8 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(false, PageModel.ModelState.IsValid);
-            Assert.IsTrue(PageModel.ModelState.ContainsKey("bogus"));
+            Assert.That(PageModel.ModelState.IsValid, Is.False);
+            Assert.That(PageModel.ModelState.ContainsKey("bogus"));
         }
 
         /// <summary>
@@ -290,8 +290,8 @@ namespace UnitTests.Pages.Product
 
             // Assert
             var errors = PageModel.ModelState["bogus"].Errors;
-            Assert.AreEqual(1, errors.Count);
-            Assert.AreEqual("bogus error", errors[0].ErrorMessage);
+            Assert.That(errors.Count, Is.EqualTo(1));
+            Assert.That(errors[0].ErrorMessage, Is.EqualTo("bogus error"));
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -339,7 +339,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual("test-laptop-1", PageModel.Product.Id);
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
         }
 
         /// <summary>
@@ -371,8 +371,8 @@ namespace UnitTests.Pages.Product
             var result = PageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
-            Assert.AreEqual(null, PageModel.Product);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
+            Assert.That(PageModel.Product, Is.Null);
         }
 
         /// <summary>
@@ -388,14 +388,14 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual("test-laptop-1", PageModel.Product.Id);
-            Assert.AreEqual("TestBrand", PageModel.Product.Brand);
-            Assert.AreEqual("Test Laptop", PageModel.Product.ProductName);
-            Assert.AreEqual(ProductTypeEnum.Laptop, PageModel.Product.ProductType);
-            Assert.AreEqual("https://test.com", PageModel.Product.Url);
-            Assert.AreEqual("Test Description", PageModel.Product.ProductDescription);
-            Assert.AreEqual("/assets/test.png", PageModel.Product.Image);
-            Assert.IsNotNull(PageModel.Product.Ratings);
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
+            Assert.That(PageModel.Product.Brand, Is.EqualTo("TestBrand"));
+            Assert.That(PageModel.Product.ProductName, Is.EqualTo("Test Laptop"));
+            Assert.That(PageModel.Product.ProductType, Is.EqualTo(ProductTypeEnum.Laptop));
+            Assert.That(PageModel.Product.Url, Is.EqualTo("https://test.com"));
+            Assert.That(PageModel.Product.ProductDescription, Is.EqualTo("Test Description"));
+            Assert.That(PageModel.Product.Image, Is.EqualTo("/assets/test.png"));
+            Assert.That(PageModel.Product.Ratings, Is.Not.Null);
         }
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace UnitTests.Pages.Product
 
             // Assert
             MockProductService.Verify(x => x.GetProducts(), Times.Once);
-            Assert.AreEqual("test-laptop-1", PageModel.Product.Id);
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
         }
 
         /// <summary>
@@ -428,7 +428,7 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(TestProducts.First().Id, PageModel.Product.Id);
+            Assert.That(PageModel.Product.Id, Is.EqualTo(TestProducts.First().Id));
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(TestProducts.Last().Id, PageModel.Product.Id);
+            Assert.That(PageModel.Product.Id, Is.EqualTo(TestProducts.Last().Id));
         }
 
         /// <summary>
@@ -460,7 +460,7 @@ namespace UnitTests.Pages.Product
             PageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(TestProducts[1].Id, PageModel.Product.Id);
+            Assert.That(PageModel.Product.Id, Is.EqualTo(TestProducts[1].Id));
         }
 
         #endregion OnGet
@@ -479,8 +479,8 @@ namespace UnitTests.Pages.Product
             var result = PageModel.ProductService;
 
             // Assert
-            Assert.AreEqual(MockProductService.Object, result);
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.EqualTo(MockProductService.Object));
+            Assert.That(result, Is.Not.Null);
         }
 
         /// <summary>
@@ -495,7 +495,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.ProductService;
 
             // Assert
-            Assert.IsInstanceOf<JsonFileProductService>(result);
+            Assert.That(result, Is.InstanceOf<JsonFileProductService>());
         }
 
         #endregion ProductService
@@ -515,7 +515,7 @@ namespace UnitTests.Pages.Product
             var result = newPageModel.Product;
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(result, Is.Null);
         }
 
         /// <summary>
@@ -532,8 +532,8 @@ namespace UnitTests.Pages.Product
             var result = PageModel.Product;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("test-laptop-1", result.Id);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.EqualTo("test-laptop-1"));
         }
 
         /// <summary>
@@ -550,7 +550,7 @@ namespace UnitTests.Pages.Product
             var result = PageModel.Product;
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(result, Is.Null);
         }
 
         #endregion Product
