@@ -1,166 +1,874 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-using NUnit.Framework;
-
+﻿using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Pages.Product;
-using ContosoCrafts.WebSite.Models;
+using ContosoCrafts.WebSite.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moq;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace UnitTests.Pages.Product
 {
     /// <summary>
-    /// Provides unit testing for the Update page
+    /// Unit tests for UpdateModel class
+    /// Tests all methods and properties to achieve 100% code coverage
     /// </summary>
-    public class UpdateTests
+    [TestFixture]
+    public class UpdateModelTests
     {
         #region TestSetup
-        // Declare the model of the Update page to be used in unit tests
-        public static UpdateModel pageModel;
 
-        [SetUp]
+        // Page model instance for testing
+        public UpdateModel PageModel;
+
+        // Mock product service
+        public Mock<JsonFileProductService> MockProductService;
+
+        // Test product data
+        public List<ProductModel> TestProducts;
+
         /// <summary>
-        /// Initializes mock Update page model for testing.
+        /// Initialize test environment before each test
+        /// Creates mock service and test data
         /// </summary>
+        [SetUp]
         public void TestInitialize()
         {
-            pageModel = new UpdateModel(TestHelper.ProductService, TestHelper.WebHostEnvironment)
+            // Arrange - Create test products
+            TestProducts = new List<ProductModel>
             {
+                new ProductModel
+                {
+                    Id = "test-laptop-1",
+                    Brand = "TestBrand",
+                    ProductName = "Test Laptop",
+                    ProductType = ProductTypeEnum.Laptop,
+                    Url = "https://test.com",
+                    ProductDescription = "Test Description",
+                    Image = "/assets/test.png",
+                    Ratings = new int[] { 5, 4, 5 }
+                },
+                new ProductModel
+                {
+                    Id = "test-keyboard-1",
+                    Brand = "KeyboardBrand",
+                    ProductName = "Test Keyboard",
+                    ProductType = ProductTypeEnum.Keyboard,
+                    Url = "https://keyboard.com",
+                    ProductDescription = "Keyboard Description",
+                    Image = "/assets/keyboard.png",
+                    Ratings = null
+                },
+                new ProductModel
+                {
+                    Id = "test-mice-1",
+                    Brand = "MiceBrand",
+                    ProductName = "Test Mouse",
+                    ProductType = ProductTypeEnum.Mice,
+                    Url = "https://mice.com",
+                    ProductDescription = "Mouse Description",
+                    Image = "/assets/mouse.png",
+                    Ratings = new int[] { 3, 4 }
+                }
             };
+
+            // Create mock product service
+            MockProductService = new Mock<JsonFileProductService>(MockBehavior.Strict, null);
+
+            // Setup GetProducts to return test data
+            MockProductService.Setup(x => x.GetProducts()).Returns(TestProducts);
+
+            // Instantiate page model with mock service
+            PageModel = new UpdateModel(MockProductService.Object);
         }
 
         #endregion TestSetup
 
+        #region Constructor
+
+        /// <summary>
+        /// Test constructor initializes ProductService correctly
+        /// </summary>
+        [Test]
+        public void Constructor_Valid_Should_Initialize_ProductService()
+        {
+            // Arrange - Done in TestInitialize
+
+            // Act
+            var result = PageModel.ProductService;
+
+            // Assert
+            Assert.AreEqual(MockProductService.Object, result);
+        }
+
+        /// <summary>
+        /// Test constructor creates valid instance
+        /// </summary>
+        [Test]
+        public void Constructor_Valid_Should_Create_Valid_Instance()
+        {
+            // Arrange - Done in TestInitialize
+
+            // Act - PageModel created in TestInitialize
+
+            // Assert
+            Assert.IsNotNull(PageModel);
+            Assert.IsNotNull(PageModel.ProductService);
+        }
+
+        #endregion Constructor
+
         #region OnGet
-        [Test]
+
         /// <summary>
-        /// Test that's loading the update page returns a non-empty list of products
+        /// Test OnGet with valid product ID returns Page result
         /// </summary>
-        public void OnGet_Valid_Should_Return_Product()
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Return_Page_Result()
         {
             // Arrange
+            var productId = "test-laptop-1";
 
             // Act
-            pageModel.OnGet("laptops");
+            var result = PageModel.OnGet(productId);
+
             // Assert
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual("@jenlooper", pageModel.Product.Maker);
-
-            // Reset
-            // This should remove the error we added
-            pageModel.ModelState.Clear();
-
+            Assert.IsInstanceOf<PageResult>(result);
         }
 
-
-        [Test]
         /// <summary>
-        /// Test that's loading the update page returns an invalid state
+        /// Test OnGet with valid product ID sets Product property
         /// </summary>
-        public void OnGet_Valid_Should_Return_InvalidState()
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Set_Product_Property()
         {
             // Arrange
+            var productId = "test-laptop-1";
 
             // Act
-            pageModel.OnGet("mike-clown1");  // Should not find
+            PageModel.OnGet(productId);
+
             // Assert
-            Assert.AreEqual(false, pageModel.ModelState.IsValid);
-
-            // Reset
-            pageModel.ModelState.Clear();
-
+            Assert.AreEqual("test-laptop-1", PageModel.Product.Id);
+            Assert.AreEqual("TestBrand", PageModel.Product.Brand);
+            Assert.AreEqual("Test Laptop", PageModel.Product.ProductName);
         }
+
+        /// <summary>
+        /// Test OnGet with valid product ID loads all product properties
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Load_All_Product_Properties()
+        {
+            // Arrange
+            var productId = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(productId);
+
+            // Assert
+            Assert.AreEqual("test-laptop-1", PageModel.Product.Id);
+            Assert.AreEqual("TestBrand", PageModel.Product.Brand);
+            Assert.AreEqual("Test Laptop", PageModel.Product.ProductName);
+            Assert.AreEqual(ProductTypeEnum.Laptop, PageModel.Product.ProductType);
+            Assert.AreEqual("https://test.com", PageModel.Product.Url);
+            Assert.AreEqual("Test Description", PageModel.Product.ProductDescription);
+            Assert.AreEqual("/assets/test.png", PageModel.Product.Image);
+        }
+
+        /// <summary>
+        /// Test OnGet with valid product ID loads product with ratings
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_With_Ratings_Should_Load_Product()
+        {
+            // Arrange
+            var productId = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(productId);
+
+            // Assert
+            Assert.AreEqual(3, PageModel.Product.Ratings.Length);
+            Assert.AreEqual(5, PageModel.Product.Ratings[0]);
+        }
+
+        /// <summary>
+        /// Test OnGet with valid product ID loads product with null ratings
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_With_Null_Ratings_Should_Load_Product()
+        {
+            // Arrange
+            var productId = "test-keyboard-1";
+
+            // Act
+            PageModel.OnGet(productId);
+
+            // Assert
+            Assert.AreEqual(null, PageModel.Product.Ratings);
+        }
+
+        /// <summary>
+        /// Test OnGet with different valid product ID loads correct product
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_Different_ProductId_Should_Load_Correct_Product()
+        {
+            // Arrange
+            var productId = "test-mice-1";
+
+            // Act
+            PageModel.OnGet(productId);
+
+            // Assert
+            Assert.AreEqual("test-mice-1", PageModel.Product.Id);
+            Assert.AreEqual("MiceBrand", PageModel.Product.Brand);
+            Assert.AreEqual(ProductTypeEnum.Mice, PageModel.Product.ProductType);
+        }
+
+        /// <summary>
+        /// Test OnGet with null product ID returns RedirectToPageResult
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Null_ProductId_Should_Return_RedirectToPageResult()
+        {
+            // Arrange
+            string productId = null;
+
+            // Act
+            var result = PageModel.OnGet(productId);
+
+            // Assert
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+        }
+
+        /// <summary>
+        /// Test OnGet with null product ID redirects to Index page
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Null_ProductId_Should_Redirect_To_Index()
+        {
+            // Arrange
+            string productId = null;
+
+            // Act
+            var result = PageModel.OnGet(productId) as RedirectToPageResult;
+
+            // Assert
+            Assert.AreEqual("/Product/Index", result.PageName);
+        }
+
+        /// <summary>
+        /// Test OnGet with empty string product ID returns RedirectToPageResult
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Empty_ProductId_Should_Return_RedirectToPageResult()
+        {
+            // Arrange
+            var productId = string.Empty;
+
+            // Act
+            var result = PageModel.OnGet(productId);
+
+            // Assert
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+        }
+
+        /// <summary>
+        /// Test OnGet with empty string product ID redirects to Index
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Empty_ProductId_Should_Redirect_To_Index()
+        {
+            // Arrange
+            var productId = string.Empty;
+
+            // Act
+            var result = PageModel.OnGet(productId) as RedirectToPageResult;
+
+            // Assert
+            Assert.AreEqual("/Product/Index", result.PageName);
+        }
+
+        /// <summary>
+        /// Test OnGet with whitespace product ID returns RedirectToPageResult
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Whitespace_ProductId_Should_Return_RedirectToPageResult()
+        {
+            // Arrange
+            var productId = "   ";
+
+            // Act
+            var result = PageModel.OnGet(productId);
+
+            // Assert
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+        }
+
+        /// <summary>
+        /// Test OnGet with non-existent product ID returns RedirectToPageResult
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_NonExistent_ProductId_Should_Return_RedirectToPageResult()
+        {
+            // Arrange
+            var productId = "non-existent-id";
+
+            // Act
+            var result = PageModel.OnGet(productId);
+
+            // Assert
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+        }
+
+        /// <summary>
+        /// Test OnGet with non-existent product ID redirects to Index
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_NonExistent_ProductId_Should_Redirect_To_Index()
+        {
+            // Arrange
+            var productId = "non-existent-id";
+
+            // Act
+            var result = PageModel.OnGet(productId) as RedirectToPageResult;
+
+            // Assert
+            Assert.AreEqual("/Product/Index", result.PageName);
+        }
+
+        /// <summary>
+        /// Test OnGet with non-existent product ID does not set Product
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_NonExistent_ProductId_Should_Not_Set_Product()
+        {
+            // Arrange
+            var productId = "non-existent-id";
+
+            // Act
+            PageModel.OnGet(productId);
+
+            // Assert
+            Assert.AreEqual(null, PageModel.Product);
+        }
+
+        /// <summary>
+        /// Test OnGet with case sensitive product ID match
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_Case_Sensitive_ProductId_Should_Match_Exact_Case()
+        {
+            // Arrange
+            var productId = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(productId);
+
+            // Assert
+            Assert.AreEqual("test-laptop-1", PageModel.Product.Id);
+        }
+
+        /// <summary>
+        /// Test OnGet with different case product ID does not match
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Different_Case_ProductId_Should_Not_Match()
+        {
+            // Arrange
+            var productId = "TEST-LAPTOP-1";
+
+            // Act
+            var result = PageModel.OnGet(productId);
+
+            // Assert
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.AreEqual(null, PageModel.Product);
+        }
+
+        /// <summary>
+        /// Test OnGet uses FirstOrDefault for product lookup
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Use_FirstOrDefault_For_Lookup()
+        {
+            // Arrange
+            var productId = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(productId);
+
+            // Assert
+            MockProductService.Verify(x => x.GetProducts(), Times.Once);
+        }
+
         #endregion OnGet
 
-        #region OnPost
-        [Test]
+        #region OnPostAsync
+
         /// <summary>
-        /// Test that checks update functionality
+        /// Test OnPostAsync with valid data updates product and redirects
         /// </summary>
-        public void OnPost_Valid_Should_Return_Products()
+        [Test]
+        public async Task OnPostAsync_Valid_Product_Should_Update_And_Redirect_To_Index()
         {
             // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "UpdatedBrand",
+                ProductName = "Updated Laptop"
+            };
+            PageModel.ModelState.Clear();
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync((string)null);
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
 
             // Act
-            pageModel.OnGet("laptops");
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            var originalMaker = pageModel.Product.Maker;
-
-            // change Value to Microsoft  and update
-            pageModel.Product.Maker = "Microsoft";
-            var result = pageModel.OnPost() as RedirectToPageResult;
-
-            // Assert to see that post succeeeded
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-
-            // Read it to see if it changed
-            pageModel.OnGet("laptops");
-
-            // Assertions to verify
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual("Microsoft", pageModel.Product.Maker);
-
-            // Reset it back
-            pageModel.Product.Maker = originalMaker;
-            result = pageModel.OnPost() as RedirectToPageResult;
-            // Assert to see that post succeeeded
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-
-            // Reset 
-            pageModel.ModelState.Clear();
-
-        }
-
-        [Test]
-        /// <summary>
-        /// Test that checks update functionality's error state
-        /// </summary>
-        public void OnPost_InValid_Model_NotValid_Return_Page()
-        {
-            // Arrange
-
-            // Force an invalid error state
-            pageModel.ModelState.AddModelError("bogus", "bogus error");
-
-            // Act
-            // Store the ActionResult of the post? TODO: better understand this line of code or ask professor
-            var result = pageModel.OnPost() as ActionResult;
-            // Store whether the ModelState is valid for later assert
-            var stateIsValid = pageModel.ModelState.IsValid;
+            var result = await PageModel.OnPostAsync() as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual(false, stateIsValid);
-
-            // Reset
-            // This should remove the error we added
-            pageModel.ModelState.Clear();
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.AreEqual("/Product/Index", result.PageName);
         }
 
-
-        [Test]
         /// <summary>
-        /// Test that's loading the update page returns a non-empty list of products
+        /// Test OnPostAsync calls SaveUploadedFileAsync
         /// </summary>
-        public void OnPost_InValidID_Should_Return_Null()
+        [Test]
+        public async Task OnPostAsync_Valid_Should_Call_SaveUploadedFileAsync()
         {
             // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+            PageModel.ModelState.Clear();
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync("/assets/test.png");
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
 
             // Act
-            pageModel.OnGet("laptops");
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-
-            pageModel.Product.Id = "mike-clown2"; // post with an invalid id
-            var result = pageModel.OnPost() as ActionResult;
-
-            // Store whether the ModelState is valid for later assert
-            var stateIsValid = pageModel.ModelState.IsValid;
+            await PageModel.OnPostAsync();
 
             // Assert
-            Assert.AreEqual(false, stateIsValid);
-
-            // Reset
-            // This should remove the error we added
-            pageModel.ModelState.Clear();
-
+            MockProductService.Verify(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()), Times.Once);
         }
-        #endregion OnPost
+
+        /// <summary>
+        /// Test OnPostAsync sets Product Image from SaveUploadedFileAsync
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Valid_Should_Set_Product_Image_From_Upload()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+            PageModel.ModelState.Clear();
+
+            var expectedImagePath = "/assets/uploaded-image.png";
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync(expectedImagePath);
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
+
+            // Act
+            await PageModel.OnPostAsync();
+
+            // Assert
+            Assert.AreEqual(expectedImagePath, PageModel.Product.Image);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync calls UpdateData service method
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Valid_Should_Call_UpdateData()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+            PageModel.ModelState.Clear();
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync((string)null);
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
+
+            // Act
+            await PageModel.OnPostAsync();
+
+            // Assert
+            MockProductService.Verify(x => x.UpdateData(PageModel.Product), Times.Once);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with null Product returns RedirectToPageResult
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Invalid_Null_Product_Should_Return_RedirectToPageResult()
+        {
+            // Arrange
+            PageModel.Product = null;
+
+            // Act
+            var result = await PageModel.OnPostAsync();
+
+            // Assert
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with null Product redirects to Index
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Invalid_Null_Product_Should_Redirect_To_Index()
+        {
+            // Arrange
+            PageModel.Product = null;
+
+            // Act
+            var result = await PageModel.OnPostAsync() as RedirectToPageResult;
+
+            // Assert
+            Assert.AreEqual("/Product/Index", result.PageName);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with invalid ModelState returns Page result
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Invalid_ModelState_Should_Return_Page_Result()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+            PageModel.ModelState.AddModelError("TestError", "Test error message");
+
+            // Act
+            var result = await PageModel.OnPostAsync();
+
+            // Assert
+            Assert.IsInstanceOf<PageResult>(result);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with invalid ModelState does not call UpdateData
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Invalid_ModelState_Should_Not_Call_UpdateData()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+            PageModel.ModelState.AddModelError("TestError", "Test error message");
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync((string)null);
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
+
+            // Act
+            await PageModel.OnPostAsync();
+
+            // Assert
+            MockProductService.Verify(x => x.UpdateData(It.IsAny<ProductModel>()), Times.Never);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with multiple ModelState errors returns Page result
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Invalid_Multiple_ModelState_Errors_Should_Return_Page_Result()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+            PageModel.ModelState.AddModelError("Error1", "First error");
+            PageModel.ModelState.AddModelError("Error2", "Second error");
+
+            // Act
+            var result = await PageModel.OnPostAsync();
+
+            // Assert
+            Assert.IsInstanceOf<PageResult>(result);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with valid data and null image path
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Valid_With_Null_Image_Path_Should_Update_Product()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+            PageModel.ModelState.Clear();
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync((string)null);
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
+
+            // Act
+            var result = await PageModel.OnPostAsync();
+
+            // Assert
+            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.AreEqual(null, PageModel.Product.Image);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync updates product with complete data
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Valid_Complete_Product_Should_Update_All_Properties()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "UpdatedBrand",
+                ProductName = "Updated Laptop",
+                ProductType = ProductTypeEnum.Laptop,
+                Url = "https://updated.com",
+                ProductDescription = "Updated Description",
+                Ratings = new int[] { 5 }
+            };
+            PageModel.ModelState.Clear();
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+                .ReturnsAsync("/assets/updated.png");
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
+
+            // Act
+            await PageModel.OnPostAsync();
+
+            // Assert
+            Assert.AreEqual("UpdatedBrand", PageModel.Product.Brand);
+            Assert.AreEqual("Updated Laptop", PageModel.Product.ProductName);
+            Assert.AreEqual("/assets/updated.png", PageModel.Product.Image);
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with ImageFile property
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Valid_With_ImageFile_Should_Save_Image()
+        {
+            // Arrange
+            PageModel.Product = new ProductModel
+            {
+                Id = "test-laptop-1",
+                Brand = "TestBrand"
+            };
+
+            var mockImageFile = new Mock<IFormFile>();
+            mockImageFile.Setup(f => f.Length).Returns(100);
+            PageModel.ImageFile = mockImageFile.Object;
+            PageModel.ModelState.Clear();
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(mockImageFile.Object))
+                .ReturnsAsync("/assets/new-image.png");
+            MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
+                .Returns(true);
+
+            // Act
+            await PageModel.OnPostAsync();
+
+            // Assert
+            MockProductService.Verify(x => x.SaveUploadedFileAsync(mockImageFile.Object), Times.Once);
+            Assert.AreEqual("/assets/new-image.png", PageModel.Product.Image);
+        }
+
+        #endregion OnPostAsync
+
+        #region ProductService
+
+        /// <summary>
+        /// Test ProductService property returns correct instance
+        /// </summary>
+        [Test]
+        public void ProductService_Valid_Should_Return_Correct_Instance()
+        {
+            // Arrange - Done in TestInitialize
+
+            // Act
+            var result = PageModel.ProductService;
+
+            // Assert
+            Assert.AreEqual(MockProductService.Object, result);
+            Assert.IsNotNull(result);
+        }
+
+        /// <summary>
+        /// Test ProductService property is accessible
+        /// </summary>
+        [Test]
+        public void ProductService_Valid_Should_Be_Accessible()
+        {
+            // Arrange - Done in TestInitialize
+
+            // Act
+            var result = PageModel.ProductService;
+
+            // Assert
+            Assert.IsInstanceOf<JsonFileProductService>(result);
+        }
+
+        #endregion ProductService
+
+        #region Product
+
+        /// <summary>
+        /// Test Product property is initially null
+        /// </summary>
+        [Test]
+        public void Product_Initial_Should_Be_Null()
+        {
+            // Arrange
+            var newPageModel = new UpdateModel(MockProductService.Object);
+
+            // Act
+            var result = newPageModel.Product;
+
+            // Assert
+            Assert.AreEqual(null, result);
+        }
+
+        /// <summary>
+        /// Test Product property is set after OnGet with valid ID
+        /// </summary>
+        [Test]
+        public void Product_After_Valid_OnGet_Should_Be_Set()
+        {
+            // Arrange
+            var productId = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(productId);
+            var result = PageModel.Product;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("test-laptop-1", result.Id);
+        }
+
+        /// <summary>
+        /// Test Product property remains null after OnGet with invalid ID
+        /// </summary>
+        [Test]
+        public void Product_After_Invalid_OnGet_Should_Remain_Null()
+        {
+            // Arrange
+            var productId = "non-existent-id";
+
+            // Act
+            PageModel.OnGet(productId);
+            var result = PageModel.Product;
+
+            // Assert
+            Assert.AreEqual(null, result);
+        }
+
+        /// <summary>
+        /// Test Product property has BindProperty attribute
+        /// </summary>
+        [Test]
+        public void Product_Should_Have_BindProperty_Attribute()
+        {
+            // Arrange
+            var propertyInfo = typeof(UpdateModel).GetProperty("Product");
+
+            // Act
+            var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
+
+            // Assert
+            Assert.AreEqual(1, attributes.Length);
+        }
+
+        #endregion Product
+
+        #region ImageFile
+
+        /// <summary>
+        /// Test ImageFile property is initially null
+        /// </summary>
+        [Test]
+        public void ImageFile_Initial_Should_Be_Null()
+        {
+            // Arrange
+            var newPageModel = new UpdateModel(MockProductService.Object);
+
+            // Act
+            var result = newPageModel.ImageFile;
+
+            // Assert
+            Assert.AreEqual(null, result);
+        }
+
+        /// <summary>
+        /// Test ImageFile property can be set
+        /// </summary>
+        [Test]
+        public void ImageFile_Valid_Should_Be_Settable()
+        {
+            // Arrange
+            var mockFile = new Mock<IFormFile>();
+
+            // Act
+            PageModel.ImageFile = mockFile.Object;
+
+            // Assert
+            Assert.AreEqual(mockFile.Object, PageModel.ImageFile);
+        }
+
+        /// <summary>
+        /// Test ImageFile property has BindProperty attribute
+        /// </summary>
+        [Test]
+        public void ImageFile_Should_Have_BindProperty_Attribute()
+        {
+            // Arrange
+            var propertyInfo = typeof(UpdateModel).GetProperty("ImageFile");
+
+            // Act
+            var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
+
+            // Assert
+            Assert.AreEqual(1, attributes.Length);
+        }
+
+        #endregion ImageFile
     }
 }
