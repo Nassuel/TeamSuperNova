@@ -30,12 +30,12 @@ namespace ContosoCrafts.WebSite.Pages.Product
             Product = new ProductModel
             {
                 Id = Guid.NewGuid().ToString(),
-                Brand = "New Product",
-                ProductDescription = "Default description",
-                Url = "Enter the Url",
-                Image = "Upload Image",
+                Brand = "",
+                ProductDescription = "",
+                Url = "",
+                Image = "",
                 Ratings = null,
-                ProductName = "New Product Name",
+                ProductName = "",
                 ProductType = 0
             };
 
