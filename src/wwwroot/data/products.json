@@ -1,6 +1,6 @@
 [
   {
-    "Id": "dell",
+    "Id": "delllaptop1",
     "Ratings": null,
     "Brand": "Dell",
     "ProductName": "Dell 16 Plus",
@@ -10,7 +10,7 @@
     "Image": "/assets/laptop_dell_16_plus.png"
   },
   {
-    "Id": "apple",
+    "Id": "applelaptop1",
     "Ratings": null,
     "Brand": "Apple",
     "ProductName": "15-inch MacBook Air - Sky Blue",
@@ -20,7 +20,7 @@
     "Image": "/assets/laptop_apple_macbook_15in_sky_blue.png"
   },
   {
-    "Id": "rog_asus",
+    "Id": "rog_asuslaptop1",
     "Ratings": null,
     "Brand": "ROG Asus",
     "ProductName": "ROG Strix SCAR 18 (2025) G835",
@@ -30,7 +30,7 @@
     "Image": "/assets/laptop_rog_strix_scar_18_2025_g835.png"
   },
   {
-    "Id": "razer",
+    "Id": "razerlaptop1",
     "Ratings": null,
     "Brand": "Razer",
     "ProductName": "Razer Blade 18",
@@ -41,7 +41,7 @@
   },
 
   {
-    "Id": "logitech",
+    "Id": "logitechkeyboard1",
     "Ratings": null,
     "Brand": "Logitech",
     "ProductName": "POP Keyboard",
@@ -51,7 +51,7 @@
     "Image": "/assets/keyboard_logitech_pop.png"
   },
   {
-    "Id": "ducky",
+    "Id": "duckykeyboard1",
     "Ratings": null,
     "Brand": "Ducky",
     "ProductName": "DOOM\u00AE Edition One 3 SF",
@@ -61,7 +61,7 @@
     "Image": "/assets/keyboard_ducky_doom_edition_one_3_sf.png"
   },
   {
-    "Id": "razer",
+    "Id": "razerkeyboard1",
     "Ratings": null,
     "Brand": "Razer",
     "ProductName": "Razer Pro Type Ultra",
@@ -71,7 +71,7 @@
     "Image": "/assets/keyboard_razer_pro_type_ultra.png"
   },
   {
-    "Id": "corsair",
+    "Id": "corsairkeyboard1",
     "Ratings": null,
     "Brand": "Corsair",
     "ProductName": "VANGUARD PRO 96 Hall Effect Gaming Keyboard",
@@ -81,7 +81,7 @@
     "Image": "/assets/keyboard_corsair_vanguard_pro_96_hall_effect_gaming.png"
   },
   {
-    "Id": "apple",
+    "Id": "applemice1",
     "Ratings": null,
     "Brand": "Apple",
     "ProductName": "Magic Mouse (USB\u2011C) - Black Multi-Touch Surface",
@@ -91,7 +91,7 @@
     "Image": "/assets/mice_apple_magic_mouse_usb_c.png"
   },
   {
-    "Id": "corsair",
+    "Id": "corsairmice1",
     "Ratings": null,
     "Brand": "Corsair",
     "ProductName": "M75 WIRELESS Lightweight RGB Gaming Mouse \u2013 Glacier Blue",
@@ -101,7 +101,7 @@
     "Image": "/assets/mice_corsair_m75_wireless_lightweight.png"
   },
   {
-    "Id": "razer",
+    "Id": "razermice1",
     "Ratings": null,
     "Brand": "Razer",
     "ProductName": "Razer Pro Click V2 Vertical",
@@ -111,7 +111,7 @@
     "Image": "/assets/mice_razer_pro_click_v2_vertical_edition.png"
   },
   {
-    "Id": "logitech",
+    "Id": "logitechmice1",
     "Ratings": null,
     "Brand": "Logitech",
     "ProductName": "G502 X PLUS",
@@ -121,7 +121,7 @@
     "Image": "/assets/mice_logitech_g502_x_plus_wireless.png"
   },
   {
-    "Id": "sennheiser",
+    "Id": "sennheiserheadset1",
     "Ratings": null,
     "Brand": "Sennheiser",
     "ProductName": "HD 490 PRO",
@@ -131,7 +131,7 @@
     "Image": "/assets/headset_sennheiser_hd_490_pro.png"
   },
   {
-    "Id": "sony",
+    "Id": "sonyheadset1",
     "Ratings": null,
     "Brand": "Sony",
     "ProductName": "WH-1000XM6 Best Wireless Noise Canceling Headphones | Platinum Silver",
@@ -141,7 +141,7 @@
     "Image": "/assets/headset_sony_wh-1000xm6_noise_cancellation.png"
   },
   {
-    "Id": "sony",
+    "Id": "sonyheadset2",
     "Ratings": null,
     "Brand": "Sony",
     "ProductName": "WF-1000XM5 The Best Truly Wireless Noise Canceling Earbuds | Black",
@@ -151,7 +151,7 @@
     "Image": "/assets/headset_sony_wf_1000xm5_truly_wireless_earbuds.png"
   },
   {
-    "Id": "bose",
+    "Id": "boseheadset1",
     "Ratings": null,
     "Brand": "Bose",
     "ProductName": "Bose QuietComfort Ultra Headphones",
@@ -161,7 +161,7 @@
     "Image": "/assets/headset_bose_quitecomfort_ultra.png"
   },
   {
-    "Id": "meta",
+    "Id": "metavrheadset1",
     "Ratings": null,
     "Brand": "Meta",
     "ProductName": "Meta Quest 3",
@@ -171,7 +171,7 @@
     "Image": "/assets/vrheadset_meta_quest_3.png"
   },
   {
-    "Id": "vive",
+    "Id": "vivevrheadset1",
     "Ratings": null,
     "Brand": "Vive",
     "ProductName": "Vive Pro 2 Headset",
@@ -181,7 +181,7 @@
     "Image": "/assets/vrheadset_vive_pro_2.png"
   },
   {
-    "Id": "playstation",
+    "Id": "playstationvrheadset1",
     "Ratings": null,
     "Brand": "PlayStation",
     "ProductName": "PlayStation VR2",
@@ -191,7 +191,7 @@
     "Image": "/assets/vrheadset_playstation_vr2.png"
   },
   {
-    "Id": "apple",
+    "Id": "applevrheadset1",
     "Ratings": null,
     "Brand": "Apple",
     "ProductName": "Apple Vision Pro",
@@ -201,7 +201,7 @@
     "Image": "/assets/vrheadset_apple_vision_pro.png"
   },
   {
-    "Id": "bambustore",
+    "Id": "bambustore3dprinter1",
     "Ratings": null,
     "Brand": "Bambu Store",
     "ProductName": "Bambu Lab H2D",
@@ -211,7 +211,7 @@
     "Image": "/assets/3dprinter_bamustore_bambulab_h2d.png"
   },
   {
-    "Id": "prusa",
+    "Id": "prusa3dprinter1",
     "Ratings": null,
     "Brand": "Prusa",
     "ProductName": "Prusa Core One",
@@ -221,7 +221,7 @@
     "Image": "/assets/3dprinter_prusa_core_one.png"
   },
   {
-    "Id": "creality",
+    "Id": "creality3dprinter1",
     "Ratings": null,
     "Brand": "Creality",
     "ProductName": "K1C",
@@ -231,7 +231,7 @@
     "Image": "/assets/3dprinter_creality_k1c.png"
   },
   {
-    "Id": "flashforge",
+    "Id": "flashforge3dprinter1",
     "Ratings": null,
     "Brand": "FlashForge",
     "ProductName": "FlashForge Adventurer 5M",
