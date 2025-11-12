@@ -48,7 +48,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<PageResult>(result);
+            Assert.That(result, Is.InstanceOf<PageResult>());
         }
 
         /// <summary>
@@ -64,8 +64,8 @@ namespace UnitTests.Pages.Product
             pageModel.OnGet(productId);
 
             // Assert
-            Assert.IsNotNull(pageModel.Product);
-            Assert.AreEqual(productId, pageModel.Product.Id);
+            Assert.That(pageModel.Product, Is.Not.Null);
+            Assert.That(pageModel.Product.Id, Is.EqualTo(productId));
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace UnitTests.Pages.Product
             pageModel.OnGet(productId);
 
             // Assert
-            Assert.IsNotNull(pageModel.Product.Id);
-            Assert.IsNotNull(pageModel.Product.Brand);
-            Assert.IsNotNull(pageModel.Product.ProductName);
+            Assert.That(pageModel.Product.Id, Is.Not.Null);
+            Assert.That(pageModel.Product.Brand, Is.Not.Null);
+            Assert.That(pageModel.Product.ProductName, Is.Not.Null);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId);
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace UnitTests.Pages.Product
             pageModel.OnGet(productId);
 
             // Assert
-            Assert.AreEqual(null, pageModel.Product);
+            Assert.That(pageModel.Product, Is.Null);
         }
 
         /// <summary>
@@ -253,9 +253,9 @@ namespace UnitTests.Pages.Product
             var lastProduct = pageModel.Product;
 
             // Assert
-            Assert.IsNotNull(firstProduct);
-            Assert.IsNotNull(lastProduct);
-            Assert.AreNotEqual(firstProduct.Id, lastProduct.Id);
+            Assert.That(firstProduct, Is.Not.Null);
+            Assert.That(lastProduct, Is.Not.Null);
+            Assert.That(firstProduct.Id, Is.Not.EqualTo(lastProduct.Id));
         }
 
         #endregion OnGet
@@ -276,8 +276,8 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost() as RedirectToPageResult;
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -298,8 +298,8 @@ namespace UnitTests.Pages.Product
 
             // Assert
             var updatedProducts = TestHelper.ProductService.GetProducts();
-            Assert.AreEqual(initialCount - 1, updatedProducts.Count());
-            Assert.IsFalse(updatedProducts.Any(p => p.Id == productId));
+            Assert.That(updatedProducts.Count(), Is.EqualTo(initialCount - 1));
+            Assert.That(updatedProducts.Any(p => p.Id == productId), Is.False);
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost();
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost() as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -351,7 +351,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost();
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost() as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost();
 
             // Assert
-            Assert.IsInstanceOf<RedirectToPageResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost() as RedirectToPageResult;
 
             // Assert
-            Assert.AreEqual("/Product/Index", result.PageName);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
 
         /// <summary>
@@ -432,8 +432,8 @@ namespace UnitTests.Pages.Product
 
             // Assert
             var updatedProducts = TestHelper.ProductService.GetProducts();
-            Assert.IsFalse(updatedProducts.Any(p => p.Id == productToDelete.Id));
-            Assert.IsTrue(updatedProducts.Any(p => p.Id == otherProduct.Id));
+            Assert.That(updatedProducts.Any(p => p.Id == productToDelete.Id), Is.False);
+            Assert.That(updatedProducts.Any(p => p.Id == otherProduct.Id), Is.True);
         }
 
         #endregion OnPost
@@ -453,7 +453,7 @@ namespace UnitTests.Pages.Product
             var result = newPageModel.Product;
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(result, Is.Null);
         }
 
         /// <summary>
@@ -470,8 +470,8 @@ namespace UnitTests.Pages.Product
             var result = pageModel.Product;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(productId, result.Id);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.EqualTo(productId));
         }
 
         /// <summary>
@@ -488,7 +488,7 @@ namespace UnitTests.Pages.Product
             var result = pageModel.Product;
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(result, Is.Null);
         }
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace UnitTests.Pages.Product
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
 
             // Assert
-            Assert.AreEqual(1, attributes.Length);
+            Assert.That(attributes.Length, Is.EqualTo(1));
         }
 
         /// <summary>
@@ -524,8 +524,8 @@ namespace UnitTests.Pages.Product
             pageModel.Product = testProduct;
 
             // Assert
-            Assert.AreEqual("manual-id", pageModel.Product.Id);
-            Assert.AreEqual("ManualBrand", pageModel.Product.Brand);
+            Assert.That(pageModel.Product.Id, Is.EqualTo("manual-id"));
+            Assert.That(pageModel.Product.Brand, Is.EqualTo("ManualBrand"));
         }
 
         #endregion Product
