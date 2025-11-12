@@ -48,9 +48,9 @@ namespace UnitTests.Pages.Index
             pageModel.OnGet();
 
             // Assert
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
+            Assert.That(pageModel.ModelState.IsValid);
             // Are there any in existence?
-            Assert.AreEqual(true, pageModel.Products.ToList().Any());
+            Assert.That(pageModel.Products.ToList().Any());
         }
         #endregion OnGet
     }
