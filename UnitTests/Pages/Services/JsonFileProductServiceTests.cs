@@ -2,6 +2,7 @@ using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using Moq;
 using NUnit.Framework;
@@ -152,7 +153,7 @@ namespace UnitTests.Services
             var result = TestService.GetProducts();
 
             // Assert
-            Assert.AreEqual(2, result.Count());
+            Assert.That(2, Is.EqualTo(result.Count()));
         }
 
         /// <summary>
@@ -167,9 +168,9 @@ namespace UnitTests.Services
             var result = TestService.GetProducts().First();
 
             // Assert
-            Assert.AreEqual("test-laptop-1", result.Id);
-            Assert.AreEqual("TestBrand", result.Brand);
-            Assert.AreEqual("Test Laptop", result.ProductName);
+            Assert.That("test-laptop-1", Is.EqualTo(result.Id));
+            Assert.That("TestBrand", Is.EqualTo(result.Brand));
+            Assert.That("Test Laptop", Is.EqualTo(result.ProductName));
         }
 
         /// <summary>
@@ -184,8 +185,8 @@ namespace UnitTests.Services
             var result = TestService.GetProducts().First();
 
             // Assert
-            Assert.AreEqual(3, result.Ratings.Length);
-            Assert.AreEqual(5, result.Ratings[0]);
+            Assert.That(3, Is.EqualTo(result.Ratings.Length));
+            Assert.That(5, Is.EqualTo(result.Ratings[0]));
         }
 
         /// <summary>
@@ -200,7 +201,7 @@ namespace UnitTests.Services
             var result = TestService.GetProducts().Last();
 
             // Assert
-            Assert.AreEqual(null, result.Ratings);
+            Assert.That(null, Is.EqualTo(result.Ratings));
         }
 
         #endregion GetProducts
@@ -220,8 +221,8 @@ namespace UnitTests.Services
             var result = TestService.GetProductById(productId);
 
             // Assert
-            Assert.AreEqual("test-laptop-1", result.Id);
-            Assert.AreEqual("TestBrand", result.Brand);
+            Assert.That("test-laptop-1", Is.EqualTo(result.Id));
+            Assert.That("TestBrand", Is.EqualTo(result.Brand));
         }
 
         /// <summary>
@@ -237,7 +238,7 @@ namespace UnitTests.Services
             var result = TestService.GetProductById(productId);
 
             // Assert
-            Assert.AreEqual("test-laptop-1", result.Id);
+            Assert.That("test-laptop-1", Is.EqualTo(result.Id));
         }
 
         /// <summary>
@@ -253,7 +254,7 @@ namespace UnitTests.Services
             var result = TestService.GetProductById(productId);
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(null, Is.EqualTo(result));
         }
 
         #endregion GetProductById
@@ -274,10 +275,10 @@ namespace UnitTests.Services
             var result = TestService.AddRating(productId, rating);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(true, Is.EqualTo(result));
             var product = TestService.GetProductById(productId);
-            Assert.AreEqual(4, product.Ratings.Length);
-            Assert.AreEqual(3, product.Ratings[3]);
+            Assert.That(4, Is.EqualTo(product.Ratings.Length));
+            Assert.That(3, Is.EqualTo(product.Ratings[3]));
         }
 
         /// <summary>
@@ -294,10 +295,10 @@ namespace UnitTests.Services
             var result = TestService.AddRating(productId, rating);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var product = TestService.GetProductById(productId);
-            Assert.AreEqual(1, product.Ratings.Length);
-            Assert.AreEqual(5, product.Ratings[0]);
+            Assert.That(1, Is.EqualTo(product.Ratings.Length));
+            Assert.That(5, Is.EqualTo(product.Ratings[0]));
         }
 
         /// <summary>
@@ -314,7 +315,7 @@ namespace UnitTests.Services
             var result = TestService.AddRating(productId, rating);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(false, Is.EqualTo(result));
         }
 
         /// <summary>
@@ -332,7 +333,7 @@ namespace UnitTests.Services
             var result = TestService.AddRating(productId, rating);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(false, Is.EqualTo(result));
         }
 
         #endregion AddRating
@@ -362,10 +363,10 @@ namespace UnitTests.Services
             var result = TestService.UpdateData(updatedProduct);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var product = TestService.GetProductById("test-laptop-1");
-            Assert.AreEqual("UpdatedBrand", product.Brand);
-            Assert.AreEqual("Updated Laptop", product.ProductName);
+            Assert.That("UpdatedBrand", Is.EqualTo(product.Brand));
+            Assert.That("Updated Laptop", Is.EqualTo(product.ProductName));
         }
 
         /// <summary>
@@ -389,9 +390,9 @@ namespace UnitTests.Services
             var result = TestService.UpdateData(updatedProduct);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var product = TestService.GetProductById("test-laptop-1");
-            Assert.AreEqual(originalRatings.Length, product.Ratings.Length);
+            Assert.That(originalRatings.Length, Is.EqualTo(product.Ratings.Length));
         }
 
         /// <summary>
@@ -412,7 +413,7 @@ namespace UnitTests.Services
             var result = TestService.UpdateData(updatedProduct);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(false, Is.EqualTo(result));
         }
 
         /// <summary>
@@ -433,7 +434,7 @@ namespace UnitTests.Services
             var result = TestService.UpdateData(updatedProduct);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(false, Is.EqualTo(result));
         }
 
         #endregion UpdateData
@@ -463,11 +464,11 @@ namespace UnitTests.Services
             var result = TestService.AddCategory(newProduct);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var products = TestService.GetProducts();
-            Assert.AreEqual(3, products.Count());
+            Assert.That(3, Is.EqualTo(products.Count()));
             var addedProduct = TestService.GetProductById("test-mice-1");
-            Assert.AreEqual("MiceBrand", addedProduct.Brand);
+            Assert.That("MiceBrand", Is.EqualTo(addedProduct.Brand));
         }
 
         /// <summary>
@@ -488,9 +489,9 @@ namespace UnitTests.Services
             var result = TestService.AddCategory(duplicateProduct);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(false, Is.EqualTo(result));
             var products = TestService.GetProducts();
-            Assert.AreEqual(2, products.Count());
+            Assert.That(2, Is.EqualTo(products.Count()));
         }
 
         /// <summary>
@@ -510,7 +511,7 @@ namespace UnitTests.Services
             var result = TestService.AddCategory(duplicateProduct);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(false, Is.EqualTo(result));
         }
 
         /// <summary>
@@ -531,7 +532,7 @@ namespace UnitTests.Services
             var result = TestService.AddCategory(newProduct);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(false, Is.EqualTo(result));
         }
 
         #endregion AddCategory
@@ -558,9 +559,9 @@ namespace UnitTests.Services
             var result = TestService.UpdateCategory(updatedProduct);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var product = TestService.GetProductById("test-keyboard-1");
-            Assert.AreEqual("UpdatedKeyboardBrand", product.Brand);
+            Assert.That("UpdatedKeyboardBrand", Is.EqualTo(product.Brand));
         }
 
         /// <summary>
@@ -582,9 +583,9 @@ namespace UnitTests.Services
             var result = TestService.UpdateCategory(updatedProduct);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var product = TestService.GetProductById("test-laptop-1");
-            Assert.AreEqual(originalRatings.Length, product.Ratings.Length);
+            Assert.That(originalRatings.Length, Is.EqualTo(product.Ratings.Length));
         }
 
         /// <summary>
@@ -604,7 +605,7 @@ namespace UnitTests.Services
             var result = TestService.UpdateCategory(updatedProduct);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.EqualTo(false));
         }
 
         /// <summary>
@@ -625,7 +626,7 @@ namespace UnitTests.Services
             var result = TestService.UpdateCategory(updatedProduct);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.EqualTo(false));
         }
 
         #endregion UpdateCategory
@@ -645,11 +646,11 @@ namespace UnitTests.Services
             var result = TestService.DeleteCategory(productId);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var products = TestService.GetProducts();
-            Assert.AreEqual(1, products.Count());
+            Assert.That(1, Is.EqualTo(products.Count()));
             var deletedProduct = TestService.GetProductById(productId);
-            Assert.AreEqual(null, deletedProduct);
+            Assert.That(deletedProduct, Is.Null);
         }
 
         /// <summary>
@@ -665,9 +666,9 @@ namespace UnitTests.Services
             var result = TestService.DeleteCategory(productId);
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result);
             var product = TestService.GetProductById("test-keyboard-1");
-            Assert.AreEqual(null, product);
+            Assert.That(product, Is.Null);
         }
 
         /// <summary>
@@ -683,9 +684,9 @@ namespace UnitTests.Services
             var result = TestService.DeleteCategory(productId);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.EqualTo(false));
             var products = TestService.GetProducts();
-            Assert.AreEqual(2, products.Count());
+            Assert.That(2, Is.EqualTo(products.Count()));
         }
 
         /// <summary>
@@ -702,7 +703,7 @@ namespace UnitTests.Services
             var result = TestService.DeleteCategory(productId);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.EqualTo(false));
         }
 
         #endregion DeleteCategory
@@ -733,8 +734,8 @@ namespace UnitTests.Services
             var result = await TestService.SaveUploadedFileAsync(mockFile.Object);
 
             // Assert
-            Assert.IsTrue(result.StartsWith("/assets/"));
-            Assert.IsTrue(result.EndsWith(".png"));
+            Assert.That(result.StartsWith("/assets/"));
+            Assert.That(result.EndsWith(".png"));
         }
 
         /// <summary>
@@ -760,8 +761,8 @@ namespace UnitTests.Services
             var result = await TestService.SaveUploadedFileAsync(mockFile.Object);
 
             // Assert
-            Assert.IsTrue(Directory.Exists(assetsPath));
-            Assert.IsTrue(result.StartsWith("/assets/"));
+            Assert.That(Directory.Exists(assetsPath));
+            Assert.That(result.StartsWith("/assets/"));
         }
 
         /// <summary>
@@ -777,7 +778,7 @@ namespace UnitTests.Services
             var result = await TestService.SaveUploadedFileAsync(nullFile);
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(result, Is.Null);
         }
 
         /// <summary>
@@ -794,7 +795,7 @@ namespace UnitTests.Services
             var result = await TestService.SaveUploadedFileAsync(mockFile.Object);
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(result, Is.Null);
         }
 
         /// <summary>
@@ -821,7 +822,7 @@ namespace UnitTests.Services
             var result2 = await TestService.SaveUploadedFileAsync(mockFile2.Object);
 
             // Assert
-            Assert.AreNotEqual(result1, result2);
+            Assert.That(result1, Is.Not.EqualTo(result2));
         }
 
         /// <summary>
@@ -841,7 +842,7 @@ namespace UnitTests.Services
             var result = await TestService.SaveUploadedFileAsync(mockFileJpg.Object);
 
             // Assert
-            Assert.IsTrue(result.EndsWith(".jpg"));
+            Assert.That(result.EndsWith(".jpg"));
         }
 
         #endregion SaveUploadedFileAsync
@@ -860,7 +861,7 @@ namespace UnitTests.Services
             var result = TestService.WebHostEnvironment;
 
             // Assert
-            Assert.AreEqual(MockWebHostEnvironment.Object, result);
+            Assert.That(MockWebHostEnvironment.Object, Is.EqualTo(result));
         }
 
         #endregion WebHostEnvironment
