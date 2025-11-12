@@ -37,7 +37,7 @@ namespace UnitTests.Pages.Startup
         public void Startup_ConfigureServices_Valid_Defaut_Should_Pass()
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<Startup>().Build();
-            Assert.IsNotNull(webHost);
+            Assert.That(webHost, Is.Not.Null);
         }
         #endregion ConfigureServices
 
@@ -49,7 +49,7 @@ namespace UnitTests.Pages.Startup
         public void Startup_Configure_Valid_Defaut_Should_Pass()
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<Startup>().Build();
-            Assert.IsNotNull(webHost);
+            Assert.That(webHost, Is.Not.Null);
         }
 
         #endregion Configure
