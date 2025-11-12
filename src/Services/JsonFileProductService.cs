@@ -190,7 +190,7 @@ namespace ContosoCrafts.WebSite.Services
                 await file.CopyToAsync(stream);
             }
 
-            return $"~/assets/{fileName}";
+            return $"/assets/{fileName}";
         }
 
         private string MakeSafeId(string text)
