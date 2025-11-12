@@ -1,94 +1,3 @@
-//using System.Diagnostics;
-
-//using Microsoft.Extensions.Logging;
-
-//using NUnit.Framework;
-
-//using Moq;
-
-//using ContosoCrafts.WebSite.Pages;
-
-//namespace UnitTests.Pages.Error
-//{
-//    /// <summary>
-//    /// Provides unit testing for the Error page
-//    /// </summary>
-//    public class ErrorTests
-//    {
-//        #region TestSetup
-//        // Declare the model of the Error page to be used in unit tests
-//        public static ErrorModel pageModel;
-
-//        [SetUp]
-//        /// <summary>
-//        /// Initializes mock error page model for testing.
-//        /// </summary>
-//        public void TestInitialize()
-//        {
-//            // Logs where the category name is derived from for the mocked ErrorMoel
-//            var MockLoggerDirect = Mock.Of<ILogger<ErrorModel>>();
-
-//            pageModel = new ErrorModel(MockLoggerDirect)
-//            {
-//                // Holds the dummy PageContext from testHelper
-//                PageContext = TestHelper.PageContext,
-//                // Holds the dummy tempData from testHelper
-//                TempData = TestHelper.TempData,
-//            };
-//        }
-
-//        #endregion TestSetup
-
-//        #region OnGet
-//        [Test]
-//        /// <summary>
-//        /// Tests that starting a valid activity then going to the Error page correctly sets the RequestId for the Error page as the
-//        /// activity Id
-//        /// </summary>
-//        public void OnGet_Valid_Activity_Set_Should_Return_RequestId()
-//        {
-//            // Arrange
-
-//            // Creates a valid activity to test the pageModel with
-//            Activity activity = new Activity("activity");
-//            activity.Start();
-
-//            // Act
-//            pageModel.OnGet();
-
-//            // Reset
-//            activity.Stop();
-
-//            // Assert
-//            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-//            Assert.AreEqual(activity.Id, pageModel.RequestId);
-//        }
-
-//        [Test]
-//        /// <summary>
-//        /// Tests that having an invalid activity then going to the Error page correctly sets the RequestId for the Error page as "trace"
-//        /// while maintaining a valid state
-//        /// </summary>
-//        public void OnGet_InValid_Activity_Null_Should_Return_TraceIdentifier()
-//        {
-//            // Arrange
-
-//            // Act
-//            pageModel.OnGet();
-
-//            // Reset
-
-//            // Assert
-//            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-//            Assert.AreEqual("trace", pageModel.RequestId);
-//            Assert.AreEqual(true, pageModel.ShowRequestId);
-//        }
-//        #endregion OnGet
-//    }
-//}
-
-
-
 using ContosoCrafts.WebSite.Pages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -137,7 +46,7 @@ namespace UnitTests.Pages
             // Act - PageModel created in TestInitialize
 
             // Assert
-            Assert.IsNotNull(pageModel);
+            Assert.That(pageModel, Is.Not.Null);
         }
 
         /// <summary>
@@ -153,7 +62,7 @@ namespace UnitTests.Pages
             var model = new ErrorModel(logger.Object);
 
             // Assert
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
         }
 
         #endregion Constructor
@@ -172,7 +81,7 @@ namespace UnitTests.Pages
             var result = pageModel.RequestId;
 
             // Assert
-            Assert.AreEqual(null, result);
+            Assert.That(result, Is.Null);
         }
 
         /// <summary>
@@ -188,7 +97,7 @@ namespace UnitTests.Pages
             pageModel.RequestId = requestId;
 
             // Assert
-            Assert.AreEqual(requestId, pageModel.RequestId);
+            Assert.That(pageModel.RequestId, Is.EqualTo(requestId));
         }
 
         /// <summary>
@@ -204,7 +113,7 @@ namespace UnitTests.Pages
             pageModel.RequestId = null;
 
             // Assert
-            Assert.AreEqual(null, pageModel.RequestId);
+            Assert.That(pageModel.RequestId, Is.Null);
         }
 
         /// <summary>
@@ -220,7 +129,7 @@ namespace UnitTests.Pages
             pageModel.RequestId = requestId;
 
             // Assert
-            Assert.AreEqual(string.Empty, pageModel.RequestId);
+            Assert.That(pageModel.RequestId, Is.EqualTo(string.Empty));
         }
 
         #endregion RequestId
@@ -240,7 +149,7 @@ namespace UnitTests.Pages
             var result = pageModel.ShowRequestId;
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.False);
         }
 
         /// <summary>
@@ -256,7 +165,7 @@ namespace UnitTests.Pages
             var result = pageModel.ShowRequestId;
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.False);
         }
 
         /// <summary>
@@ -272,7 +181,7 @@ namespace UnitTests.Pages
             var result = pageModel.ShowRequestId;
 
             // Assert
-            Assert.AreEqual(true, result);
+            Assert.That(result, Is.True);
         }
 
         /// <summary>
@@ -288,7 +197,7 @@ namespace UnitTests.Pages
             var result = pageModel.ShowRequestId;
 
             // Assert
-            Assert.AreEqual(true, result); // Note: !string.IsNullOrEmpty doesn't check whitespace
+            Assert.That(result, Is.True); // Note: !string.IsNullOrEmpty doesn't check whitespace
         }
 
         #endregion ShowRequestId
@@ -310,7 +219,7 @@ namespace UnitTests.Pages
             pageModel.OnGet();
 
             // Assert
-            Assert.AreEqual("test-trace-id", pageModel.RequestId);
+            Assert.That(pageModel.RequestId, Is.EqualTo("test-trace-id"));
         }
 
         /// <summary>
@@ -329,7 +238,7 @@ namespace UnitTests.Pages
             pageModel.OnGet();
 
             // Assert
-            Assert.AreEqual("trace-id-123", pageModel.RequestId);
+            Assert.That(pageModel.RequestId, Is.EqualTo("trace-id-123"));
         }
 
         /// <summary>
@@ -351,8 +260,8 @@ namespace UnitTests.Pages
             pageModel.OnGet();
 
             // Assert
-            Assert.IsNotNull(pageModel.RequestId);
-            Assert.AreEqual(activity.Id, pageModel.RequestId);
+            Assert.That(pageModel.RequestId, Is.Not.Null);
+            Assert.That(pageModel.RequestId, Is.EqualTo(activity.Id));
 
             // Cleanup
             activity.Stop();
@@ -379,8 +288,8 @@ namespace UnitTests.Pages
             var secondRequestId = pageModel.RequestId;
 
             // Assert
-            Assert.AreEqual("first-trace-id", firstRequestId);
-            Assert.AreEqual("second-trace-id", secondRequestId);
+            Assert.That(firstRequestId, Is.EqualTo("first-trace-id"));
+            Assert.That(secondRequestId, Is.EqualTo("second-trace-id"));
         }
 
         /// <summary>
@@ -396,11 +305,11 @@ namespace UnitTests.Pages
             var attributes = type.GetCustomAttributes(typeof(ResponseCacheAttribute), false);
 
             // Assert
-            Assert.AreEqual(1, attributes.Length);
+            Assert.That(attributes.Length, Is.EqualTo(1));
             var responseCacheAttr = (ResponseCacheAttribute)attributes[0];
-            Assert.AreEqual(0, responseCacheAttr.Duration);
-            Assert.AreEqual(ResponseCacheLocation.None, responseCacheAttr.Location);
-            Assert.AreEqual(true, responseCacheAttr.NoStore);
+            Assert.That(responseCacheAttr.Duration, Is.EqualTo(0));
+            Assert.That(responseCacheAttr.Location, Is.EqualTo(ResponseCacheLocation.None));
+            Assert.That(responseCacheAttr.NoStore, Is.True);
         }
 
         #endregion OnGet
