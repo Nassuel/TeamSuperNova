@@ -1,81 +1,100 @@
+using System.Linq;
+using System.Threading.Tasks;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ContosoCrafts.WebSite.Pages.Product
 {
+
     /// <summary>
-    /// Manage the Update of the data for a single record
+    /// Page model for updating an existing product
     /// </summary>
     public class UpdateModel : PageModel
     {
-        // Data middletier
+
+        // Service for handling product data operations
         public JsonFileProductService ProductService { get; }
 
-        /// <summary>
-        /// Default Construtor
-        /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="productService"></param>
-        public UpdateModel(JsonFileProductService productService)
-        {
-            ProductService = productService;
-        }
-
-        // The data to show, bind to it for the post
+        // The product data to update, bound for post
         [BindProperty]
         public ProductModel Product { get; set; }
+
+        // The uploaded image file for the product
         [BindProperty]
         public IFormFile ImageFile { get; set; }
 
         /// <summary>
-        /// REST Get request
-        /// Loads the Data
+        /// Constructor to initialize the UpdateModel with product service
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="productService">Service for product data operations</param>
+        public UpdateModel(JsonFileProductService productService)
+        {
+
+            ProductService = productService;
+
+        }
+
+        /// <summary>
+        /// Handles GET request to load and display product data for editing
+        /// </summary>
+        /// <param name="id">ID of the product to update</param>
+        /// <returns>Page result or redirect to index if product not found</returns>
         public IActionResult OnGet(string id)
         {
+
+            // Fast fail: Check if id is null or empty
             if (string.IsNullOrEmpty(id))
             {
                 return RedirectToPage("/Product/Index");
             }
 
+            // Retrieve product by ID
             Product = ProductService.GetProducts().FirstOrDefault(x => x.Id.Equals(id));
+
+            // Fast fail: Check if product was not found
             if (Product == null)
             {
                 return RedirectToPage("/Product/Index");
             }
 
             return Page();
+
         }
 
         /// <summary>
-        /// Post the model back to the page
-        /// The model is in the class variable Product
-        /// Call the data layer to Update that data
-        /// Then return to the index page
+        /// Handles POST request to save updated product data
+        /// Validates the model and updates the product with new image if provided
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Redirect to product index page or current page if validation fails</returns>
         public async Task<IActionResult> OnPostAsync()
         {
+
+            // Fast fail: Check if product is null
             if (Product == null)
             {
                 return RedirectToPage("/Product/Index");
             }
-            if (!ModelState.IsValid)
+
+            // Fast fail: Check if model state is invalid
+            if (ModelState.IsValid == false)
             {
                 return Page();
             }
 
+            // Save uploaded image file and update product image path
             Product.Image = await ProductService.SaveUploadedFileAsync(ImageFile);
 
+            // Update product data in service
             ProductService.UpdateData(Product);
+
+            // Redirect to index page
             return RedirectToPage("/Product/Index");
+
         }
 
     }
+
 }
