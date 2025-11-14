@@ -1,53 +1,62 @@
 using System.Linq;
-
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ContosoCrafts.WebSite.Pages.Product
 {
+
+    /// <summary>
+    /// Page model for reading and displaying a single product
+    /// </summary>
     public class ReadModel : PageModel
     {
-        // Data middletier
+
+        // Service for handling product data operations
         public JsonFileProductService ProductService { get; }
 
-        /// <summary>
-        /// Defualt Construtor
-        /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="productService"></param>
-        public ReadModel(JsonFileProductService productService)
-        {
-            ProductService = productService;
-        }
-
-        // The data to show
+        // The product data to display
         public ProductModel Product;
 
         /// <summary>
-        /// REST Get request
+        /// Constructor to initialize the ReadModel with product service
         /// </summary>
-        /// <param name="id"></param>
-        /// 
+        /// <param name="productService">Service for product data operations</param>
+        public ReadModel(JsonFileProductService productService)
+        {
 
+            ProductService = productService;
+
+        }
 
         /// <summary>
-        /// REST Get request
+        /// Handles GET request to retrieve and display a specific product
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID of the product to retrieve</param>
+        /// <returns>Page result or redirect to index if product not found</returns>
         public IActionResult OnGet(string id)
         {
+
+            // Fast fail: Check if id is null or empty
+            if (string.IsNullOrEmpty(id))
+            {
+                return RedirectToPage("./Index");
+            }
+
+            // Retrieve product by ID
             Product = ProductService.GetProducts().FirstOrDefault(m => m.Id.Equals(id));
+
+            // Fast fail: Check if product was not found
             if (Product == null)
             {
-                this.ModelState.AddModelError("bogus", "bogus error");
-                return RedirectToPage("./Index"); // Probably should be an error message
+                return RedirectToPage("./Index");
             }
 
             return Page();
+
         }
 
     }
+
 }
