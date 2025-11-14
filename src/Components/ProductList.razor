@@ -11,14 +11,14 @@
             <input type="text"
                    class="form-control"
                    placeholder="Search Brands..."
-                   @bind="searchTerm" />
+                   @bind="SearchTerm" />
         </div>
     </div>
     <div class="row">
         <!-- Product Type Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
             <label class="form-label">Product Type</label>
-            <select class="form-select" @bind="selectedProductType">
+            <select class="form-select" @bind="SelectedProductType">
                 <option value="">All Types</option>
                 @foreach (var productType in GetAllProductTypes())
                 {
@@ -29,7 +29,7 @@
         <!-- Brand Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
             <label class="form-label">Brand</label>
-            <select class="form-select" @bind="selectedBrand">
+            <select class="form-select" @bind="SelectedBrand">
                 <option value="">All Brands</option>
                 @foreach (var brand in GetAllBrands())
                 {
@@ -40,7 +40,7 @@
         <!-- Min Rating Filter -->
         <div class="col-md-2 mb-2">
             <label class="form-label">Min Rating</label>
-            <select class="form-select" @bind="minRating">
+            <select class="form-select" @bind="MinRating">
                 <option value="0">All Ratings</option>
                 <option value="1">1+ Stars</option>
                 <option value="2">2+ Stars</option>
@@ -52,7 +52,7 @@
         <!-- Sort By -->
         <div class="col-md-2 mb-2">
             <label class="form-label">Sort By</label>
-            <select class="form-select" @bind="sortBy">
+            <select class="form-select" @bind="SortBy">
                 <option value="">Default</option>
                 <option value="BrandAZ">Brand: A-Z</option>
                 <option value="BrandZA">Brand: Z-A</option>
@@ -70,25 +70,27 @@
 <BlazorAnimate.Animate Animation="BlazorAnimate.Animations.FadeUp" Duration="TimeSpan.FromSeconds(0.5)">
     <div class="card-columns">
         @foreach (var product in CurrentProductList)
-    {
-        <div class="card">
-            <div class="card-img" style="background-image: url('@product.Image');">
+        {
+            <div class="card">
+                <div class="card-img" style="background-image: url('@product.Image');">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">@product.Brand</h4>
+                    <h6 class="card-subtitle text-muted">@(product.ProductType.DisplayName())</h6>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        <button @onclick="(e => SelectProduct(product.Id))"
+                                data-toggle="modal" data-target="#productModal" class="btn btn-primary">
+                            More Info
+                        </button>
+                    </small>
+                </div>
             </div>
-            <div class="card-body">
-                <h4 class="card-title">@product.Brand</h4>
-                <h6 class="card-subtitle text-muted">@(product.ProductType.DisplayName())</h6>
-            </div>
-            <div class="card-footer">
-                <small class="text-muted"><button @onclick="(e => SelectProduct(product.Id))" 
-                  data-toggle="modal" data-target="#productModal" class="btn btn-primary">More Info</button>
-                </small>
-            </div>
-        </div>
-    }
+        }
     </div>
 </BlazorAnimate.Animate>
 
-@* Message to inform if no matching products exists *@
 @if (CurrentProductList.Count() == 0)
 {
     <div class="alert alert-info text-center mt-4" role="alert">
@@ -96,82 +98,97 @@
     </div>
 }
 
-@if(selectedProduct != null)
+@if (SelectedProduct != null)
 {
-  <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="productTitle">@selectedProduct.Brand</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="card">
-            <div class="card-img" style="background-image: url('@selectedProduct.Image');">
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productTitle">@SelectedProduct.Brand</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-img" style="background-image: url('@SelectedProduct.Image');">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">@SelectedProduct.ProductDescription</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @if (string.IsNullOrEmpty(SelectedProduct.Url) == false)
+                    {
+                        <a href="@SelectedProduct.Url" target="_blank" class="btn btn-primary">View Product</a>
+                    }
+
+                    @if (VoteCount == 0)
+                    {
+                        <span>Be the first to vote!</span>
+                    }
+
+                    @if (VoteCount > 0)
+                    {
+                        <span>@VoteCount @VoteLabel</span>
+                    }
+
+                    @for (int i = 1; i < 6; i++)
+                    {
+                        var currentStar = i;
+
+                        if (i <= CurrentRating)
+                        {
+                            <span class="fa fa-star checked" @onclick="(e => SubmitRating(currentStar))"></span>
+                        }
+
+                        if (i > CurrentRating)
+                        {
+                            <span class="fa fa-star" @onclick="(e => SubmitRating(currentStar))"></span>
+                        }
+                    }
+                </div>
             </div>
-            <div class="card-body">
-                <p class="card-text">@selectedProduct.ProductDescription</p>
-            </div>
-          </div>
         </div>
-        <div class="modal-footer">
-          @if (string.IsNullOrEmpty(selectedProduct.Url) == false)
-          {
-              <a href="@selectedProduct.Url" target="_blank" class="btn btn-primary">View Product</a>
-          }
-          @if(voteCount == 0)
-          {
-            <span>Be the first to vote!</span>
-          }
-          else
-          {
-            <span>@voteCount @voteLabel</span>
-          }
-          @for(int i=1; i<6; i++)
-          {
-            var currentStar = i;
-            if(i<=currentRating)
-            {
-              <span class="fa fa-star checked" @onclick="(e => SubmitRating(currentStar))"></span>
-            }
-            else
-            {
-              <span class="fa fa-star" @onclick="(e => SubmitRating(currentStar))"></span>
-            }
-          }
-           
-        </div>
-      </div>
     </div>
-  </div>
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
-@code 
+@code
 {
-    // Search and filter parameters
-    string searchTerm = string.Empty;
-    string selectedProductType = string.Empty;
-    string selectedBrand = string.Empty;
-    int minRating = 0;
-    string sortBy = string.Empty;
 
-    // IEnumerable<ProductModel> CurrentProductList =>
-    //     string.IsNullOrWhiteSpace(searchTerm)
-    //         ? ProductService.GetProducts()
-    //         : ProductService.GetProducts().Where(p => p.Brand.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+    // Search term entered by user for filtering products
+    string SearchTerm = string.Empty;
 
-    // Modal state
-    ProductModel selectedProduct;
-    string selectedProductId;
-    int currentRating = 0;
-    int voteCount = 0;
-    string voteLabel;
+    // Selected product type filter value
+    string SelectedProductType = string.Empty;
 
+    // Selected brand filter value
+    string SelectedBrand = string.Empty;
+
+    // Minimum rating filter value
+    int MinRating = 0;
+
+    // Sort order selection
+    string SortBy = string.Empty;
+
+    // Currently selected product for modal display
+    ProductModel SelectedProduct;
+
+    // ID of the selected product
+    string SelectedProductId;
+
+    // Current average rating of selected product
+    int CurrentRating = 0;
+
+    // Total number of votes for selected product
+    int VoteCount = 0;
+
+    // Label text for vote count display
+    string VoteLabel;
 
     /// <summary>
     /// Returns filtered and sorted product list based on current filter criteria
@@ -180,25 +197,42 @@
     {
         get
         {
+
+            // Get all products from service
             var products = ProductService.GetProducts();
+
+            // Apply search filter
             products = ApplySearchFilter(products);
+
+            // Apply product type filter
             products = ApplyProductTypeFilter(products);
+
+            // Apply brand filter
             products = ApplyBrandFilter(products);
+
+            // Apply rating filter
             products = ApplyRatingFilter(products);
+
+            // Apply sorting
             products = ApplySorting(products);
+
             return products;
+
         }
     }
 
     /// <summary>
-    /// Gets all ProductType enum values (excluding Undefined)
+    /// Gets all ProductType enum values excluding Undefined
     /// </summary>
     /// <returns>Collection of all product types</returns>
     IEnumerable<ProductTypeEnum> GetAllProductTypes()
     {
+
+        // Get all enum values and filter out Undefined
         return Enum.GetValues<ProductTypeEnum>()
             .Where(pt => pt != ProductTypeEnum.Undefined)
             .OrderBy(pt => pt.DisplayName());
+
     }
 
     /// <summary>
@@ -207,137 +241,259 @@
     /// <returns>Collection of unique brand names</returns>
     IEnumerable<string> GetAllBrands()
     {
+
+        // Get all products, extract brands, remove duplicates, and sort
         return ProductService.GetProducts()
             .Select(p => p.Brand)
             .Distinct()
             .OrderBy(b => b);
+
     }
 
+    /// <summary>
+    /// Selects a product and loads its details for modal display
+    /// </summary>
+    /// <param name="productId">ID of the product to select</param>
     void SelectProduct(string productId)
     {
-        selectedProductId = productId;
-        selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
+
+        // Store the selected product ID
+        SelectedProductId = productId;
+
+        // Retrieve the product from service
+        SelectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
+
+        // Calculate current rating
         GetCurrentRating();
+
     }
 
-
+    /// <summary>
+    /// Calculates and updates the current rating for the selected product
+    /// </summary>
     void GetCurrentRating()
     {
-        if (selectedProduct.Ratings == null)
+
+        // Fast fail: Check if ratings array is null
+        if (SelectedProduct.Ratings == null)
         {
-            currentRating = 0;
-            voteCount = 0;
+            CurrentRating = 0;
+            VoteCount = 0;
             return;
         }
 
-        voteCount = selectedProduct.Ratings.Count();
-        voteLabel = voteCount > 1 ? "Votes" : "Vote";
-        currentRating = selectedProduct.Ratings.Sum() / voteCount;
+        // Count total votes
+        VoteCount = SelectedProduct.Ratings.Count();
 
-        System.Console.WriteLine($"Current rating for {selectedProduct.Id}: {currentRating}");
+        // Set appropriate vote label
+        VoteLabel = "Vote";
+
+        if (VoteCount > 1)
+        {
+            VoteLabel = "Votes";
+        }
+
+        // Calculate average rating
+        CurrentRating = SelectedProduct.Ratings.Sum() / VoteCount;
+
+        System.Console.WriteLine($"Current rating for {SelectedProduct.Id}: {CurrentRating}");
+
     }
 
+    /// <summary>
+    /// Submits a new rating for the selected product
+    /// </summary>
+    /// <param name="rating">Rating value to submit</param>
     void SubmitRating(int rating)
     {
-      System.Console.WriteLine($"Rating received for {selectedProduct.Id}: {rating}");
-      ProductService.AddRating(selectedProductId, rating);
-      SelectProduct(selectedProductId);
+
+        System.Console.WriteLine($"Rating received for {SelectedProduct.Id}: {rating}");
+
+        // Add rating to product
+        ProductService.AddRating(SelectedProductId, rating);
+
+        // Refresh selected product data
+        SelectProduct(SelectedProductId);
+
     }
 
+    /// <summary>
+    /// Clears all filter and search criteria
+    /// </summary>
     void ClearFilters()
     {
-        searchTerm = string.Empty;
-        selectedProductType = string.Empty;
-        selectedBrand = string.Empty;
-        minRating = 0;
-        sortBy = string.Empty;
+
+        // Reset search term
+        SearchTerm = string.Empty;
+
+        // Reset product type filter
+        SelectedProductType = string.Empty;
+
+        // Reset brand filter
+        SelectedBrand = string.Empty;
+
+        // Reset rating filter
+        MinRating = 0;
+
+        // Reset sort order
+        SortBy = string.Empty;
+
     }
 
-
+    /// <summary>
+    /// Applies search term filter to product list
+    /// </summary>
+    /// <param name="products">Products to filter</param>
+    /// <returns>Filtered product list</returns>
     IEnumerable<ProductModel> ApplySearchFilter(IEnumerable<ProductModel> products)
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
+
+        // Fast fail: Check if search term is empty
+        if (string.IsNullOrWhiteSpace(SearchTerm))
         {
             return products;
         }
 
+        // Filter products by brand name containing search term
         return products.Where(p =>
-            p.Brand.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+            p.Brand.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+
     }
 
+    /// <summary>
+    /// Applies product type filter to product list
+    /// </summary>
+    /// <param name="products">Products to filter</param>
+    /// <returns>Filtered product list</returns>
     IEnumerable<ProductModel> ApplyProductTypeFilter(IEnumerable<ProductModel> products)
     {
-        if (string.IsNullOrWhiteSpace(selectedProductType))
+
+        // Fast fail: Check if product type filter is empty
+        if (string.IsNullOrWhiteSpace(SelectedProductType))
         {
             return products;
         }
 
-        if (Enum.TryParse<ProductTypeEnum>(selectedProductType, out var productTypeEnum))
+        // Try to parse selected product type
+        var parseSuccessful = Enum.TryParse<ProductTypeEnum>(SelectedProductType, out var productTypeEnum);
+
+        // Fast fail: Check if parse was unsuccessful
+        if (parseSuccessful == false)
         {
-            return products.Where(p => p.ProductType == productTypeEnum);
+            return products;
         }
 
-        return products;
+        // Filter products by product type
+        return products.Where(p => p.ProductType == productTypeEnum);
+
     }
 
+    /// <summary>
+    /// Applies brand filter to product list
+    /// </summary>
+    /// <param name="products">Products to filter</param>
+    /// <returns>Filtered product list</returns>
     IEnumerable<ProductModel> ApplyBrandFilter(IEnumerable<ProductModel> products)
     {
-        if (string.IsNullOrWhiteSpace(selectedBrand))
+
+        // Fast fail: Check if brand filter is empty
+        if (string.IsNullOrWhiteSpace(SelectedBrand))
         {
             return products;
         }
 
+        // Filter products by exact brand match
         return products.Where(p =>
-            p.Brand.Equals(selectedBrand, StringComparison.OrdinalIgnoreCase));
+            p.Brand.Equals(SelectedBrand, StringComparison.OrdinalIgnoreCase));
+
     }
 
+    /// <summary>
+    /// Applies minimum rating filter to product list
+    /// </summary>
+    /// <param name="products">Products to filter</param>
+    /// <returns>Filtered product list</returns>
     IEnumerable<ProductModel> ApplyRatingFilter(IEnumerable<ProductModel> products)
     {
-        if (minRating == 0)
+
+        // Fast fail: Check if no rating filter is applied
+        if (MinRating == 0)
         {
             return products;
         }
 
+        // Filter products by minimum average rating
         return products.Where(p =>
         {
-            if (p.Ratings == null || p.Ratings.Length == 0)
+
+            // Fast fail: Check if product has no ratings
+            if (p.Ratings == null)
             {
                 return false;
             }
 
+            if (p.Ratings.Length == 0)
+            {
+                return false;
+            }
+
+            // Calculate average rating
             var avgRating = p.Ratings.Sum() / p.Ratings.Length;
-            return avgRating >= minRating;
+
+            // Check if average meets minimum
+            return avgRating >= MinRating;
+
         });
+
     }
+
+    /// <summary>
+    /// Applies sorting to product list based on sort criteria
+    /// </summary>
+    /// <param name="products">Products to sort</param>
+    /// <returns>Sorted product list</returns>
     IEnumerable<ProductModel> ApplySorting(IEnumerable<ProductModel> products)
     {
-        if (string.IsNullOrWhiteSpace(sortBy))
+
+        // Fast fail: Check if no sorting is selected
+        if (string.IsNullOrWhiteSpace(SortBy))
         {
             return products;
         }
 
-        switch (sortBy)
+        // Fast fail: Check if sorting by Brand A-Z
+        if (SortBy == "BrandAZ")
         {
-            case "BrandAZ":
-                return products.OrderBy(p => p.Brand);
-
-            case "BrandZA":
-                return products.OrderByDescending(p => p.Brand);
-
-            case "RatingHighLow":
-                return products.OrderByDescending(p =>
-                    p.Ratings == null || p.Ratings.Length == 0
-                        ? 0
-                        : p.Ratings.Sum() / p.Ratings.Length);
-
-            case "RatingLowHigh":
-                return products.OrderBy(p =>
-                    p.Ratings == null || p.Ratings.Length == 0
-                        ? 0
-                        : p.Ratings.Sum() / p.Ratings.Length);
-
-            default:
-                return products;
+            return products.OrderBy(p => p.Brand);
         }
+
+        // Fast fail: Check if sorting by Brand Z-A
+        if (SortBy == "BrandZA")
+        {
+            return products.OrderByDescending(p => p.Brand);
+        }
+
+        // Fast fail: Check if sorting by Rating High to Low
+        if (SortBy == "RatingHighLow")
+        {
+            return products.OrderByDescending(p =>
+                p.Ratings == null || p.Ratings.Length == 0
+                    ? 0
+                    : p.Ratings.Sum() / p.Ratings.Length);
+        }
+
+        // Fast fail: Check if sorting by Rating Low to High
+        if (SortBy == "RatingLowHigh")
+        {
+            return products.OrderBy(p =>
+                p.Ratings == null || p.Ratings.Length == 0
+                    ? 0
+                    : p.Ratings.Sum() / p.Ratings.Length);
+        }
+
+        // Return unsorted if sort option not recognized
+        return products;
+
     }
+
 }
