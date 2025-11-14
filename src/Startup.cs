@@ -7,59 +7,103 @@ using Microsoft.Extensions.Hosting;
 
 namespace ContosoCrafts.WebSite
 {
+
+    /// <summary>
+    /// Startup class for configuring services and the application pipeline
+    /// </summary>
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
 
+        // Configuration settings for the application
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        /// <summary>
+        /// Constructor to initialize Startup with configuration
+        /// </summary>
+        /// <param name="configuration">Application configuration instance</param>
+        public Startup(IConfiguration configuration)
         {
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddHttpClient();
-            services.AddControllers();
-            services.AddTransient<JsonFileProductService>();
+
+            Configuration = configuration;
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configures services to be added to the dependency injection container
+        /// Called by the runtime to add services
+        /// </summary>
+        /// <param name="services">Service collection to configure</param>
+        public void ConfigureServices(IServiceCollection services)
+        {
+
+            // Add Razor Pages support
+            services.AddRazorPages();
+
+            // Add server-side Blazor support
+            services.AddServerSideBlazor();
+
+            // Add HTTP client services
+            services.AddHttpClient();
+
+            // Add controller support
+            services.AddControllers();
+
+            // Register JSON file product service
+            services.AddTransient<JsonFileProductService>();
+
+        }
+
+        /// <summary>
+        /// Configures the HTTP request pipeline
+        /// Called by the runtime to configure middleware
+        /// </summary>
+        /// <param name="app">Application builder instance</param>
+        /// <param name="env">Web host environment instance</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            // Check if running in development environment
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
+
+            // Check if not running in development environment
+            if (env.IsDevelopment() == false)
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
+            // Enable HTTPS redirection
             app.UseHttpsRedirection();
+
+            // Enable static file serving
             app.UseStaticFiles();
 
+            // Enable routing
             app.UseRouting();
 
+            // Enable authorization
             app.UseAuthorization();
 
+            // Configure endpoints
             app.UseEndpoints(endpoints =>
             {
+
+                // Map Razor Pages endpoints
                 endpoints.MapRazorPages();
+
+                // Map controller endpoints
                 endpoints.MapControllers();
+
+                // Map Blazor Hub endpoint
                 endpoints.MapBlazorHub();
 
-                // endpoints.MapGet("/products", (context) => 
-                // {
-                //     var products = app.ApplicationServices.GetService<JsonFileProductService>().GetProducts();
-                //     var json = JsonSerializer.Serialize<IEnumerable<Product>>(products);
-                //     return context.Response.WriteAsync(json);
-                // });
             });
+
         }
+
     }
+
 }
