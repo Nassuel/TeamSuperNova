@@ -1,76 +1,75 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SuperNova</title>
-    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" /> *@
-    <link rel="stylesheet" href="~/css/neumorphism.css" />
-    <link rel="stylesheet" href="~/css/site.css" /> 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/assets/logoname.png" />
-</head>
-   <body style="background-image: url('/assets/SuperNovaBackground.png'); background-repeat: repeat;">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">
-                    <img src="~/assets/logoname.png" alt="Logo" class="nav-bar-img" />
-                    SuperNova</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/Product/Index">Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/About">About</a>
-                        </li>
-
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted bg-dark">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="~/assets/logoname.png" alt="Logo" style="height:200px;width:200px;" />
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex flex-column align-items-start">
-                        <h1 class="text-muted mt-4">Quick Links</h1>
-                        <a asp-area="" class="text-light" asp-page="/Privacy">Privacy</a>
-                        <a asp-area="" class="text-light" asp-page="/Product/Index">Products</a>
-                        <a asp-area="" class="text-light" asp-page="/About">About</a>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - SuperNova</title>
+        <link rel="stylesheet" href="~/css/neumorphism.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+        <link rel="icon" type="image/png" href="/assets/logoname.png" />
+    </head>
+    <body style="background-image: url('/assets/SuperNovaBackground.png'); background-repeat: repeat;">
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-page="/Index">
+                        <img src="~/assets/logoname.png" alt="Logo" class="nav-bar-img" />
+                        SuperNova
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/Product/Index">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/About">About</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            <hr class="my-2" />
-            &copy; @DateTime.Now.Year | SuperNova
+            </nav>
+        </header>
+
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
 
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+        <footer class="border-top footer text-muted bg-dark">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="~/assets/logoname.png" alt="Logo" class="footer-logo" />
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex flex-column align-items-start">
+                            <h1 class="text-muted mt-4">Quick Links</h1>
+                            <a asp-area="" class="text-light" asp-page="/Privacy">Privacy</a>
+                            <a asp-area="" class="text-light" asp-page="/Product/Index">Products</a>
+                            <a asp-area="" class="text-light" asp-page="/About">About</a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-2" />
+                &copy; @DateTime.Now.Year | SuperNova
+            </div>
+        </footer>
 
-    @RenderSection("Scripts", required: false)
-</body>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+        @RenderSection("Scripts", required: false)
+    </body>
 </html>
