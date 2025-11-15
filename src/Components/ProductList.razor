@@ -155,11 +155,10 @@
                 <div class="modal-footer">
                     <textarea class="form-control"
                               @bind="NewComment"
-                              placeholder="Add a comment."
+                              placeholder="Type your comment..."
                               rows="2"
                               @onkeydown="@(e => UsingEnterKey(e))">
-
-                            </textarea>
+                    </textarea>
 
                     <button class="btn btn-primary mt-2" @onclick="AddComment">Submit Comment</button>
                 </div>
