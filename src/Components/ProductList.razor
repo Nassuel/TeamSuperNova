@@ -110,6 +110,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <!-- Main card body -->
                     <div class="card">
                         <div class="card-img" style="background-image: url('@SelectedProduct.Image');">
                         </div>
@@ -117,6 +118,50 @@
                             <p class="card-text">@SelectedProduct.ProductDescription</p>
                         </div>
                     </div>
+
+                    <!-- Comments -->
+                    <hr />
+                    <div class="row">
+                        <div class="col">
+                            <h5>
+                                <i class="fa fa-commenting-o mr-2" aria-hidden="true"></i>
+                                Comments
+                            </h5>
+                        </div>
+                    </div>
+
+                    @if (HasComments())
+                    {
+                        <ul class="list-unstyled mb-4">
+                            @foreach (var comment in SelectedProduct.CommentList)
+                            {
+                                <li class="list-group-item pb-2">
+                                    <small class="text-muted">
+                                        @(comment.CreatedAt.ToShortDateString() + " " + comment.CreatedAt.ToShortTimeString())
+                                    </small>
+                                    <br />
+                                    @comment.Comment
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                    @if (SelectedProduct.CommentList == null)
+                    {
+                        <p>No comments yet — be the first!</p>
+                    }
+                </div>
+
+                <div class="modal-footer">
+                    <textarea class="form-control"
+                              @bind="NewComment"
+                              placeholder="Add a comment."
+                              rows="2"
+                              @onkeydown="@(e => UsingEnterKey(e))">
+
+                            </textarea>
+
+                    <button class="btn btn-primary mt-2" @onclick="AddComment">Submit Comment</button>
                 </div>
                 <div class="modal-footer justify-content-between">
                     @if (string.IsNullOrEmpty(SelectedProduct.Url) == false)
@@ -124,6 +169,7 @@
                         <a href="@SelectedProduct.Url" target="_blank" class="btn btn-primary">View Product</a>
                     }
 
+                    <!-- Ratings -->
                     @if (VoteCount == 0)
                     {
                         <span>Be the first to vote!</span>
@@ -189,6 +235,9 @@
 
     // Label text for vote count display
     string VoteLabel;
+
+    // Text of the new comment being added
+    string NewComment = string.Empty;
 
     /// <summary>
     /// Returns filtered and sorted product list based on current filter criteria
@@ -493,6 +542,73 @@
 
         // Return unsorted if sort option not recognized
         return products;
+
+    }
+
+    /// <summary>
+    /// Save comment to the data store
+    /// </summary>
+    void AddComment()
+    {
+        // Fast fail: Check if new comment text is empty
+        if (string.IsNullOrWhiteSpace(NewComment))
+        {
+            return;
+        }
+
+        // Add the new comment to the selected product
+        ProductService.AddCommentToProduct(SelectedProductId, new CommentModel() { Comment = NewComment });
+
+        // Hide the new comment input box
+        NewComment = "";
+
+        // UI Refresh
+        StateHasChanged();
+
+    }
+
+    /// <summary>
+    /// Checks for Enter key press to submit comment
+    /// </summary>
+    /// <param name="e"></param>
+    public void UsingEnterKey(KeyboardEventArgs e)
+    {
+        // Fast fail: Check if key is not Enter
+        if (e.Key != "Enter")
+        {
+            return;
+        }
+
+        // Fast fail: Check if Shift key is pressed
+        if (e.ShiftKey == true)
+        {
+            return;
+        }
+
+        // Submit the comment
+        AddComment();
+    }
+
+    /// <summary>
+    /// Checks if the selected product has any comments
+    /// </summary>
+    /// <returns>True if comments exist, false otherwise</returns>
+    bool HasComments()
+    {
+
+        // Fast fail: Check if comment list is null
+        if (SelectedProduct.CommentList == null)
+        {
+            return false;
+        }
+
+        // Fast fail: Check if comment list is empty
+        if (SelectedProduct.CommentList.Any() == false)
+        {
+            return false;
+        }
+
+        return true;
 
     }
 
