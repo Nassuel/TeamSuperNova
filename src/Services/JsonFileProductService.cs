@@ -308,7 +308,7 @@ namespace ContosoCrafts.WebSite.Services
         /// Saves product data to the JSON file
         /// </summary>
         /// <param name="products">Collection of products to save</param>
-        private void SaveData(IEnumerable<ProductModel> products)
+        public void SaveData(IEnumerable<ProductModel> products)
         {
 
             // Get directory path from file name
