@@ -35,6 +35,9 @@ namespace ContosoCrafts.WebSite.Models
         // Image URL for the product
         public string Image { get; set; }
 
+        // Comments associated with the product
+        public List<CommentModel> CommentList { get; set; }
+
         /// <summary>
         /// Converts the ProductModel to a JSON string representation
         /// </summary>
