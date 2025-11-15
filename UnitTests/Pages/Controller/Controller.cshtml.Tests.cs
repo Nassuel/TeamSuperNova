@@ -333,7 +333,7 @@ namespace UnitTests.Controllers
         /// Test Patch method with null ProductId returns Ok
         /// </summary>
         [Test]
-        public void Patch_Null_ProductId_Should_Return_Ok()
+        public void Patch_Null_ProductId_Should_Return_BadRequest()
         {
             // Arrange
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
@@ -349,14 +349,14 @@ namespace UnitTests.Controllers
             var result = controller.Patch(request);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkResult>());
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         /// <summary>
         /// Test Patch method with empty ProductId returns Ok
         /// </summary>
         [Test]
-        public void Patch_Empty_ProductId_Should_Return_Ok()
+        public void Patch_Empty_ProductId_Should_Return_BadRequest()
         {
             // Arrange
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
@@ -372,7 +372,7 @@ namespace UnitTests.Controllers
             var result = controller.Patch(request);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkResult>());
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         /// <summary>
@@ -388,7 +388,7 @@ namespace UnitTests.Controllers
             var minRatingRequest = new RatingRequest
             {
                 ProductId = "1",
-                Rating = 0
+                Rating = 1
             };
 
             var maxRatingRequest = new RatingRequest
@@ -404,7 +404,7 @@ namespace UnitTests.Controllers
             // Assert
             Assert.That(minResult, Is.InstanceOf<OkResult>());
             Assert.That(maxResult, Is.InstanceOf<OkResult>());
-            mockProductService.Verify(s => s.AddRating("1", 0), Times.Once);
+            mockProductService.Verify(s => s.AddRating("1", 1), Times.Once);
             mockProductService.Verify(s => s.AddRating("1", 5), Times.Once);
         }
 
