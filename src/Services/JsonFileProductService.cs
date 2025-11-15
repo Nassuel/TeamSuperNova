@@ -347,7 +347,7 @@ namespace ContosoCrafts.WebSite.Services
         /// comment is appended to the product's existing list of comments.</remarks>
         /// <param name="productId">The unique identifier of the product to which the comment will be added. Cannot be null or empty.</param>
         /// <param name="comment">The comment to add to the product. Cannot be null.</param>
-        public void AddCommentToProduct(string productId, CommentModel comment)
+        public bool AddCommentToProduct(string productId, CommentModel comment)
         {
             // Load all products
             var products = GetProducts().ToList();
@@ -358,7 +358,7 @@ namespace ContosoCrafts.WebSite.Services
             // Fast fail: Check if product was not found
             if (product == null)
             {
-                return;
+                return false; // Fast fail with clear failure indication
             }
 
             // Add comment to existing comments
@@ -368,6 +368,7 @@ namespace ContosoCrafts.WebSite.Services
 
             // Save updated data
             SaveData(products);
+            return true; // Clear success indication
 
         }
 
