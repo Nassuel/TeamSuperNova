@@ -262,7 +262,7 @@ namespace UnitTests.Controllers
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(true);
 
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = "1",
                 Rating = 5
@@ -285,7 +285,7 @@ namespace UnitTests.Controllers
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(true);
 
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = "1",
                 Rating = 5
@@ -308,13 +308,13 @@ namespace UnitTests.Controllers
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(true);
 
-            var request1 = new ProductsController.RatingRequest
+            var request1 = new RatingRequest
             {
                 ProductId = "1",
                 Rating = 1
             };
 
-            var request2 = new ProductsController.RatingRequest
+            var request2 = new RatingRequest
             {
                 ProductId = "2",
                 Rating = 5
@@ -339,7 +339,7 @@ namespace UnitTests.Controllers
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(false);
 
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = null,
                 Rating = 5
@@ -362,7 +362,7 @@ namespace UnitTests.Controllers
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(false);
 
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = string.Empty,
                 Rating = 5
@@ -385,13 +385,13 @@ namespace UnitTests.Controllers
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(true);
 
-            var minRatingRequest = new ProductsController.RatingRequest
+            var minRatingRequest = new RatingRequest
             {
                 ProductId = "1",
                 Rating = 0
             };
 
-            var maxRatingRequest = new ProductsController.RatingRequest
+            var maxRatingRequest = new RatingRequest
             {
                 ProductId = "1",
                 Rating = 5
@@ -451,7 +451,7 @@ namespace UnitTests.Controllers
             mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(true);
 
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = "1",
                 Rating = 5
@@ -475,7 +475,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_Class_Should_Exist()
         {
             // Arrange & Act
-            var request = new ProductsController.RatingRequest();
+            var request = new RatingRequest();
 
             // Assert
             Assert.That(request, Is.Not.Null);
@@ -488,7 +488,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_ProductId_Should_Be_Settable()
         {
             // Arrange
-            var request = new ProductsController.RatingRequest();
+            var request = new RatingRequest();
 
             // Act
             request.ProductId = "test-id";
@@ -504,7 +504,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_Rating_Should_Be_Settable()
         {
             // Arrange
-            var request = new ProductsController.RatingRequest();
+            var request = new RatingRequest();
 
             // Act
             request.Rating = 5;
@@ -520,7 +520,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_Initial_Properties_Should_Be_Default()
         {
             // Arrange & Act
-            var request = new ProductsController.RatingRequest();
+            var request = new RatingRequest();
 
             // Assert
             Assert.That(request.ProductId, Is.Null);
@@ -534,7 +534,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_Object_Initializer_Should_Work()
         {
             // Arrange & Act
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = "init-id",
                 Rating = 4
@@ -552,7 +552,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_ProductId_Should_Accept_Null()
         {
             // Arrange
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = "some-id"
             };
@@ -571,7 +571,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_ProductId_Should_Accept_Empty_String()
         {
             // Arrange
-            var request = new ProductsController.RatingRequest();
+            var request = new RatingRequest();
 
             // Act
             request.ProductId = string.Empty;
@@ -587,7 +587,7 @@ namespace UnitTests.Controllers
         public void RatingRequest_Rating_Should_Accept_Various_Integers()
         {
             // Arrange
-            var request = new ProductsController.RatingRequest();
+            var request = new RatingRequest();
 
             // Act & Assert
             request.Rating = -1;
@@ -621,7 +621,7 @@ namespace UnitTests.Controllers
             var products = controller.Get().ToList();
             var firstProductId = products.First().Id;
 
-            var request = new ProductsController.RatingRequest
+            var request = new RatingRequest
             {
                 ProductId = firstProductId,
                 Rating = 5
