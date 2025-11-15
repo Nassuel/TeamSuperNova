@@ -1,4 +1,6 @@
-﻿namespace ContosoCrafts.WebSite.Models
+﻿using System;
+
+namespace ContosoCrafts.WebSite.Models
 {
     /// <summary>
     /// Comments entered by the user about the Product
@@ -10,5 +12,8 @@
 
         // The Comment getter and setter
         public string Comment { get; set; }
+
+        // Time the comment was created
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
