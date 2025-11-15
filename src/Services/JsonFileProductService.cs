@@ -338,6 +338,36 @@ namespace ContosoCrafts.WebSite.Services
                 );
 
             }
+        }
+
+        /// <summary>
+        /// Adds a comment to the specified product.
+        /// </summary>
+        /// <remarks>If the product with the specified identifier does not exist, no action is taken. The
+        /// comment is appended to the product's existing list of comments.</remarks>
+        /// <param name="productId">The unique identifier of the product to which the comment will be added. Cannot be null or empty.</param>
+        /// <param name="comment">The comment to add to the product. Cannot be null.</param>
+        public void AddCommentToProduct(string productId, CommentModel comment)
+        {
+            // Load all products
+            var products = GetProducts().ToList();
+
+            // Find the target product
+            var product = products.FirstOrDefault(x => x.Id == productId);
+
+            // Fast fail: Check if product was not found
+            if (product == null)
+            {
+                return;
+            }
+
+            // Add comment to existing comments
+            var comments = product.CommentList?.ToList() ?? new List<CommentModel>();
+            comments.Add(comment);
+            product.CommentList = comments;
+
+            // Save updated data
+            SaveData(products);
 
         }
 
