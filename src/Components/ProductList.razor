@@ -524,23 +524,42 @@
         // Fast fail: Check if sorting by Rating High to Low
         if (SortBy == "RatingHighLow")
         {
-            return products.OrderByDescending(p =>
-                p.Ratings == null || p.Ratings.Length == 0
-                    ? 0
-                    : p.Ratings.Sum() / p.Ratings.Length);
+            return products.OrderByDescending(p => GetAverageRating(p));
         }
 
         // Fast fail: Check if sorting by Rating Low to High
         if (SortBy == "RatingLowHigh")
         {
-            return products.OrderBy(p =>
-                p.Ratings == null || p.Ratings.Length == 0
-                    ? 0
-                    : p.Ratings.Sum() / p.Ratings.Length);
+            return products.OrderBy(p => GetAverageRating(p));
         }
 
         // Return unsorted if sort option not recognized
         return products;
+
+    }
+
+    /// <summary>
+    /// Calculates the average rating for a product
+    /// </summary>
+    /// <param name="product">Product to calculate rating for</param>
+    /// <returns>Average rating or 0 if no ratings exist</returns>
+    int GetAverageRating(ProductModel product)
+    {
+
+        // Fast fail: Check if ratings is null
+        if (product.Ratings == null)
+        {
+            return 0;
+        }
+
+        // Fast fail: Check if ratings array is empty
+        if (product.Ratings.Length == 0)
+        {
+            return 0;
+        }
+
+        // Calculate and return average rating
+        return product.Ratings.Sum() / product.Ratings.Length;
 
     }
 
