@@ -37,7 +37,7 @@ namespace UnitTests.Pages.Components
         public void TestInitialize()
         {
             // Create a fresh TestContext for each test
-            _testContext = new Bunit.TestContext();
+            _testContext = new BunitContext();
 
             // Arrange - Create test products
             TestProducts = new List<ProductModel>
