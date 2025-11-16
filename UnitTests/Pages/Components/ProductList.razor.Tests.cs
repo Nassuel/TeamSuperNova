@@ -5,6 +5,7 @@ using ContosoCrafts.WebSite.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -179,7 +180,7 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search by brand...']");
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
             searchInput.Change("TestBrand");
@@ -199,7 +200,7 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search by brand...']");
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
             searchInput.Change("testbrand");
@@ -219,7 +220,7 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search by brand...']");
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
             searchInput.Change("NonExistentBrand");
@@ -227,9 +228,9 @@ namespace UnitTests.Pages.Components
             // Reset
 
             // Assert
-            var alert = component.Find(".alert-warning");
+            var alert = component.Find(".alert-info");
             Assert.That(alert, Is.Not.Null);
-            Assert.That(alert.TextContent.Contains("No products found"));
+            Assert.That(alert.TextContent.Contains("No products are found"));
         }
 
         /// <summary>
@@ -240,7 +241,7 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search by brand...']");
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
             searchInput.Change("");
@@ -323,7 +324,7 @@ namespace UnitTests.Pages.Components
             // Arrange
             var component = _testContext.Render<ProductList>();
             // Try to find rating filter - adjust selector based on your actual component
-            var ratingSelect = component.FindAll("select").Skip(1).FirstOrDefault(); // Second select is usually rating
+            var ratingSelect = component.FindAll("select").Skip(2).FirstOrDefault(); // Third select is usually rating
 
             if (ratingSelect == null)
             {
@@ -350,7 +351,7 @@ namespace UnitTests.Pages.Components
             // Arrange
             var component = _testContext.Render<ProductList>();
             // Try to find rating filter - adjust selector based on your actual component
-            var ratingSelect = component.FindAll("select").Skip(1).FirstOrDefault(); // Second select is usually rating
+            var ratingSelect = component.FindAll("select").Skip(2).FirstOrDefault(); // Third select is usually rating
 
             if (ratingSelect == null)
             {
@@ -377,7 +378,7 @@ namespace UnitTests.Pages.Components
             // Arrange
             var component = _testContext.Render<ProductList>();
             // Try to find rating filter - adjust selector based on your actual component
-            var ratingSelect = component.FindAll("select").Skip(1).FirstOrDefault(); // Second select is usually rating
+            var ratingSelect = component.FindAll("select").Skip(2).FirstOrDefault(); // Third select is usually rating
 
             if (ratingSelect == null)
             {
@@ -407,11 +408,10 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var sortButtons = component.FindAll("button");
-            var brandAZButton = sortButtons.First(b => b.TextContent.Contains("Brand (A-Z)"));
+            var sortSelect = component.FindAll("select")[3];
 
             // Act
-            brandAZButton.Click();
+            sortSelect.Change("Brand: A-Z");
 
             // Reset
 
@@ -428,11 +428,10 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var sortButtons = component.FindAll("button");
-            var brandZAButton = sortButtons.First(b => b.TextContent.Contains("Brand (Z-A)"));
+            var sortSelect = component.FindAll("select")[3];
 
             // Act
-            brandZAButton.Click();
+            sortSelect.Change("Brand: Z-A");
 
             // Reset
 
@@ -449,11 +448,10 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var sortButtons = component.FindAll("button");
-            var ratingHighLowButton = sortButtons.First(b => b.TextContent.Contains("Rating (High-Low)"));
+            var sortSelect = component.FindAll("select")[3];
 
             // Act
-            ratingHighLowButton.Click();
+            sortSelect.Change("Rating: High-Low");
 
             // Reset
 
@@ -470,11 +468,10 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var sortButtons = component.FindAll("button");
-            var ratingLowHighButton = sortButtons.First(b => b.TextContent.Contains("Rating (Low-High)"));
+            var sortSelect = component.FindAll("select")[3];
 
             // Act
-            ratingLowHighButton.Click();
+            sortSelect.Change("Rating: Low-High");
 
             // Reset
 
@@ -491,11 +488,10 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var sortButtons = component.FindAll("button");
-            var defaultButton = sortButtons.First(b => b.TextContent.Contains("Default"));
+            var sortSelect = component.FindAll("select")[3];
 
             // Act
-            defaultButton.Click();
+            sortSelect.Change("Default");
 
             // Reset
 
@@ -516,7 +512,7 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search by brand...']");
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
             searchInput.Change("TestBrand");
 
             // Try to find clear button - use FirstOrDefault to avoid exception
@@ -640,8 +636,8 @@ namespace UnitTests.Pages.Components
             // Reset
 
             // Assert
-            var modalBody = component.Find(".modal-body");
-            Assert.That(modalBody.TextContent.Contains("3"));
+            var modalBody = component.FindAll(".modal-footer")[1];
+            Assert.That(modalBody.TextContent.Contains("3 Votes"));
         }
 
         /// <summary>
@@ -660,7 +656,7 @@ namespace UnitTests.Pages.Components
             // Reset
 
             // Assert
-            var modalBody = component.Find(".modal-body");
+            var modalBody = component.FindAll(".modal-footer")[1];
             Assert.That(modalBody.TextContent.Contains("Be the first to vote!"));
         }
 
@@ -694,7 +690,7 @@ namespace UnitTests.Pages.Components
             var component = _testContext.Render<ProductList>();
             var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
             moreInfoButtons[0].Click();
-            var voteButtons = component.FindAll("button").Where(b => b.ClassName != null && b.ClassName.Contains("btn-dark")).ToList();
+            var voteButtons = component.FindAll("span").Where(b => b.ClassName != null && b.ClassName.Contains("fa-star")).ToList();
 
             // Act
             voteButtons[0].Click();
@@ -722,8 +718,8 @@ namespace UnitTests.Pages.Components
             // Reset
 
             // Assert
-            var modalBody = component.Find(".modal-body");
-            Assert.That(modalBody.TextContent.Contains("1"));
+            var modalBody = component.FindAll(".modal-footer")[1];
+            Assert.That(modalBody.TextContent.Contains("1 Vote"));
         }
 
         #endregion Modal
@@ -738,7 +734,7 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search by brand...']");
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
             var dropdown = component.Find("select");
 
             // Act
@@ -760,7 +756,7 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search by brand...']");
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
             var typeDropdown = component.Find("select");
 
             // Act
