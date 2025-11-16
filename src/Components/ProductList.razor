@@ -17,8 +17,8 @@
     <div class="row">
         <!-- Product Type Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
-            <label class="form-label">Product Type</label>
-            <select class="form-select" @bind="SelectedProductType">
+            <label class="col-form-label">Product Type</label>
+            <select class="form-control" @bind="SelectedProductType">
                 <option value="">All Types</option>
                 @foreach (var productType in GetAllProductTypes())
                 {
@@ -28,8 +28,8 @@
         </div>
         <!-- Brand Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
-            <label class="form-label">Brand</label>
-            <select class="form-select" @bind="SelectedBrand">
+            <label class="col-form-label">Brand</label>
+            <select class="form-control" @bind="SelectedBrand">
                 <option value="">All Brands</option>
                 @foreach (var brand in GetAllBrands())
                 {
@@ -39,8 +39,8 @@
         </div>
         <!-- Min Rating Filter -->
         <div class="col-md-2 mb-2">
-            <label class="form-label">Min Rating</label>
-            <select class="form-select" @bind="MinRating">
+            <label class="col-form-label">Min Rating</label>
+            <select class="form-control" @bind="MinRating">
                 <option value="0">All Ratings</option>
                 <option value="1">1+ Stars</option>
                 <option value="2">2+ Stars</option>
@@ -51,8 +51,8 @@
         </div>
         <!-- Sort By -->
         <div class="col-md-2 mb-2">
-            <label class="form-label">Sort By</label>
-            <select class="form-select" @bind="SortBy">
+            <label class="col-form-label">Sort By</label>
+            <select class="form-control" @bind="SortBy">
                 <option value="">Default</option>
                 <option value="BrandAZ">Brand: A-Z</option>
                 <option value="BrandZA">Brand: Z-A</option>
