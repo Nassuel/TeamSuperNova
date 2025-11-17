@@ -1,0 +1,168 @@
+﻿@using ContosoCrafts.WebSite.Models
+@using ContosoCrafts.WebSite.Services
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@inject ThemeService ThemeService
+@inject JsonFileProductService ProductService
+
+@* Theme toggle button with icon *@
+<button class="theme-toggle"
+        type="button"
+        @onclick="HandleToggleClick"
+        title="Toggle theme"
+        disabled="@IsToggling">
+    @if (ThemeService.GetTheme() == ThemeMode.Dark)
+    {
+        <i class="fa fa-sun-o theme-icon" aria-hidden="true"></i>
+    }
+    @if (ThemeService.GetTheme() == ThemeMode.Light)
+    {
+        <i class="fa fa-moon-o theme-icon" aria-hidden="true"></i>
+    }
+</button>
+
+@code {
+    // Flag to prevent multiple clicks
+    private bool IsToggling = false;
+
+    /// <summary>
+    /// Handles the theme toggle button click event
+    /// </summary>
+    private async Task HandleToggleClick()
+    {
+
+        // Fast fail: prevent multiple clicks
+        if (IsToggling)
+        {
+            return;
+        }
+
+        // Set toggling flag
+        IsToggling = true;
+
+        // Toggle theme in service
+        ThemeService.ToggleTheme();
+
+        // Get new theme
+        var newTheme = GetThemeName();
+
+        // Update theme in browser
+        await UpdateBrowserTheme(newTheme);
+
+        // Reset flag
+        IsToggling = false;
+
+        // Refresh UI
+        StateHasChanged();
+
+    }
+
+    /// <summary>
+    /// Gets the current theme name as string
+    /// </summary>
+    /// <returns>Theme name</returns>
+    private string GetThemeName()
+    {
+
+        // Get current theme
+        var currentTheme = ThemeService.GetTheme();
+
+        // Check if dark theme
+        if (currentTheme == ThemeMode.Dark)
+        {
+            return "dark";
+        }
+
+        // Return light theme
+        return "light";
+
+    }
+
+    /// <summary>
+    /// Updates the theme in the browser using JavaScript
+    /// </summary>
+    /// <param name="themeName">Name of theme to apply</param>
+    private async Task UpdateBrowserTheme(string themeName)
+    {
+
+        // Defensive programming: validate input
+        if (string.IsNullOrWhiteSpace(themeName))
+        {
+            return;
+        }
+
+        // Call JavaScript to update theme
+        await JSRuntime.InvokeVoidAsync("themeManager.setTheme", themeName);
+
+    }
+
+    /// <summary>
+    /// Initializes component and loads saved theme
+    /// </summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        // Fast fail: only run on first render
+        if (firstRender == false)
+        {
+            return;
+        }
+
+        // Get saved theme from browser
+        var savedTheme = await LoadSavedTheme();
+
+        // Update service with saved theme
+        UpdateServiceTheme(savedTheme);
+
+        // Refresh UI
+        StateHasChanged();
+
+    }
+
+    /// <summary>
+    /// Loads saved theme from browser storage
+    /// </summary>
+    /// <returns>Saved theme name</returns>
+    private async Task<string> LoadSavedTheme()
+    {
+
+        // Get theme from JavaScript
+        var savedTheme = await JSRuntime.InvokeAsync<string>("themeManager.getTheme");
+
+        // Check if theme is null
+        if (savedTheme == null)
+        {
+            return "light";
+        }
+
+        return savedTheme;
+
+    }
+
+    /// <summary>
+    /// Updates the theme service based on saved theme
+    /// </summary>
+    /// <param name="themeName">Name of theme to set</param>
+    private void UpdateServiceTheme(string themeName)
+    {
+
+        // Defensive programming: validate input
+        if (string.IsNullOrWhiteSpace(themeName))
+        {
+            return;
+        }
+
+        // Check if dark theme
+        if (themeName == "dark")
+        {
+            ThemeService.SetTheme(ThemeMode.Dark);
+            return;
+        }
+
+        // Set light theme
+        ThemeService.SetTheme(ThemeMode.Light);
+
+    }
+
+}
