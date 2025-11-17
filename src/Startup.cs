@@ -51,6 +51,9 @@ namespace ContosoCrafts.WebSite
             // Register JSON file product service
             services.AddTransient<JsonFileProductService>();
 
+            // Register ThemeService as singleton
+            services.AddSingleton<ThemeService>();
+
         }
 
         /// <summary>
