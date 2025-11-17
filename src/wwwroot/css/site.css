@@ -1,9 +1,127 @@
-﻿.checked {
-  color: orange;
+﻿/* Dark theme stuff */
+
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --navbar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --link-color: #0d6efd;
+    --link-hover: #0a58ca;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #3d3d3d;
+    --text-primary: #f0f0f0;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+    --navbar-bg: #1f1f1f;
+    --card-bg: #2d2d2d;
+    --shadow: rgba(0, 0, 0, 0.5);
+    --link-color: #6ea8fe;
+    --link-hover: #9ec5fe;
+    --button-bg: #0d6efd;
+    --button-hover: #3d8bfd;
+}
+
+.theme-toggle {
+    background: none;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+    .theme-toggle:hover:not(:disabled) {
+        transform: rotate(360deg);
+        background-color: var(--bg-secondary);
+    }
+
+    .theme-toggle:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+.theme-icon {
+    font-size: 20px;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar {
+    background-color: var(--navbar-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card {
+    background-color: var(--card-bg);
+}
+
+.theme-navbar {
+    background-color: var(--navbar-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.theme-nav-link {
+    color: var(--text-primary) !important;
+}
+
+    .theme-nav-link:hover {
+        color: var(--link-hover) !important;
+    }
+
+/* Theme-aware footer styles */
+.theme-footer {
+    background-color: var(--navbar-bg) !important;
+    color: var(--text-secondary) !important;
+}
+
+.theme-footer-heading {
+    color: var(--text-secondary) !important;
+}
+
+.theme-footer-link {
+    color: var(--text-primary) !important;
+}
+
+.theme-footer-link:hover {
+    color: var(--link-hover) !important;
+}
+
+/* Navbar toggler icon for dark mode */
+[data-theme="dark"] .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='%23f0f0f0' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Navbar brand color */
+.navbar-brand {
+    color: var(--text-primary) !important;
+}
+
+/* Other classes */
+
+.checked {
+    color: orange;
 }
 
 .fa-star {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .float-right {
@@ -41,38 +159,40 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 .card-columns .card-img {
-  height: 330px;
-  vertical-align: bottom;
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Do not repeat the image */
-  background-size: cover; /* Resize the background image to cover the entire container */
-  opacity: .8;
+    height: 330px;
+    vertical-align: middle;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: contain; /* Resize the background image to cover the entire container */
+    background-color: #f8f9fa;
+    opacity: .8;
 }
 
 /* Thumbnail sizing: force 150x150 for product + sub thumbnails (overrides .img-fluid) */
 img.card-img-product,
 .sub-item img.card-img-top {
-  width: 150px !important;
-  height: 150px !important;
-  object-fit: cover !important;
-  display: block;
-  flex: 0 0 auto;
-  max-width: none !important; /* override img-fluid */
+    width: 150px !important;
+    height: 150px !important;
+    object-fit: cover !important;
+    display: block;
+    flex: 0 0 auto;
+    max-width: none !important; /* override img-fluid */
 }
 
 /* Modal background-style card image (keep as background, not an <img>) */
 .modal .card-img {
-  height: 500px;
-  vertical-align: bottom;
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Do not repeat the image */
-  background-size: cover; /* Resize the background image to cover the entire container */
+    height: 500px;
+    vertical-align: bottom;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: contain; /* Resize the background image to cover the entire container */
 }
 
 .card-columns .card:hover {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(37,33,82,.12), 0 4px 8px rgba(37,33,82,.06);
 }
+
 .card-footer {
     background: #fbfafd;
 }
@@ -87,7 +207,7 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-   color: #0366d6;
+    color: #0366d6;
 }
 
 .table {
@@ -99,42 +219,43 @@ a {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
@@ -142,12 +263,15 @@ body {
     margin-bottom: 400px;
     font-family: 'Roboto', sans-serif !important;
 }
+
 p {
     font-family: 'Roboto', sans-serif !important;
 }
+
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Orbitron', sans-serif !important;
 }
+
 ul {
     font-family: 'Orbitron', sans-serif;
 }
