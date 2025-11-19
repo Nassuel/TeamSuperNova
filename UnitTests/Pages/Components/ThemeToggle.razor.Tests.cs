@@ -15,10 +15,10 @@ namespace UnitTests.Pages.Components
     public class ThemeToggleTests
     {
         // Test context for Bunit
-        private BunitContext TestContext;
+        public BunitContext TestContext;
 
         // Mock for JavaScript runtime
-        private Mock<IJSRuntime> MockJSRuntime;
+        public Mock<IJSRuntime> MockJSRuntime;
 
         /// <summary>
         /// Sets up test context before each test
@@ -470,7 +470,7 @@ namespace UnitTests.Pages.Components
         /// </summary>
         /// <param name="initialTheme">Initial theme value to return</param>
         /// <returns>Mock JavaScript runtime object</returns>
-        private IJSRuntime SetupMockJSRuntime(string initialTheme)
+        public IJSRuntime SetupMockJSRuntime(string initialTheme)
         {
             // Setup getTheme to return initial theme
             MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()))
