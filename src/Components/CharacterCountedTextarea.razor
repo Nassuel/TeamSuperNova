@@ -1,0 +1,125 @@
+﻿@using ContosoCrafts.WebSite.Models
+@using ContosoCrafts.WebSite.Services
+@using Microsoft.AspNetCore.Components.Web
+
+<div>
+    <label>@Label</label>
+    <textarea @bind="InternalValue"
+              @bind:event="oninput"
+              class="form-control mb-2"
+              placeholder="@Placeholder"
+              maxlength="@MaxLength"
+              rows="@Rows"
+              name="@Name"></textarea>
+    <small class="@GetCharCountClass()">
+        @GetCharCount() / @MaxLength characters
+    </small>
+</div>
+
+@code {
+
+    // Label text displayed above textarea
+    [Parameter]
+    public string Label { get; set; } = "";
+
+    // Placeholder text shown in empty textarea
+    [Parameter]
+    public string Placeholder { get; set; } = "";
+
+    // Maximum character length allowed
+    [Parameter]
+    public int MaxLength { get; set; } = 5000;
+
+    // Number of visible text rows
+    [Parameter]
+    public int Rows { get; set; } = 10;
+
+    // Name attribute for form submission
+    [Parameter]
+    public string Name { get; set; } = "";
+
+    // Current value of the textarea
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    // Event callback when value changes
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    // Internal value used for binding
+    private string InternalValue { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Initializes the component with the initial value
+    /// </summary>
+    protected override void OnInitialized()
+    {
+
+        // Set internal value from parameter
+        InternalValue = Value;
+
+        // Fast fail: Check if Value is null
+        if (Value == null)
+        {
+            InternalValue = "";
+        }
+
+    }
+
+    /// <summary>
+    /// Updates internal value when parameters change
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+
+        // Set internal value from parameter
+        InternalValue = Value;
+
+        // Fast fail: Check if Value is null
+        if (Value == null)
+        {
+            InternalValue = "";
+        }
+
+    }
+
+    /// <summary>
+    /// Gets the current character count of the textarea
+    /// </summary>
+    /// <returns>Number of characters</returns>
+    private int GetCharCount()
+    {
+
+        // Fast fail: Check if internal value is null or empty
+        if (string.IsNullOrEmpty(InternalValue))
+        {
+            return 0;
+        }
+
+        // Return length of internal value
+        return InternalValue.Length;
+
+    }
+
+    /// <summary>
+    /// Gets the CSS class for character count display
+    /// </summary>
+    /// <returns>CSS class string</returns>
+    private string GetCharCountClass()
+    {
+
+        // Get current character count
+        int count = GetCharCount();
+
+        // Fast fail: Check if at or exceeding limit
+        if (count >= MaxLength)
+        {
+            return "text-danger";
+        }
+
+        // Under limit
+        return "text-muted";
+
+    }
+
+}
