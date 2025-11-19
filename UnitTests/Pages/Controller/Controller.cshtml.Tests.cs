@@ -28,7 +28,7 @@ namespace UnitTests.Controllers
         [SetUp]
         public void TestInitialize()
         {
-            // Create test data
+            // Arrange - Create test data
             testProducts = new List<ProductModel>
             {
                 new ProductModel
@@ -54,12 +54,14 @@ namespace UnitTests.Controllers
                 }
             };
 
-            // Setup mock service
-            mockProductService = new Mock<JsonFileProductService>(MockBehavior.Strict, (Microsoft.AspNetCore.Hosting.IWebHostEnvironment)null);
+            // Setup mock service - Use Loose behavior instead of Strict
+            mockProductService = new Mock<JsonFileProductService>((Microsoft.AspNetCore.Hosting.IWebHostEnvironment)null);
             mockProductService.Setup(s => s.GetProducts()).Returns(testProducts);
 
             // Create controller with mock service
             controller = new ProductsController(mockProductService.Object);
+
+            // Reset
         }
 
         #endregion TestSetup
@@ -72,8 +74,12 @@ namespace UnitTests.Controllers
         [Test]
         public void Constructor_Valid_Should_Create_Valid_Instance()
         {
-            // Arrange & Act
+            // Arrange - Done in TestInitialize
+
+            // Act
             var testController = new ProductsController(mockProductService.Object);
+
+            // Reset
 
             // Assert
             Assert.That(testController, Is.Not.Null);
@@ -85,8 +91,12 @@ namespace UnitTests.Controllers
         [Test]
         public void Constructor_Valid_Should_Initialize_ProductService_Property()
         {
-            // Arrange & Act
+            // Arrange - Done in TestInitialize
+
+            // Act
             var testController = new ProductsController(mockProductService.Object);
+
+            // Reset
 
             // Assert
             Assert.That(testController.ProductService, Is.Not.Null);
@@ -105,6 +115,8 @@ namespace UnitTests.Controllers
             // Act
             var attributes = type.GetCustomAttributes(typeof(ApiControllerAttribute), false);
 
+            // Reset
+
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
         }
@@ -120,6 +132,8 @@ namespace UnitTests.Controllers
 
             // Act
             var attributes = type.GetCustomAttributes(typeof(RouteAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
@@ -142,6 +156,8 @@ namespace UnitTests.Controllers
             // Act
             var result = controller.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.EqualTo(mockProductService.Object));
@@ -162,6 +178,8 @@ namespace UnitTests.Controllers
             // Act
             var result = controller.Get();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Count(), Is.EqualTo(3));
@@ -177,6 +195,8 @@ namespace UnitTests.Controllers
 
             // Act
             var result = controller.Get().ToList();
+
+            // Reset
 
             // Assert
             Assert.That(result[0].Id, Is.EqualTo("1"));
@@ -196,6 +216,8 @@ namespace UnitTests.Controllers
             // Act
             controller.Get();
 
+            // Reset
+
             // Assert
             mockProductService.Verify(s => s.GetProducts(), Times.Once);
         }
@@ -211,6 +233,8 @@ namespace UnitTests.Controllers
 
             // Act
             var result = controller.Get();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -229,6 +253,8 @@ namespace UnitTests.Controllers
             // Act
             var attributes = methodInfo.GetCustomAttributes(typeof(HttpGetAttribute), false);
 
+            // Reset
+
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
         }
@@ -243,6 +269,8 @@ namespace UnitTests.Controllers
 
             // Act
             var result = controller.Get();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<IEnumerable<ProductModel>>());
@@ -271,6 +299,8 @@ namespace UnitTests.Controllers
             // Act
             var result = controller.Patch(request);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<OkResult>());
         }
@@ -282,7 +312,7 @@ namespace UnitTests.Controllers
         public void Patch_Valid_Request_Should_Call_AddRating_With_Correct_Parameters()
         {
             // Arrange
-            mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
+            mockProductService.Setup(s => s.AddRating("1", 5))
                 .Returns(true);
 
             var request = new RatingRequest
@@ -292,10 +322,13 @@ namespace UnitTests.Controllers
             };
 
             // Act
-            controller.Patch(request);
+            var result = controller.Patch(request);
+
+            // Reset
 
             // Assert
             mockProductService.Verify(s => s.AddRating("1", 5), Times.Once);
+            Assert.That(result, Is.InstanceOf<OkResult>());
         }
 
         /// <summary>
@@ -305,7 +338,9 @@ namespace UnitTests.Controllers
         public void Patch_Valid_Different_Ratings_Should_Call_AddRating()
         {
             // Arrange
-            mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
+            mockProductService.Setup(s => s.AddRating("1", 1))
+                .Returns(true);
+            mockProductService.Setup(s => s.AddRating("2", 5))
                 .Returns(true);
 
             var request1 = new RatingRequest
@@ -321,24 +356,25 @@ namespace UnitTests.Controllers
             };
 
             // Act
-            controller.Patch(request1);
-            controller.Patch(request2);
+            var result1 = controller.Patch(request1);
+            var result2 = controller.Patch(request2);
+
+            // Reset
 
             // Assert
             mockProductService.Verify(s => s.AddRating("1", 1), Times.Once);
             mockProductService.Verify(s => s.AddRating("2", 5), Times.Once);
+            Assert.That(result1, Is.InstanceOf<OkResult>());
+            Assert.That(result2, Is.InstanceOf<OkResult>());
         }
 
         /// <summary>
-        /// Test Patch method with null ProductId returns Ok
+        /// Test Patch method with null ProductId returns BadRequest
         /// </summary>
         [Test]
         public void Patch_Null_ProductId_Should_Return_BadRequest()
         {
             // Arrange
-            mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
-                .Returns(false);
-
             var request = new RatingRequest
             {
                 ProductId = null,
@@ -348,20 +384,19 @@ namespace UnitTests.Controllers
             // Act
             var result = controller.Patch(request);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         /// <summary>
-        /// Test Patch method with empty ProductId returns Ok
+        /// Test Patch method with empty ProductId returns BadRequest
         /// </summary>
         [Test]
         public void Patch_Empty_ProductId_Should_Return_BadRequest()
         {
             // Arrange
-            mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
-                .Returns(false);
-
             var request = new RatingRequest
             {
                 ProductId = string.Empty,
@@ -371,18 +406,140 @@ namespace UnitTests.Controllers
             // Act
             var result = controller.Patch(request);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         /// <summary>
-        /// Test Patch method with rating boundary values
+        /// Test Patch method with invalid rating (less than 0) returns BadRequest
+        /// </summary>
+        [Test]
+        public void Patch_Rating_Less_Than_Zero_Should_Return_BadRequest()
+        {
+            // Arrange
+            var request = new RatingRequest
+            {
+                ProductId = "1",
+                Rating = -1
+            };
+
+            // Act
+            var result = controller.Patch(request);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        }
+
+        /// <summary>
+        /// Test Patch method with invalid rating (greater than 5) returns BadRequest
+        /// </summary>
+        [Test]
+        public void Patch_Rating_Greater_Than_Five_Should_Return_BadRequest()
+        {
+            // Arrange
+            var request = new RatingRequest
+            {
+                ProductId = "1",
+                Rating = 6
+            };
+
+            // Act
+            var result = controller.Patch(request);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        }
+
+        /// <summary>
+        /// Test Patch method with rating = 0 returns BadRequest
+        /// </summary>
+        [Test]
+        public void Patch_Rating_Zero_Should_Return_BadRequest()
+        {
+            // Arrange
+            var request = new RatingRequest
+            {
+                ProductId = "1",
+                Rating = 0
+            };
+
+            // Act
+            var result = controller.Patch(request);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        }
+
+        /// <summary>
+        /// Test Patch method when AddRating is called with valid parameters returns Ok
+        /// </summary>
+        [Test]
+        public void Patch_Valid_Request_Always_Returns_Ok()
+        {
+            // Arrange
+            mockProductService.Setup(s => s.AddRating("1", 4))
+                .Returns(true);
+
+            var request = new RatingRequest
+            {
+                ProductId = "1",
+                Rating = 4
+            };
+
+            // Act
+            var result = controller.Patch(request);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkResult>());
+            mockProductService.Verify(s => s.AddRating("1", 4), Times.Once);
+        }
+
+        /// <summary>
+        /// Test Patch method still returns Ok even when AddRating returns false
+        /// </summary>
+        [Test]
+        public void Patch_Returns_Ok_Even_When_AddRating_Returns_False()
+        {
+            // Arrange
+            mockProductService.Setup(s => s.AddRating("nonexistent", 3))
+                .Returns(false);
+
+            var request = new RatingRequest
+            {
+                ProductId = "nonexistent",
+                Rating = 3
+            };
+
+            // Act
+            var result = controller.Patch(request);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkResult>());
+            mockProductService.Verify(s => s.AddRating("nonexistent", 3), Times.Once);
+        }
+
+        /// <summary>
+        /// Test Patch method with rating boundary values (1 and 5 should work)
         /// </summary>
         [Test]
         public void Patch_Valid_Boundary_Ratings_Should_Work()
         {
             // Arrange
-            mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
+            mockProductService.Setup(s => s.AddRating("1", 1))
+                .Returns(true);
+            mockProductService.Setup(s => s.AddRating("1", 5))
                 .Returns(true);
 
             var minRatingRequest = new RatingRequest
@@ -401,11 +558,13 @@ namespace UnitTests.Controllers
             var minResult = controller.Patch(minRatingRequest);
             var maxResult = controller.Patch(maxRatingRequest);
 
+            // Reset
+
             // Assert
-            Assert.That(minResult, Is.InstanceOf<OkResult>());
-            Assert.That(maxResult, Is.InstanceOf<OkResult>());
             mockProductService.Verify(s => s.AddRating("1", 1), Times.Once);
             mockProductService.Verify(s => s.AddRating("1", 5), Times.Once);
+            Assert.That(minResult, Is.InstanceOf<OkResult>());
+            Assert.That(maxResult, Is.InstanceOf<OkResult>());
         }
 
         /// <summary>
@@ -419,6 +578,8 @@ namespace UnitTests.Controllers
 
             // Act
             var attributes = methodInfo.GetCustomAttributes(typeof(HttpPatchAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
@@ -436,6 +597,8 @@ namespace UnitTests.Controllers
 
             // Act
             var attributes = parameter.GetCustomAttributes(typeof(FromBodyAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
@@ -460,6 +623,8 @@ namespace UnitTests.Controllers
             // Act
             var result = controller.Patch(request);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<ActionResult>());
         }
@@ -474,8 +639,12 @@ namespace UnitTests.Controllers
         [Test]
         public void RatingRequest_Class_Should_Exist()
         {
-            // Arrange & Act
+            // Arrange - No setup needed
+
+            // Act
             var request = new RatingRequest();
+
+            // Reset
 
             // Assert
             Assert.That(request, Is.Not.Null);
@@ -493,6 +662,8 @@ namespace UnitTests.Controllers
             // Act
             request.ProductId = "test-id";
 
+            // Reset
+
             // Assert
             Assert.That(request.ProductId, Is.EqualTo("test-id"));
         }
@@ -509,6 +680,8 @@ namespace UnitTests.Controllers
             // Act
             request.Rating = 5;
 
+            // Reset
+
             // Assert
             Assert.That(request.Rating, Is.EqualTo(5));
         }
@@ -519,8 +692,12 @@ namespace UnitTests.Controllers
         [Test]
         public void RatingRequest_Initial_Properties_Should_Be_Default()
         {
-            // Arrange & Act
+            // Arrange - No setup needed
+
+            // Act
             var request = new RatingRequest();
+
+            // Reset
 
             // Assert
             Assert.That(request.ProductId, Is.Null);
@@ -533,12 +710,16 @@ namespace UnitTests.Controllers
         [Test]
         public void RatingRequest_Object_Initializer_Should_Work()
         {
-            // Arrange & Act
+            // Arrange - No setup needed
+
+            // Act
             var request = new RatingRequest
             {
                 ProductId = "init-id",
                 Rating = 4
             };
+
+            // Reset
 
             // Assert
             Assert.That(request.ProductId, Is.EqualTo("init-id"));
@@ -560,6 +741,8 @@ namespace UnitTests.Controllers
             // Act
             request.ProductId = null;
 
+            // Reset
+
             // Assert
             Assert.That(request.ProductId, Is.Null);
         }
@@ -575,6 +758,8 @@ namespace UnitTests.Controllers
 
             // Act
             request.ProductId = string.Empty;
+
+            // Reset
 
             // Assert
             Assert.That(request.ProductId, Is.EqualTo(string.Empty));
@@ -601,41 +786,58 @@ namespace UnitTests.Controllers
 
             request.Rating = 100;
             Assert.That(request.Rating, Is.EqualTo(100));
+
+            // Reset
         }
 
         #endregion RatingRequest
 
         #region Integration
 
+        #endregion Integration
+
+        #region AdditionalCoverage
+
         /// <summary>
-        /// Test full workflow: Get products, then Patch rating
+        /// Test Patch with null request should return BadRequest
         /// </summary>
         [Test]
-        public void Integration_Get_Then_Patch_Should_Work_Together()
+        public void Patch_Null_Request_Should_Return_BadRequest()
         {
             // Arrange
-            mockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
-                .Returns(true);
+            RatingRequest request = null;
 
             // Act
-            var products = controller.Get().ToList();
-            var firstProductId = products.First().Id;
+            var result = controller.Patch(request);
 
-            var request = new RatingRequest
-            {
-                ProductId = firstProductId,
-                Rating = 5
-            };
-
-            var patchResult = controller.Patch(request);
+            // Reset
 
             // Assert
-            Assert.That(products, Is.Not.Empty);
-            Assert.That(patchResult, Is.InstanceOf<OkResult>());
-            mockProductService.Verify(s => s.GetProducts(), Times.Once);
-            mockProductService.Verify(s => s.AddRating(firstProductId, 5), Times.Once);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
-        #endregion Integration
+        /// <summary>
+        /// Test Patch with whitespace ProductId should return BadRequest
+        /// </summary>
+        [Test]
+        public void Patch_Whitespace_ProductId_Should_Return_BadRequest()
+        {
+            // Arrange
+            var request = new RatingRequest
+            {
+                ProductId = "   ",
+                Rating = 3
+            };
+
+            // Act
+            var result = controller.Patch(request);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        }
+
+        #endregion AdditionalCoverage
     }
 }

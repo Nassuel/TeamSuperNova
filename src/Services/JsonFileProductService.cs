@@ -347,7 +347,7 @@ namespace ContosoCrafts.WebSite.Services
         /// comment is appended to the product's existing list of comments.</remarks>
         /// <param name="productId">The unique identifier of the product to which the comment will be added. Cannot be null or empty.</param>
         /// <param name="comment">The comment to add to the product. Cannot be null.</param>
-        public bool AddCommentToProduct(string productId, CommentModel comment)
+        public virtual bool AddCommentToProduct(string productId, CommentModel comment)
         {
             // Load all products
             var products = GetProducts().ToList();

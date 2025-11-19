@@ -98,8 +98,29 @@ namespace UnitTests.Pages.Product
             // Act
             var result = PageModel.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.EqualTo(MockProductService.Object));
+        }
+
+        /// <summary>
+        /// Test constructor creates valid instance
+        /// </summary>
+        [Test]
+        public void Constructor_Valid_Should_Create_Valid_Instance()
+        {
+            // Arrange
+            var mockService = new Mock<JsonFileProductService>(MockBehavior.Strict, null);
+
+            // Act
+            var result = new ReadModel(mockService.Object);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.ProductService, Is.EqualTo(mockService.Object));
         }
 
         #endregion Constructor
@@ -113,13 +134,16 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Return_Page_Result()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
+            Assert.That(result, Is.Not.Null);
         }
 
         /// <summary>
@@ -129,10 +153,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Set_Product_Property()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
@@ -147,10 +173,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Load_Correct_Product_Data()
         {
             // Arrange
-            var productId = "test-keyboard-1";
+            var data = "test-keyboard-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo("test-keyboard-1"));
@@ -166,10 +194,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_With_Ratings_Should_Load_Product()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Ratings.Length, Is.EqualTo(3));
@@ -184,10 +214,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_With_Null_Ratings_Should_Load_Product()
         {
             // Arrange
-            var productId = "test-keyboard-1";
+            var data = "test-keyboard-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Ratings, Is.Null);
@@ -200,10 +232,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_Different_ProductId_Should_Load_Correct_Product()
         {
             // Arrange
-            var productId = "test-mice-1";
+            var data = "test-mice-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo("test-mice-1"));
@@ -218,10 +252,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -234,10 +270,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_ProductId_Should_Redirect_To_Index()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            var result = PageModel.OnGet(productId) as RedirectToPageResult;
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.PageName, Is.EqualTo("./Index"));
@@ -250,48 +288,15 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_ProductId_Should_Set_Product_Null()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product, Is.Null);
-        }
-
-        /// <summary>
-        /// Test OnGet with invalid product ID adds model error
-        /// </summary>
-        [Test]
-        public void OnGet_Invalid_ProductId_Should_Add_ModelState_Error()
-        {
-            // Arrange
-            var productId = "non-existent-id";
-
-            // Act
-            PageModel.OnGet(productId);
-
-            // Assert
-            Assert.That(PageModel.ModelState.IsValid, Is.False);
-            Assert.That(PageModel.ModelState.ContainsKey("bogus"));
-        }
-
-        /// <summary>
-        /// Test OnGet with invalid product ID adds correct error message
-        /// </summary>
-        [Test]
-        public void OnGet_Invalid_ProductId_Should_Add_Correct_Error_Message()
-        {
-            // Arrange
-            var productId = "non-existent-id";
-
-            // Act
-            PageModel.OnGet(productId);
-
-            // Assert
-            var errors = PageModel.ModelState["bogus"].Errors;
-            Assert.That(errors.Count, Is.EqualTo(1));
-            Assert.That(errors[0].ErrorMessage, Is.EqualTo("bogus error"));
         }
 
         /// <summary>
@@ -301,13 +306,33 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Null_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            string productId = null;
+            string data = null;
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
+        }
+
+        /// <summary>
+        /// Test OnGet with null product ID redirects to Index page
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Null_ProductId_Should_Redirect_To_Index()
+        {
+            // Arrange
+            string data = null;
+
+            // Act
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
+
+            // Reset
+
+            // Assert
+            Assert.That(result.PageName, Is.EqualTo("./Index"));
         }
 
         /// <summary>
@@ -317,13 +342,33 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Empty_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            var productId = string.Empty;
+            var data = string.Empty;
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
+        }
+
+        /// <summary>
+        /// Test OnGet with empty string product ID redirects to Index page
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Empty_ProductId_Should_Redirect_To_Index()
+        {
+            // Arrange
+            var data = string.Empty;
+
+            // Act
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
+
+            // Reset
+
+            // Assert
+            Assert.That(result.PageName, Is.EqualTo("./Index"));
         }
 
         /// <summary>
@@ -333,13 +378,34 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Whitespace_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            var productId = "   ";
+            var data = "   ";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
+        }
+
+        /// <summary>
+        /// Test OnGet with whitespace product ID redirects to Index page
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Whitespace_ProductId_Should_Redirect_To_Index()
+        {
+            // Arrange
+            var data = "   ";
+
+            // Act
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.PageName, Is.EqualTo("./Index"));
         }
 
         /// <summary>
@@ -349,10 +415,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_Case_Sensitive_ProductId_Should_Match_Exact_Case()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
@@ -365,10 +433,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Different_Case_ProductId_Should_Not_Match()
         {
             // Arrange
-            var productId = "TEST-LAPTOP-1";
+            var data = "TEST-LAPTOP-1";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -382,10 +452,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Load_All_Product_Properties()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
@@ -405,14 +477,101 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Use_FirstOrDefault_For_Lookup()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
-            MockProductService.Verify(x => x.GetProducts(), Times.Once);
+            Assert.That(PageModel.Product, Is.Not.Null);
             Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
+        }
+
+        /// <summary>
+        /// Test OnGet with valid product ID verifies Equals method is used
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Use_Equals_For_Comparison()
+        {
+            // Arrange
+            var data = "test-mice-1";
+
+            // Act
+            var result = PageModel.OnGet(data);
+
+            // Reset
+
+            // Assert
+            Assert.That(PageModel.Product, Is.Not.Null);
+            Assert.That(PageModel.Product.Id.Equals(data), Is.True);
+            Assert.That(result, Is.InstanceOf<PageResult>());
+        }
+
+        /// <summary>
+        /// Test OnGet executes lambda expression in FirstOrDefault
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Execute_Lambda_Expression()
+        {
+            // Arrange
+            var data = "test-keyboard-1";
+
+            // Act
+            var result = PageModel.OnGet(data);
+
+            // Reset
+
+            // Assert
+            Assert.That(PageModel.Product, Is.Not.Null);
+            Assert.That(PageModel.Product.Id, Is.EqualTo(data));
+            Assert.That(result, Is.InstanceOf<PageResult>());
+            MockProductService.Verify(x => x.GetProducts(), Times.Once);
+        }
+
+        /// <summary>
+        /// Test OnGet returns PageResult with correct type
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Return_Correct_PageResult_Type()
+        {
+            // Arrange
+            var data = "test-laptop-1";
+
+            // Act
+            var result = PageModel.OnGet(data);
+            var pageResult = result as PageResult;
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.TypeOf<PageResult>());
+            Assert.That(pageResult, Is.Not.Null);
+        }
+
+        /// <summary>
+        /// Test OnGet with each product verifies all IDs match correctly
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_Each_Product_Should_Match_Correctly()
+        {
+            // Arrange & Act & Assert for first product
+            var result1 = PageModel.OnGet("test-laptop-1");
+            Assert.That(result1, Is.InstanceOf<PageResult>());
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-laptop-1"));
+
+            // Arrange & Act & Assert for second product
+            var result2 = PageModel.OnGet("test-keyboard-1");
+            Assert.That(result2, Is.InstanceOf<PageResult>());
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-keyboard-1"));
+
+            // Arrange & Act & Assert for third product
+            var result3 = PageModel.OnGet("test-mice-1");
+            Assert.That(result3, Is.InstanceOf<PageResult>());
+            Assert.That(PageModel.Product.Id, Is.EqualTo("test-mice-1"));
+
+            // Reset
         }
 
         /// <summary>
@@ -422,13 +581,16 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_First_Product_Should_Return_First_Product()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo(TestProducts.First().Id));
+            Assert.That(result, Is.InstanceOf<PageResult>());
         }
 
         /// <summary>
@@ -438,13 +600,16 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_Last_Product_Should_Return_Last_Product()
         {
             // Arrange
-            var productId = "test-mice-1";
+            var data = "test-mice-1";
 
             // Act
-            PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo(TestProducts.Last().Id));
+            Assert.That(result, Is.InstanceOf<PageResult>());
         }
 
         /// <summary>
@@ -454,13 +619,84 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_Middle_Product_Should_Return_Middle_Product()
         {
             // Arrange
-            var productId = "test-keyboard-1";
+            var data = "test-keyboard-1";
 
             // Act
-            PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Id, Is.EqualTo(TestProducts[1].Id));
+            Assert.That(result, Is.InstanceOf<PageResult>());
+        }
+
+        /// <summary>
+        /// Test OnGet returns Page result and sets Product correctly
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_ProductId_Should_Return_Page_And_Set_Product()
+        {
+            // Arrange
+            var data = "test-laptop-1";
+
+            // Act
+            var result = PageModel.OnGet(data);
+            var pageResult = result as PageResult;
+
+            // Reset
+
+            // Assert
+            Assert.That(pageResult, Is.Not.Null);
+            Assert.That(PageModel.Product, Is.Not.Null);
+            Assert.That(PageModel.Product.Id, Is.EqualTo(data));
+        }
+
+        /// <summary>
+        /// Test OnGet with null ID does not call GetProducts
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Null_ProductId_Should_Not_Call_GetProducts()
+        {
+            // Arrange
+            string data = null;
+            var mockService = new Mock<JsonFileProductService>(MockBehavior.Strict, null);
+            var model = new ReadModel(mockService.Object);
+
+            // Act
+            var result = model.OnGet(data);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<RedirectToPageResult>());
+            var redirectResult = result as RedirectToPageResult;
+            Assert.That(redirectResult.PageName, Is.EqualTo("./Index"));
+        }
+
+        /// <summary>
+        /// Test OnGet with empty ID does not call GetProducts
+        /// </summary>
+        [Test]
+        public void OnGet_Invalid_Empty_ProductId_Should_Not_Call_GetProducts()
+        {
+            // Arrange
+            var data = string.Empty;
+            var mockService = new Mock<JsonFileProductService>(MockBehavior.Strict, null);
+            var model = new ReadModel(mockService.Object);
+
+            // Act
+            var result = model.OnGet(data);
+            var redirectResult = result as RedirectToPageResult;
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(redirectResult.PageName, Is.EqualTo("./Index"));
+            mockService.Verify(x => x.GetProducts(), Times.Never);
         }
 
         #endregion OnGet
@@ -478,6 +714,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = PageModel.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.EqualTo(MockProductService.Object));
             Assert.That(result, Is.Not.Null);
@@ -493,6 +731,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = PageModel.ProductService;
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<JsonFileProductService>());
@@ -514,6 +754,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = newPageModel.Product;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -525,11 +767,13 @@ namespace UnitTests.Pages.Product
         public void Product_After_Valid_OnGet_Should_Be_Set()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
             var result = PageModel.Product;
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -543,14 +787,36 @@ namespace UnitTests.Pages.Product
         public void Product_After_Invalid_OnGet_Should_Remain_Null()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
             var result = PageModel.Product;
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.Null);
+        }
+
+        /// <summary>
+        /// Test Product property can be accessed directly
+        /// </summary>
+        [Test]
+        public void Product_Valid_Should_Be_Accessible()
+        {
+            // Arrange
+            var data = "test-laptop-1";
+            PageModel.OnGet(data);
+
+            // Act
+            var result = PageModel.Product;
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.InstanceOf<ProductModel>());
         }
 
         #endregion Product

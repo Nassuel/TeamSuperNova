@@ -101,6 +101,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = PageModel.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(MockProductService.Object, Is.EqualTo(result));
         }
@@ -114,6 +116,8 @@ namespace UnitTests.Pages.Product
             // Arrange - Done in TestInitialize
 
             // Act - PageModel created in TestInitialize
+
+            // Reset
 
             // Assert
             Assert.That(PageModel, Is.Not.Null);
@@ -131,10 +135,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Return_Page_Result()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
@@ -147,10 +153,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Set_Product_Property()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That("test-laptop-1", Is.EqualTo(PageModel.Product.Id));
@@ -165,10 +173,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Load_All_Product_Properties()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That("test-laptop-1", Is.EqualTo(PageModel.Product.Id));
@@ -187,10 +197,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_With_Ratings_Should_Load_Product()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(3, Is.EqualTo(PageModel.Product.Ratings.Length));
@@ -204,10 +216,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_With_Null_Ratings_Should_Load_Product()
         {
             // Arrange
-            var productId = "test-keyboard-1";
+            var data = "test-keyboard-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Ratings, Is.Null);
@@ -220,10 +234,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_Different_ProductId_Should_Load_Correct_Product()
         {
             // Arrange
-            var productId = "test-mice-1";
+            var data = "test-mice-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That("test-mice-1", Is.EqualTo(PageModel.Product.Id));
@@ -238,10 +254,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Null_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            string productId = null;
+            string data = null;
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -254,10 +272,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Null_ProductId_Should_Redirect_To_Index()
         {
             // Arrange
-            string productId = null;
+            string data = null;
 
             // Act
-            var result = PageModel.OnGet(productId) as RedirectToPageResult;
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That("/Product/Index", Is.EqualTo(result.PageName));
@@ -270,10 +290,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Empty_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            var productId = string.Empty;
+            var data = string.Empty;
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -286,10 +308,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Empty_ProductId_Should_Redirect_To_Index()
         {
             // Arrange
-            var productId = string.Empty;
+            var data = string.Empty;
 
             // Act
-            var result = PageModel.OnGet(productId) as RedirectToPageResult;
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That("/Product/Index", Is.EqualTo(result.PageName));
@@ -302,10 +326,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Whitespace_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            var productId = "   ";
+            var data = "   ";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -318,10 +344,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_NonExistent_ProductId_Should_Return_RedirectToPageResult()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -334,10 +362,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_NonExistent_ProductId_Should_Redirect_To_Index()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            var result = PageModel.OnGet(productId) as RedirectToPageResult;
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That("/Product/Index", Is.EqualTo(result.PageName));
@@ -350,10 +380,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_NonExistent_ProductId_Should_Not_Set_Product()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product, Is.Null);
@@ -366,10 +398,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_Case_Sensitive_ProductId_Should_Match_Exact_Case()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That("test-laptop-1", Is.EqualTo(PageModel.Product.Id));
@@ -382,10 +416,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Invalid_Different_Case_ProductId_Should_Not_Match()
         {
             // Arrange
-            var productId = "TEST-LAPTOP-1";
+            var data = "TEST-LAPTOP-1";
 
             // Act
-            var result = PageModel.OnGet(productId);
+            var result = PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -399,10 +435,12 @@ namespace UnitTests.Pages.Product
         public void OnGet_Valid_ProductId_Should_Use_FirstOrDefault_For_Lookup()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
+
+            // Reset
 
             // Assert
             MockProductService.Verify(x => x.GetProducts(), Times.Once);
@@ -433,11 +471,15 @@ namespace UnitTests.Pages.Product
                 .Returns(true);
 
             // Act
-            var result = await PageModel.OnPostAsync() as RedirectToPageResult;
+            var result = await PageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
+            Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
-            Assert.That("/Product/Index", Is.EqualTo(result.PageName));
+            var redirectResult = result as RedirectToPageResult;
+            Assert.That("/Product/Index", Is.EqualTo(redirectResult.PageName));
         }
 
         /// <summary>
@@ -460,9 +502,15 @@ namespace UnitTests.Pages.Product
                 .Returns(true);
 
             // Act
-            await PageModel.OnPostAsync();
+            var result = await PageModel.OnPostAsync();
+            var redirectResult = result as RedirectToPageResult;
+
+            // Reset
 
             // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(redirectResult, Is.InstanceOf<RedirectToPageResult>());
             MockProductService.Verify(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()), Times.Once);
         }
 
@@ -480,17 +528,20 @@ namespace UnitTests.Pages.Product
             };
             PageModel.ModelState.Clear();
 
-            var expectedImagePath = "/assets/uploaded-image.png";
+            var data = "/assets/uploaded-image.png";
             MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
-                .ReturnsAsync(expectedImagePath);
+                .ReturnsAsync(data);
             MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
                 .Returns(true);
 
             // Act
-            await PageModel.OnPostAsync();
+            var result = await PageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
-            Assert.That(expectedImagePath, Is.EqualTo(PageModel.Product.Image));
+            Assert.That(result, Is.Not.Null);
+            Assert.That(data, Is.EqualTo(PageModel.Product.Image));
         }
 
         /// <summary>
@@ -513,9 +564,15 @@ namespace UnitTests.Pages.Product
                 .Returns(true);
 
             // Act
-            await PageModel.OnPostAsync();
+            var result = await PageModel.OnPostAsync();
+            var redirectResult = result as RedirectToPageResult;
+
+            // Reset
 
             // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(redirectResult, Is.InstanceOf<RedirectToPageResult>());
             MockProductService.Verify(x => x.UpdateData(PageModel.Product), Times.Once);
         }
 
@@ -531,6 +588,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = await PageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -545,10 +604,14 @@ namespace UnitTests.Pages.Product
             PageModel.Product = null;
 
             // Act
-            var result = await PageModel.OnPostAsync() as RedirectToPageResult;
+            var result = await PageModel.OnPostAsync();
+            var redirectResult = result as RedirectToPageResult;
+
+            // Reset
 
             // Assert
-            Assert.That("/Product/Index", Is.EqualTo(result.PageName));
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That("/Product/Index", Is.EqualTo(redirectResult.PageName));
         }
 
         /// <summary>
@@ -567,6 +630,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = await PageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
@@ -592,7 +657,9 @@ namespace UnitTests.Pages.Product
                 .Returns(true);
 
             // Act
-            await PageModel.OnPostAsync();
+            var result = await PageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
             MockProductService.Verify(x => x.UpdateData(It.IsAny<ProductModel>()), Times.Never);
@@ -615,6 +682,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = await PageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
@@ -641,6 +710,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = await PageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -672,7 +743,9 @@ namespace UnitTests.Pages.Product
                 .Returns(true);
 
             // Act
-            await PageModel.OnPostAsync();
+            var result = await PageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
             Assert.That(PageModel.Product.Brand, Is.EqualTo("UpdatedBrand"));
@@ -681,7 +754,7 @@ namespace UnitTests.Pages.Product
         }
 
         /// <summary>
-        /// Test OnPostAsync with ImageFile property
+        /// Test OnPostAsync with ImageFile property saves image file
         /// </summary>
         [Test]
         public async Task OnPostAsync_Valid_With_ImageFile_Should_Save_Image()
@@ -693,6 +766,7 @@ namespace UnitTests.Pages.Product
                 Brand = "TestBrand"
             };
 
+            // Mock image file
             var mockImageFile = new Mock<IFormFile>();
             mockImageFile.Setup(f => f.Length).Returns(100);
             PageModel.ImageFile = mockImageFile.Object;
@@ -704,9 +778,15 @@ namespace UnitTests.Pages.Product
                 .Returns(true);
 
             // Act
-            await PageModel.OnPostAsync();
+            var result = await PageModel.OnPostAsync();
+            var redirectResult = result as RedirectToPageResult;
+
+            // Reset
 
             // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(redirectResult, Is.InstanceOf<RedirectToPageResult>());
             MockProductService.Verify(x => x.SaveUploadedFileAsync(mockImageFile.Object), Times.Once);
             Assert.That("/assets/new-image.png", Is.EqualTo(PageModel.Product.Image));
         }
@@ -726,6 +806,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = PageModel.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(MockProductService.Object, Is.EqualTo(result));
             Assert.That(result, Is.Not.Null);
@@ -741,6 +823,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = PageModel.ProductService;
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<JsonFileProductService>());
@@ -762,6 +846,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = newPageModel.Product;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -773,11 +859,13 @@ namespace UnitTests.Pages.Product
         public void Product_After_Valid_OnGet_Should_Be_Set()
         {
             // Arrange
-            var productId = "test-laptop-1";
+            var data = "test-laptop-1";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
             var result = PageModel.Product;
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -791,11 +879,13 @@ namespace UnitTests.Pages.Product
         public void Product_After_Invalid_OnGet_Should_Remain_Null()
         {
             // Arrange
-            var productId = "non-existent-id";
+            var data = "non-existent-id";
 
             // Act
-            PageModel.OnGet(productId);
+            PageModel.OnGet(data);
             var result = PageModel.Product;
+
+            // Reset
 
             // Assert
             Assert.That(null, Is.EqualTo(result));
@@ -812,6 +902,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(1, Is.EqualTo(attributes.Length));
@@ -833,6 +925,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = newPageModel.ImageFile;
 
+            // Reset
+
             // Assert
             Assert.That(null, Is.EqualTo(result));
         }
@@ -849,6 +943,8 @@ namespace UnitTests.Pages.Product
             // Act
             PageModel.ImageFile = mockFile.Object;
 
+            // Reset
+
             // Assert
             Assert.That(mockFile.Object, Is.EqualTo(PageModel.ImageFile));
         }
@@ -864,6 +960,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(1, Is.EqualTo(attributes.Length));

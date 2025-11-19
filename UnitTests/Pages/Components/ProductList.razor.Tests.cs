@@ -2,6 +2,7 @@
 using ContosoCrafts.WebSite.Components;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Services;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
@@ -817,5 +818,448 @@ namespace UnitTests.Pages.Components
         }
 
         #endregion ComponentHandling
+        #region BrandFilterTests
+
+        /// <summary>
+        /// Test ApplyBrandFilter with specific brand
+        /// Covers the ApplyBrandFilter method
+        /// </summary>
+        [Test]
+        public void ApplyBrandFilter_Should_Filter_By_Brand()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var brandSelect = component.FindAll("select").Skip(1).FirstOrDefault();
+
+            // Act
+            brandSelect.Change("AcerBrand");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Test GetAllBrands returns unique sorted brands
+        /// Covers the GetAllBrands method
+        /// </summary>
+        [Test]
+        public void GetAllBrands_Should_Return_Unique_Sorted_Brands()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            var brandSelect = component.FindAll("select").Skip(1).FirstOrDefault();
+
+            // Reset
+
+            // Assert
+            Assert.That(brandSelect, Is.Not.Null);
+            var options = brandSelect.QuerySelectorAll("option");
+            Assert.That(options.Length, Is.GreaterThan(1));
+        }
+
+        #endregion BrandFilterTests
+
+        #region CommentTests
+
+        /// <summary>
+        /// Test AddComment with valid comment
+        /// Covers the AddComment method
+        /// </summary>
+        [Test]
+        public void AddComment_With_Valid_Comment_Should_Call_Service()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var commentTextarea = component.Find("textarea");
+            var submitButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Submit Comment"));
+
+            // Act
+            commentTextarea.Change("Test comment");
+            submitButton.Click();
+
+            // Reset
+
+            // Assert
+            MockProductService.Verify(x => x.AddCommentToProduct(
+                It.IsAny<string>(),
+                It.Is<CommentModel>(c => c.Comment == "Test comment")),
+                Times.Once);
+        }
+
+        /// <summary>
+        /// Test AddComment with empty comment
+        /// Covers the fast fail check in AddComment
+        /// </summary>
+        [Test]
+        public void AddComment_With_Empty_Comment_Should_Not_Call_Service()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var submitButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Submit Comment"));
+
+            // Act
+            submitButton.Click();
+
+            // Reset
+
+            // Assert
+            MockProductService.Verify(x => x.AddCommentToProduct(It.IsAny<string>(), It.IsAny<CommentModel>()), Times.Never);
+        }
+
+        /// <summary>
+        /// Test UsingEnterKey with Enter key
+        /// Covers the UsingEnterKey method
+        /// </summary>
+        [Test]
+        public void UsingEnterKey_With_Enter_Should_Submit_Comment()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var commentTextarea = component.Find("textarea");
+
+            // Act
+            commentTextarea.Change("Test comment");
+            commentTextarea.KeyDown(new KeyboardEventArgs { Key = "Enter", ShiftKey = false });
+
+            // Reset
+
+            // Assert
+            MockProductService.Verify(x => x.AddCommentToProduct(
+                It.IsAny<string>(),
+                It.Is<CommentModel>(c => c.Comment == "Test comment")),
+                Times.Once);
+        }
+
+        /// <summary>
+        /// Test UsingEnterKey with Shift+Enter
+        /// Covers the ShiftKey fast fail check
+        /// </summary>
+        [Test]
+        public void UsingEnterKey_With_ShiftEnter_Should_Not_Submit_Comment()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var commentTextarea = component.Find("textarea");
+
+            // Act
+            commentTextarea.Change("Test comment");
+            commentTextarea.KeyDown(new KeyboardEventArgs { Key = "Enter", ShiftKey = true });
+
+            // Reset
+
+            // Assert
+            MockProductService.Verify(x => x.AddCommentToProduct(It.IsAny<string>(), It.IsAny<CommentModel>()), Times.Never);
+        }
+
+        /// <summary>
+        /// Test UsingEnterKey with other key
+        /// Covers the Key != "Enter" fast fail check
+        /// </summary>
+        [Test]
+        public void UsingEnterKey_With_Other_Key_Should_Not_Submit_Comment()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var commentTextarea = component.Find("textarea");
+
+            // Act
+            commentTextarea.Change("Test comment");
+            commentTextarea.KeyDown(new KeyboardEventArgs { Key = "a", ShiftKey = false });
+
+            // Reset
+
+            // Assert
+            MockProductService.Verify(x => x.AddCommentToProduct(It.IsAny<string>(), It.IsAny<CommentModel>()), Times.Never);
+        }
+
+        /// <summary>
+        /// Test HasComments with null CommentList
+        /// Covers the null check in HasComments
+        /// </summary>
+        [Test]
+        public void HasComments_With_Null_CommentList_Should_Return_False()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[1].Click(); // Second product has null CommentList
+
+            // Reset
+
+            // Assert
+            var modalBody = component.Find(".modal-body");
+            Assert.That(modalBody.TextContent.Contains("No comments yet"));
+        }
+
+        /// <summary>
+        /// Test HasComments with empty CommentList
+        /// Covers the Any() check in HasComments
+        /// </summary>
+        [Test]
+        public void HasComments_With_Empty_CommentList_Should_Return_False()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[2].Click(); // Third product has empty CommentList
+
+            // Reset
+
+            // Assert
+            var modalBody = component.Find(".modal-body");
+            Assert.That(modalBody.TextContent.Contains("No comments yet"));
+        }
+
+        /// <summary>
+        /// Test comment display when comments exist
+        /// Covers the foreach loop in the modal
+        /// </summary>
+        [Test]
+        public void Modal_Should_Display_Existing_Comments()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[0].Click(); // First product has comments
+
+            // Reset
+
+            // Assert
+            var modalBody = component.Find(".modal-body");
+            Assert.That(modalBody.TextContent.Contains("Great!"));
+        }
+
+        #endregion CommentTests
+
+        #region SortingTests
+
+        /// <summary>
+        /// Test ApplySorting with BrandAZ
+        /// Covers the SortBy == "BrandAZ" branch
+        /// </summary>
+        [Test]
+        public void ApplySorting_BrandAZ_Should_Sort_Alphabetically()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var sortSelect = component.FindAll("select")[3];
+
+            // Act
+            sortSelect.Change("BrandAZ");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(3));
+            var firstCard = cards[0].QuerySelector(".card-title");
+            Assert.That(firstCard.TextContent, Does.Contain("AcerBrand"));
+        }
+
+        /// <summary>
+        /// Test ApplySorting with BrandZA
+        /// Covers the SortBy == "BrandZA" branch
+        /// </summary>
+        [Test]
+        public void ApplySorting_BrandZA_Should_Sort_Reverse()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var sortSelect = component.FindAll("select")[3];
+
+            // Act
+            sortSelect.Change("BrandZA");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(3));
+            var firstCard = cards[0].QuerySelector(".card-title");
+            Assert.That(firstCard.TextContent, Does.Contain("ZebraBrand"));
+        }
+
+        /// <summary>
+        /// Test ApplySorting with RatingHighLow
+        /// Covers the SortBy == "RatingHighLow" branch and GetAverageRating usage
+        /// </summary>
+        [Test]
+        public void ApplySorting_RatingHighLow_Should_Sort_By_Rating_Desc()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var sortSelect = component.FindAll("select")[3];
+
+            // Act
+            sortSelect.Change("RatingHighLow");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(3));
+        }
+
+        /// <summary>
+        /// Test ApplySorting with RatingLowHigh
+        /// Covers the SortBy == "RatingLowHigh" branch
+        /// </summary>
+        [Test]
+        public void ApplySorting_RatingLowHigh_Should_Sort_By_Rating_Asc()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var sortSelect = component.FindAll("select")[3];
+
+            // Act
+            sortSelect.Change("RatingLowHigh");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(3));
+        }
+
+        /// <summary>
+        /// Test GetAverageRating with null ratings
+        /// Covers the null check in GetAverageRating
+        /// </summary>
+        [Test]
+        public void GetAverageRating_With_Null_Ratings_Should_Return_Zero()
+        {
+            // Arrange
+            TestProducts[0].Ratings = null;
+            var component = _testContext.Render<ProductList>();
+            var sortSelect = component.FindAll("select")[3];
+
+            // Act
+            sortSelect.Change("RatingHighLow");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.GreaterThan(0));
+        }
+
+        /// <summary>
+        /// Test GetAverageRating with empty ratings array
+        /// Covers the Length == 0 check in GetAverageRating
+        /// </summary>
+        [Test]
+        public void GetAverageRating_With_Empty_Ratings_Should_Return_Zero()
+        {
+            // Arrange
+            TestProducts[0].Ratings = new int[] { };
+            var component = _testContext.Render<ProductList>();
+            var sortSelect = component.FindAll("select")[3];
+
+            // Act
+            sortSelect.Change("RatingHighLow");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.GreaterThan(0));
+        }
+
+        #endregion SortingTests
+
+        #region FilterEdgeCases
+
+        /// <summary>
+        /// Test ApplyProductTypeFilter with invalid enum
+        /// Covers the parseSuccessful == false branch
+        /// </summary>
+        [Test]
+        public void ApplyProductTypeFilter_With_Invalid_Enum_Should_Return_All()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var typeSelect = component.Find("select");
+
+            // Act
+            typeSelect.Change("InvalidEnum");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(3));
+        }
+
+        /// <summary>
+        /// Test ApplyRatingFilter with products having empty ratings
+        /// Covers the Length == 0 check in ApplyRatingFilter
+        /// </summary>
+        [Test]
+        public void ApplyRatingFilter_Should_Exclude_Empty_Ratings()
+        {
+            // Arrange
+            TestProducts[0].Ratings = new int[] { };
+            var component = _testContext.Render<ProductList>();
+            var ratingSelect = component.FindAll("select").Skip(2).FirstOrDefault();
+
+            // Act
+            ratingSelect.Change("1");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.LessThan(3));
+        }
+
+        #endregion FilterEdgeCases
+
+        #region GetCurrentRatingTests
+
+        /// <summary>
+        /// Test GetCurrentRating with null ratings
+        /// Covers the null check in GetCurrentRating
+        /// </summary>
+        [Test]
+        public void GetCurrentRating_With_Null_Ratings_Should_Set_Zero()
+        {
+            // Arrange
+            TestProducts[0].Ratings = null;
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[0].Click();
+
+            // Reset
+
+            // Assert
+            var modalFooter = component.FindAll(".modal-footer")[1];
+            Assert.That(modalFooter.TextContent.Contains("Be the first to vote!"));
+        }
+
+        #endregion GetCurrentRatingTests
+
     }
 }
