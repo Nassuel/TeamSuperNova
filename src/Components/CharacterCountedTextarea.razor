@@ -47,7 +47,7 @@
     public EventCallback<string> ValueChanged { get; set; }
 
     // Internal value used for binding
-    private string InternalValue { get; set; } = string.Empty;
+    public string InternalValue { get; set; } = string.Empty;
 
     /// <summary>
     /// Initializes the component with the initial value
@@ -87,7 +87,7 @@
     /// Gets the current character count of the textarea
     /// </summary>
     /// <returns>Number of characters</returns>
-    private int GetCharCount()
+    public int GetCharCount()
     {
 
         // Fast fail: Check if internal value is null or empty
@@ -105,7 +105,7 @@
     /// Gets the CSS class for character count display
     /// </summary>
     /// <returns>CSS class string</returns>
-    private string GetCharCountClass()
+    public string GetCharCountClass()
     {
 
         // Get current character count
