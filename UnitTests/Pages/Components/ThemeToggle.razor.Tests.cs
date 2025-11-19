@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Moq;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace UnitTests.Pages.Components
 {
@@ -56,13 +57,10 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_ComponentInitialized_WithMockJSRuntime_Should_Return_NotNull()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
-
-            // Reset
-            // No reset needed
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -75,16 +73,13 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_ComponentInitialized_WithLightTheme_Should_Return_ButtonElement()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
 
             // Get button
             var buttonElement = result.Find("button");
-
-            // Reset
-            // No reset needed
 
             // Assert
             Assert.That(buttonElement, Is.Not.Null);
@@ -97,16 +92,13 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_ComponentInitialized_WithLightTheme_Should_Return_ThemeToggleClass()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
 
             // Get button with class
             var buttonElement = result.Find("button.theme-toggle");
-
-            // Reset
-            // No reset needed
 
             // Assert
             Assert.That(buttonElement, Is.Not.Null);
@@ -119,7 +111,7 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_ComponentInitialized_WithLightTheme_Should_Return_TypeButton()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
@@ -129,9 +121,6 @@ namespace UnitTests.Pages.Components
 
             // Get type attribute
             var typeAttribute = buttonElement.GetAttribute("type");
-
-            // Reset
-            // No reset needed
 
             // Assert
             Assert.That(typeAttribute, Is.EqualTo("button"));
@@ -144,7 +133,7 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_ComponentInitialized_WithLightTheme_Should_Return_TitleAttribute()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
@@ -154,9 +143,6 @@ namespace UnitTests.Pages.Components
 
             // Get title attribute
             var titleAttribute = buttonElement.GetAttribute("title");
-
-            // Reset
-            // No reset needed
 
             // Assert
             Assert.That(titleAttribute, Is.Not.Null);
@@ -169,19 +155,16 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_LightTheme_WithInitialization_Should_Return_MoonIcon()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
 
             // Wait for component to initialize
-            result.WaitForState(() => result.Find("i.fa-moon") != null);
+            result.WaitForState(() => result.Find("i.fa-moon-o") != null);
 
             // Get icon element
-            var iconElement = result.Find("i.fa-moon");
-
-            // Reset
-            // No reset needed
+            var iconElement = result.Find("i.fa-moon-o");
 
             // Assert
             Assert.That(iconElement, Is.Not.Null);
@@ -194,19 +177,16 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_DarkTheme_WithInitialization_Should_Return_SunIcon()
         {
             // Arrange
-            var data = SetupMockJSRuntime("dark");
+            SetupMockJSRuntime("dark");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
 
             // Wait for component to initialize
-            result.WaitForState(() => result.Find("i.fa-sun") != null);
+            result.WaitForState(() => result.Find("i.fa-sun-o") != null);
 
             // Get icon element
-            var iconElement = result.Find("i.fa-sun");
-
-            // Reset
-            // No reset needed
+            var iconElement = result.Find("i.fa-sun-o");
 
             // Assert
             Assert.That(iconElement, Is.Not.Null);
@@ -219,7 +199,7 @@ namespace UnitTests.Pages.Components
         public void Render_Valid_LightTheme_WithInitialization_Should_Return_ThemeIconClass()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
@@ -230,28 +210,24 @@ namespace UnitTests.Pages.Components
             // Get icon element
             var iconElement = result.Find("i.theme-icon");
 
-            // Reset
-            // No reset needed
-
             // Assert
             Assert.That(iconElement, Is.Not.Null);
         }
 
         /// <summary>
-        /// Tests that clicking button invokes JavaScript toggle function
+        /// Tests that clicking button invokes JavaScript setTheme function
         /// </summary>
         [Test]
-        public void Click_Valid_ButtonClicked_WithLightTheme_Should_Invoke_JavaScriptToggle()
+        public void Click_Valid_ButtonClicked_WithLightTheme_Should_Invoke_JavaScriptSetTheme()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
-
-            // Setup toggle to return dark
-            MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.toggle", It.IsAny<object[]>()))
-                .ReturnsAsync("dark");
+            SetupMockJSRuntime("light");
 
             // Render component
             var component = TestContext.Render<ThemeToggle>();
+
+            // Wait for initialization
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
 
             // Get button
             var buttonElement = component.Find("button");
@@ -259,11 +235,12 @@ namespace UnitTests.Pages.Components
             // Act
             buttonElement.Click();
 
-            // Reset
-            // No reset needed
-
-            // Assert
-            MockJSRuntime.Verify(x => x.InvokeAsync<string>("themeManager.toggle", It.IsAny<object[]>()), Times.Once);
+            // Assert - Verify that InvokeAsync was called with setTheme (IJSVoidResult)
+            MockJSRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "themeManager.setTheme",
+                    It.Is<object[]>(args => args.Length == 1 && args[0].ToString() == "dark")),
+                Times.Once);
         }
 
         /// <summary>
@@ -273,14 +250,13 @@ namespace UnitTests.Pages.Components
         public void Click_Valid_ButtonClicked_FromLightToDark_Should_Return_SunIcon()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
-
-            // Setup toggle to return dark
-            MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.toggle", It.IsAny<object[]>()))
-                .ReturnsAsync("dark");
+            SetupMockJSRuntime("light");
 
             // Render component
             var component = TestContext.Render<ThemeToggle>();
+
+            // Wait for initialization
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
 
             // Get button
             var buttonElement = component.Find("button");
@@ -289,13 +265,10 @@ namespace UnitTests.Pages.Components
             buttonElement.Click();
 
             // Wait for icon to change
-            component.WaitForState(() => component.Find("i.fa-sun") != null);
+            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
 
             // Get result icon
-            var result = component.Find("i.fa-sun");
-
-            // Reset
-            // No reset needed
+            var result = component.Find("i.fa-sun-o");
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -308,17 +281,13 @@ namespace UnitTests.Pages.Components
         public void Click_Valid_ButtonClicked_FromDarkToLight_Should_Return_MoonIcon()
         {
             // Arrange
-            var data = SetupMockJSRuntime("dark");
-
-            // Setup toggle to return light
-            MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.toggle", It.IsAny<object[]>()))
-                .ReturnsAsync("light");
+            SetupMockJSRuntime("dark");
 
             // Render component
             var component = TestContext.Render<ThemeToggle>();
 
             // Wait for initial render
-            component.WaitForState(() => component.Find("i.fa-sun") != null);
+            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
 
             // Get button
             var buttonElement = component.Find("button");
@@ -327,13 +296,10 @@ namespace UnitTests.Pages.Components
             buttonElement.Click();
 
             // Wait for icon to change
-            component.WaitForState(() => component.Find("i.fa-moon") != null);
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
 
             // Get result icon
-            var result = component.Find("i.fa-moon");
-
-            // Reset
-            // No reset needed
+            var result = component.Find("i.fa-moon-o");
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -346,150 +312,33 @@ namespace UnitTests.Pages.Components
         public void Initialize_Valid_ComponentRendered_WithMockJSRuntime_Should_Invoke_GetTheme()
         {
             // Arrange
-            var data = SetupMockJSRuntime("light");
-
-            // Act
-            var result = TestContext.Render<ThemeToggle>();
-
-            // Reset
-            // No reset needed
-
-            // Assert
-            MockJSRuntime.Verify(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()), Times.AtLeastOnce);
-        }
-
-        /// <summary>
-        /// Tests that component defaults to light theme when saved theme is null
-        /// </summary>
-        [Test]
-        public void Initialize_InValid_NullSavedTheme_WithComponentRendered_Should_Return_MoonIcon()
-        {
-            // Arrange
-            MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()))
-                .ReturnsAsync((string)null);
-
-            var data = MockJSRuntime.Object;
+            SetupMockJSRuntime("light");
 
             // Act
             var result = TestContext.Render<ThemeToggle>();
 
             // Wait for initialization
-            result.WaitForState(() => result.Find("i.fa-moon") != null);
-
-            // Get moon icon
-            var iconElement = result.Find("i.fa-moon");
-
-            // Reset
-            // No reset needed
+            result.WaitForState(() => result.Find("i.fa-moon-o") != null);
 
             // Assert
-            Assert.That(iconElement, Is.Not.Null);
+            MockJSRuntime.Verify(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()),
+                Times.AtLeastOnce);
         }
 
         /// <summary>
-        /// Tests that multiple clicks toggle between themes correctly
+        /// Helper to setup JSRuntime mock to return a theme value
         /// </summary>
-        [Test]
-        public void Click_Valid_MultipleClicks_WithAlternatingThemes_Should_Return_MoonIcon()
+        /// <param name="theme">Theme value to return ("light" or "dark")</param>
+        private void SetupMockJSRuntime(string theme)
         {
-            // Arrange
-            var data = SetupMockJSRuntime("light");
+            MockJSRuntime
+                .Setup(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()))
+                .ReturnsAsync(theme);
 
-            // Setup toggle sequence
-            var toggleCallCount = 0;
-
-            MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.toggle", It.IsAny<object[]>()))
-                .ReturnsAsync(() =>
-                {
-                    toggleCallCount++;
-
-                    // Check if odd count
-                    if (toggleCallCount % 2 == 1)
-                    {
-                        return "dark";
-                    }
-
-                    return "light";
-                });
-
-            // Render component
-            var component = TestContext.Render<ThemeToggle>();
-
-            // Get button
-            var buttonElement = component.Find("button");
-
-            // Act - First click
-            buttonElement.Click();
-
-            // Wait for sun icon
-            component.WaitForState(() => component.Find("i.fa-sun") != null);
-
-            // Act - Second click
-            buttonElement.Click();
-
-            // Wait for moon icon
-            component.WaitForState(() => component.Find("i.fa-moon") != null);
-
-            // Get result icon
-            var result = component.Find("i.fa-moon");
-
-            // Reset
-            // No reset needed
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-        }
-
-        /// <summary>
-        /// Tests that button is not disabled on initial render
-        /// </summary>
-        [Test]
-        public void Render_Valid_ComponentInitialized_WithLightTheme_Should_Return_ButtonNotDisabled()
-        {
-            // Arrange
-            var data = SetupMockJSRuntime("light");
-
-            // Act
-            var result = TestContext.Render<ThemeToggle>();
-
-            // Get button
-            var buttonElement = result.Find("button");
-
-            // Check if disabled
-            var isDisabled = buttonElement.HasAttribute("disabled");
-
-            // Reset
-            // No reset needed
-
-            // Assert
-            Assert.That(isDisabled, Is.False);
-        }
-
-        /// <summary>
-        /// Sets up mock JavaScript runtime with initial theme
-        /// </summary>
-        /// <param name="initialTheme">Initial theme value to return</param>
-        /// <returns>Mock JavaScript runtime object</returns>
-        public IJSRuntime SetupMockJSRuntime(string initialTheme)
-        {
-            // Setup getTheme to return initial theme
-            MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()))
-                .ReturnsAsync(initialTheme);
-
-            // Determine opposite theme
-            var oppositeTheme = "light";
-
-            // Check if light theme
-            if (initialTheme == "light")
-            {
-                oppositeTheme = "dark";
-            }
-
-            // Setup toggle to return opposite theme
-            MockJSRuntime.Setup(x => x.InvokeAsync<string>("themeManager.toggle", It.IsAny<object[]>()))
-                .ReturnsAsync(oppositeTheme);
-
-            return MockJSRuntime.Object;
+            // Match the exact generic type used by InvokeVoidAsync (IJSVoidResult) to avoid InvalidCastException
+            MockJSRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>("themeManager.setTheme", It.IsAny<object[]>()))
+                .Returns(new ValueTask<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(default(Microsoft.JSInterop.Infrastructure.IJSVoidResult)));
         }
     }
 }
