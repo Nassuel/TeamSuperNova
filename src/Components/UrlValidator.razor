@@ -15,7 +15,7 @@
                @onchange="OnUrlChanged" />
 
         <input type="hidden" name="Product.Url" value="@UrlValue" />
-        <input type="hidden" name="IsUrlValidated" value="@IsValid" />
+        <input type="hidden" name="IsUrlValidated" value="@IsValid.ToString()" />
 
         <button class="btn btn-secondary ml-2"
                 type="button"
@@ -56,10 +56,10 @@
     private bool IsValidating = false;
 
     // Indicates if URL has been validated
-    private bool IsValidated;
+    private bool IsValidated = false;
 
     // Indicates if URL is valid
-    private bool IsValid;
+    private bool IsValid = false;
 
     // Validation message to display to user
     private string ValidationMessage = string.Empty;
@@ -78,6 +78,10 @@
             UrlValue = string.Empty;
         }
 
+        // Ensure explicit initial boolean values
+        IsValidated = false;
+        IsValid = false;
+
     }
 
     /// <summary>
@@ -93,6 +97,8 @@
 
         ValidationMessage = string.Empty;
 
+        // Ensure UI updates immediately when user changes URL
+        StateHasChanged();
     }
 
     /// <summary>
@@ -108,6 +114,7 @@
             ValidationMessage = "Please enter a URL first.";
             IsValidated = true;
             IsValid = false;
+            StateHasChanged();
             return;
         }
 
@@ -120,6 +127,7 @@
             ValidationMessage = "Invalid URL format. Please use http:// or https://";
             IsValidated = true;
             IsValid = false;
+            StateHasChanged();
             return;
         }
 
@@ -141,6 +149,7 @@
         ValidationMessage = "Invalid URL format. Please use http:// or https://";
         IsValidated = true;
         IsValid = false;
+        StateHasChanged();
 
     }
 
@@ -155,6 +164,9 @@
 
         ValidationMessage = string.Empty;
 
+        // Ensure UI shows validating state before making HTTP request
+        StateHasChanged();
+
         // Create HTTP client
         var client = HttpClientFactory.CreateClient();
 
@@ -166,6 +178,9 @@
         // Reset validating state
         IsValidating = false;
 
+        // Ensure UI updates after request completes
+        StateHasChanged();
+
     }
 
     /// <summary>
@@ -175,22 +190,38 @@
     private async Task AttemptHttpRequest(HttpClient client)
     {
 
-        // Send GET request to URL
-        var response = await client.GetAsync(UrlValue);
-
-        // Check if response is OK
-        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        try
         {
-            ValidationMessage = $"✓ URL is valid and accessible (Status: {(int)response.StatusCode})";
-            IsValid = true;
-            IsValidated = true;
-            return;
-        }
+            // Send GET request to URL
+            var response = await client.GetAsync(UrlValue);
 
-        // Response is not OK
-        ValidationMessage = $"✗ URL returned status code {(int)response.StatusCode}. Expected 200 OK.";
-        IsValid = false;
-        IsValidated = true;
+            // Check if response is OK
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                ValidationMessage = $"✓ URL is valid and accessible (Status: {(int)response.StatusCode})";
+                IsValid = true;
+                IsValidated = true;
+                Console.WriteLine($"=== AttemptHttpRequest: Success {(int)response.StatusCode} ===");
+                StateHasChanged();
+                return;
+            }
+
+            // Response is not OK
+            ValidationMessage = $"✗ URL returned status code {(int)response.StatusCode}. Expected 200 OK.";
+            IsValid = false;
+            IsValidated = true;
+            Console.WriteLine($"=== AttemptHttpRequest: Non-OK {(int)response.StatusCode} ===");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions (e.g., DNS failure, timeout)
+            ValidationMessage = $"✗ Error checking URL: {ex.Message}";
+            IsValid = false;
+            IsValidated = true;
+            Console.WriteLine($"=== AttemptHttpRequest: Exception {ex.Message} ===");
+            StateHasChanged();
+        }
 
     }
 
