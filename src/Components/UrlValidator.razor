@@ -1,0 +1,239 @@
+﻿@using System.Net.Http
+@using ContosoCrafts.WebSite.Models
+@using ContosoCrafts.WebSite.Services
+@using Microsoft.AspNetCore.Components.Web
+@inject IHttpClientFactory HttpClientFactory
+
+<div class="mb-3">
+    <label class="col-form-label">Product Url:</label>
+    <div class="d-flex align-content-center">
+        <input type="text"
+               class="@GetInputCssClass()"
+               placeholder="Enter URL of Product Website"
+               @bind="UrlValue"
+               @bind:event="oninput"
+               @onchange="OnUrlChanged" />
+
+        <input type="hidden" name="Product.Url" value="@UrlValue" />
+        <input type="hidden" name="IsUrlValidated" value="@IsValid" />
+
+        <button class="btn btn-secondary ml-2"
+                type="button"
+                @onclick="ValidateUrlAsync"
+                
+        >
+            @if (IsValidating)
+            {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                <text>Validating...</text>
+            }
+
+            @if (IsValidating == false)
+            {
+                <text>Validate</text>
+            }
+        </button>
+    </div>
+
+    @if (string.IsNullOrEmpty(ValidationMessage) == false)
+    {
+        <div class="mt-2 ml-2 alert @GetAlertCssClass()" role="alert">
+            @ValidationMessage
+        </div>
+    }
+</div>
+
+@code {
+
+    // Initial URL parameter passed from parent component
+    [Parameter]
+    public string InitialUrl { get; set; } = string.Empty;
+
+    // Current URL value in the input field
+    private string UrlValue = string.Empty;
+
+    // Indicates if validation is in progress
+    private bool IsValidating = false;
+
+    // Indicates if URL has been validated
+    private bool IsValidated;
+
+    // Indicates if URL is valid
+    private bool IsValid;
+
+    // Validation message to display to user
+    private string ValidationMessage = string.Empty;
+
+    /// <summary>
+    /// Initializes the component with the initial URL parameter
+    /// </summary>
+    protected override void OnInitialized()
+    {
+
+        // Set initial URL value from parameter or empty string
+        UrlValue = InitialUrl;
+
+        if (InitialUrl == null)
+        {
+            UrlValue = string.Empty;
+        }
+
+    }
+
+    /// <summary>
+    /// Handles URL change event and resets validation state
+    /// </summary>
+    private void OnUrlChanged()
+    {
+
+        // Reset validation state
+        IsValidated = false;
+
+        IsValid = false;
+
+        ValidationMessage = string.Empty;
+
+    }
+
+    /// <summary>
+    /// Validates the URL by checking format and attempting HTTP request
+    /// </summary>
+    private async Task ValidateUrlAsync()
+    {
+        Console.WriteLine("=== ValidateUrlAsync STARTED ===");
+
+        // Fast fail: Check if URL is empty
+        if (string.IsNullOrWhiteSpace(UrlValue))
+        {
+            ValidationMessage = "Please enter a URL first.";
+            IsValidated = true;
+            IsValid = false;
+            return;
+        }
+
+        // Try to parse URL
+        var uriParseSuccessful = Uri.TryCreate(UrlValue, UriKind.Absolute, out Uri uriResult);
+
+        // Fast fail: Check if URI parsing failed
+        if (uriParseSuccessful == false)
+        {
+            ValidationMessage = "Invalid URL format. Please use http:// or https://";
+            IsValidated = true;
+            IsValid = false;
+            return;
+        }
+
+        // Fast success: Check if scheme is HTTP
+        if (uriResult.Scheme == Uri.UriSchemeHttp)
+        {
+            await PerformHttpValidation();
+            return;
+        }
+
+        // Fast success: Check if scheme is HTTPS
+        if (uriResult.Scheme == Uri.UriSchemeHttps)
+        {
+            await PerformHttpValidation();
+            return;
+        }
+
+        // Scheme is neither HTTP nor HTTPS
+        ValidationMessage = "Invalid URL format. Please use http:// or https://";
+        IsValidated = true;
+        IsValid = false;
+
+    }
+
+    /// <summary>
+    /// Performs HTTP request to validate URL accessibility
+    /// </summary>
+    private async Task PerformHttpValidation()
+    {
+
+        // Set validating state
+        IsValidating = true;
+
+        ValidationMessage = string.Empty;
+
+        // Create HTTP client
+        var client = HttpClientFactory.CreateClient();
+
+        client.Timeout = TimeSpan.FromSeconds(10);
+
+        // Attempt HTTP request
+        await AttemptHttpRequest(client);
+
+        // Reset validating state
+        IsValidating = false;
+
+    }
+
+    /// <summary>
+    /// Attempts HTTP request and handles various response scenarios
+    /// </summary>
+    /// <param name="client">HTTP client to use for request</param>
+    private async Task AttemptHttpRequest(HttpClient client)
+    {
+
+        // Send GET request to URL
+        var response = await client.GetAsync(UrlValue);
+
+        // Check if response is OK
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            ValidationMessage = $"✓ URL is valid and accessible (Status: {(int)response.StatusCode})";
+            IsValid = true;
+            IsValidated = true;
+            return;
+        }
+
+        // Response is not OK
+        ValidationMessage = $"✗ URL returned status code {(int)response.StatusCode}. Expected 200 OK.";
+        IsValid = false;
+        IsValidated = true;
+
+    }
+
+    /// <summary>
+    /// Gets the CSS class for the input field based on validation state
+    /// </summary>
+    /// <returns>CSS class string</returns>
+    private string GetInputCssClass()
+    {
+
+        // Check if not validated
+        if (IsValidated == false)
+        {
+            return "form-control";
+        }
+
+        // Check if valid
+        if (IsValid)
+        {
+            return "form-control is-valid";
+        }
+
+        // Invalid
+        return "form-control is-invalid";
+
+    }
+
+    /// <summary>
+    /// Gets the CSS class for the alert based on validation result
+    /// </summary>
+    /// <returns>CSS class string</returns>
+    private string GetAlertCssClass()
+    {
+
+        // Check if valid
+        if (IsValid)
+        {
+            return "alert-success";
+        }
+
+        // Invalid
+        return "alert-danger";
+
+    }
+
+}
