@@ -47,7 +47,20 @@
     public EventCallback<string> ValueChanged { get; set; }
 
     // Internal value used for binding
-    public string InternalValue { get; set; } = string.Empty;
+    private string _internalValue = string.Empty;
+    public string InternalValue
+    {
+        get => _internalValue;
+        set
+        {
+            // Ensure non-null
+            _internalValue = value ?? string.Empty;
+
+            // Notify consumers about change
+            // Fire-and-forget is acceptable for EventCallback
+            _ = ValueChanged.InvokeAsync(_internalValue);
+        }
+    }
 
     /// <summary>
     /// Initializes the component with the initial value
