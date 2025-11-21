@@ -1,3 +1,4 @@
+using ContosoCrafts.WebSite.Enums;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Pages.Product;
 using Microsoft.AspNetCore.Http;
