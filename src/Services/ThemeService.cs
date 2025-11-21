@@ -1,4 +1,4 @@
-﻿using ContosoCrafts.WebSite.Models;
+﻿using ContosoCrafts.WebSite.Enums;
 using System;
 
 namespace ContosoCrafts.WebSite.Services
