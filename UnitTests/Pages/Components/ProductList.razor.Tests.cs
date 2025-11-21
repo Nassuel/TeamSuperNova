@@ -1,5 +1,6 @@
 ﻿using Bunit;
 using ContosoCrafts.WebSite.Components;
+using ContosoCrafts.WebSite.Enums;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Services;
 using Microsoft.Extensions.DependencyInjection;
