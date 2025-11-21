@@ -83,10 +83,12 @@ body {
 
 .theme-nav-link {
     color: var(--text-primary) !important;
+    letter-spacing: .2rem !important;
 }
 
     .theme-nav-link:hover {
         color: var(--link-hover) !important;
+        letter-spacing: .1rem !important;
     }
 
 /* Theme-aware footer styles */
@@ -101,10 +103,12 @@ body {
 
 .theme-footer-link {
     color: var(--text-primary) !important;
+    letter-spacing: .1rem;
 }
 
     .theme-footer-link:hover {
         color: var(--link-hover) !important;
+        letter-spacing: .2rem;
     }
 
 /* Navbar toggler icon for dark mode */
