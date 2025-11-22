@@ -10,19 +10,19 @@
     <a asp-page="Create" class="btn btn-success mb-3">Create New Product</a>
     @foreach (var product in Model.Products)
     {
-        <div class="card bg-primary border-light shadow-soft mb-3 page_enter">
+        <div class="card theme-card mb-3 page_enter">
             <div class="row g-0">
                 <div class="d-flex flex-column col-md-2 ml-2 mt-2">
                     <img src="@product.Image" class="card-img-top rounded mb-2" alt="@product.Image" />
-                    <a asp-page="/Product/Update" asp-route-id="@product.Id" class="btn btn-primary float-right animate-up-2 btn-block mb-2">Update</a>
-                    <a asp-page="/Product/Delete" asp-route-id="@product.Id" class="btn btn-primary text-danger float-right animate-up-2 btn-block mb-2">Delete</a>
+                    <a asp-page="/Product/Update" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-2">Update</a>
+                    <a asp-page="/Product/Delete" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary text-danger float-right animate-up-2 btn-block mb-2">Delete</a>
                 </div>
                 <div class="col-md-9">
-                    <div class="card-body">
-                        <h4 class="card-title">@product.Brand</h4>
-                        <h6 class="card-subtitle text-muted mb-2">@(product.ProductType.DisplayName())</h6>
-                        <p class="card-text">@product.ProductDescription</p>
-                        <a asp-page="/Product/Read" asp-route-id="@product.Id" class="btn btn-primary float-right animate-up-2 btn-block mb-4">Read</a>
+                    <div class="card-body theme-card-body">
+                        <h4 class="card-title theme-card-title">@product.Brand</h4>
+                        <h6 class="card-subtitle theme-card-subtitle text-muted mb-2">@(product.ProductType.DisplayName())</h6>
+                        <p class="card-text theme-card-text">@product.ProductDescription</p>
+                        <a asp-page="/Product/Read" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-4">Read</a>
                     </div>
                 </div>
             </div>
