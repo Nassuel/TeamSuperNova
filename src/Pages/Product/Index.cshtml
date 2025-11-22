@@ -20,7 +20,7 @@
                 <div class="col-md-9">
                     <div class="card-body theme-card-body">
                         <h4 class="card-title theme-card-title">@product.Brand</h4>
-                        <h6 class="card-subtitle theme-card-subtitle text-muted mb-2">@(product.ProductType.DisplayName())</h6>
+                        <h6 class="card-subtitle theme-card-subtitle text-muted theme-text-muted mb-2">@(product.ProductType.DisplayName())</h6>
                         <p class="card-text theme-card-text">@product.ProductDescription</p>
                         <a asp-page="/Product/Read" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-4">Read</a>
                     </div>
