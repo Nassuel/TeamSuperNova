@@ -15,15 +15,15 @@
     <input type="hidden" asp-for="Product.Id" />
     <div>
         <label class="col-form-label theme-label">Product Brand:</label>
-        <input asp-for="Product.Brand" class="form-control mb-2" placeholder="Enter the brand of new product" />
+        <input asp-for="Product.Brand" class="form-control theme-input mb-2" placeholder="Enter the brand of new product" />
     </div>
     <div>
         <label class="col-form-label theme-label">Product Name:</label>
-        <input asp-for="Product.ProductName" class="form-control mb-2" placeholder="Enter the new product name" />
+        <input asp-for="Product.ProductName" class="form-control theme-input mb-2" placeholder="Enter the new product name" />
     </div>
     <div>
         <label class="col-form-label theme-label">Upload Product Image:</label>
-        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+        <input asp-for="ImageFile" type="file" class="form-control theme-input" accept="image/*" />
     </div>
     <div>
         <label class="col-form-label theme-label">Product Description:</label>
@@ -32,11 +32,11 @@
     </div>
     <div>
         <label class="col-form-label theme-label">Product Url:</label>
-        <input asp-for="Product.Url" class="form-control mb-2" placeholder="Enter URL of Product Website" />
+        <input asp-for="Product.Url" class="form-control theme-input mb-2" placeholder="Enter URL of Product Website" />
     </div>
     <div>
         <label class="col-form-label theme-label">Product Type:</label>
-        <select asp-for="Product.ProductType" class="form-control mb-2">
+        <select asp-for="Product.ProductType" class="form-control theme-input mb-2">
             @foreach (var item in Enum.GetValues(typeof(ProductTypeEnum)))
             {
                 <option value="@((int)item)">@(((ProductTypeEnum)item).DisplayName())</option>
@@ -47,3 +47,5 @@
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-page="/Product/Read" asp-route-id="@Model.Product.Id" class="btn btn-secondary">Cancel</a>
 </form>
+
+<script src="_framework/blazor.server.js"></script>
