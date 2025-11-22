@@ -122,12 +122,12 @@ body {
 
 .theme-footer-link {
     color: var(--text-primary) !important;
-    letter-spacing: .1rem;
+    letter-spacing: .2rem;
 }
 
     .theme-footer-link:hover {
         color: var(--link-hover) !important;
-        letter-spacing: .2rem;
+        letter-spacing: .1rem;
     }
 
 /* Navbar toggler icon for dark mode */
