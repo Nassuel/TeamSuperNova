@@ -7,32 +7,32 @@
     ViewData["Title"] = "Delete page";
 }
 
-<h1>Delete Product</h1>
+<h1 class="theme-heading">Delete Product</h1>
 
  <form method="post">
     <input type="hidden" asp-for="Product.Id" />
-    <div>
+    <div class="mb-2">
         <label class="col-form-label theme-label">Product Brand:</label>
-        <input asp-for="Product.Brand" readonly disabled />
+        <input asp-for="Product.Brand" class="form-control theme-input" readonly disabled />
     </div>
-    <div>
+    <div class="mb-2">
         <label class="col-form-label theme-label">Product Name:</label>
-        <input asp-for="Product.ProductName" readonly disabled />
+        <input asp-for="Product.ProductName" class="form-control theme-input" readonly disabled />
     </div>
-    <div>
+    <div class="mb-2">
         <label class="col-form-label theme-label">Description:</label>
-        <input asp-for="Product.ProductDescription" readonly disabled />
+        <input asp-for="Product.ProductDescription" class="form-control theme-input" readonly disabled />
     </div>
-     <div>
+     <div class="mb-2">
         <label class="col-form-label theme-label">Product Url:</label>
-        <input asp-for="Product.Url" class="form-control mb-2" readonly disabled />
+        <input asp-for="Product.Url" class="form-control theme-input" readonly disabled />
     </div>
-     <div>
+    <div class="mb-2">
         <label class="col-form-label theme-label">Product Type:</label>
-        <input asp-for="Product.ProductType" readonly disabled />
+        <input asp-for="Product.ProductType" class="form-control theme-input" readonly disabled />
     </div>
 
     <p>Are you sure you want to delete this product?</p>
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-page="Read" asp-route-id="Product.Id" class="btn btn-secondary">Cancel</a>
+    <a asp-page="Read" asp-route-id="Product.Id" class="btn btn-secondary theme-btn-secondary">Cancel</a>
 </form>
