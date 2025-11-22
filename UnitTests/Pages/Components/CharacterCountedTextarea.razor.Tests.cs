@@ -33,7 +33,7 @@ namespace UnitTests.Pages.Components
         public void TearDown()
         {
             // Dispose test context
-            TestContext?.Dispose();
+            //TestContext?.Dispose();
         }
 
         #region Render Tests
