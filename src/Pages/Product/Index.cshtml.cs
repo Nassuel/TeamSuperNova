@@ -21,12 +21,10 @@ namespace ContosoCrafts.WebSite.Pages.Product
         public IndexModel(JsonFileProductService productService, IWebHostEnvironment env)
         {
             ProductService = productService;
-            WebHostEnvironment = env;
         }
 
         // Data Service
         public JsonFileProductService ProductService { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
 
         // Collection of the Data
         public IEnumerable<ProductModel> Products { get; private set; }
