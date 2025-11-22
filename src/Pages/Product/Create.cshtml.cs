@@ -57,12 +57,6 @@ namespace ContosoCrafts.WebSite.Pages.Product
                 ProductType = 0
             };
 
-            // Fast fail: Check if product initialization failed
-            if (Product == null)
-            {
-                return RedirectToPage("/Product/Index");
-            }
-
             return Page();
 
         }
