@@ -41,16 +41,6 @@ namespace UnitTests.Pages.Components
         }
 
         /// <summary>
-        /// Cleans up test context after each test
-        /// </summary>
-        [TearDown]
-        public void TearDown()
-        {
-            // Dispose test context
-            TestContext?.Dispose();
-        }
-
-        /// <summary>
         /// Tests that component renders successfully with valid setup
         /// </summary>
         [Test]
