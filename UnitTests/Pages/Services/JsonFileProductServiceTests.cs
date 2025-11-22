@@ -50,12 +50,6 @@ namespace UnitTests.Services
             var assetsPath = Path.Combine(testPath, "assets");
             TestJsonFilePath = Path.Combine(dataPath, "products.json");
 
-            // Create directories if they don't exist
-            if (Directory.Exists(dataPath) == false)
-            {
-                Directory.CreateDirectory(dataPath);
-            }
-
             if (Directory.Exists(assetsPath) == false)
             {
                 Directory.CreateDirectory(assetsPath);
@@ -810,12 +804,6 @@ namespace UnitTests.Services
             // Arrange
             var dataPath = Path.Combine(MockWebHostEnvironment.Object.WebRootPath, "data");
 
-            // Ensure directory exists
-            if (Directory.Exists(dataPath) == false)
-            {
-                Directory.CreateDirectory(dataPath);
-            }
-
             var newProduct = new ProductModel
             {
                 Id = "test-mouse-pad-1",
@@ -909,12 +897,6 @@ namespace UnitTests.Services
         {
             // Arrange
             var assetsPath = Path.Combine(MockWebHostEnvironment.Object.WebRootPath, "assets");
-
-            // Ensure directory exists
-            if (Directory.Exists(assetsPath) == false)
-            {
-                Directory.CreateDirectory(assetsPath);
-            }
 
             var mockFile = new Mock<IFormFile>();
             mockFile.Setup(f => f.FileName).Returns("existing-dir-test.png");
@@ -1060,12 +1042,6 @@ namespace UnitTests.Services
             var dataPath = Path.Combine(testPath, "data");
             var assetsPath = Path.Combine(testPath, "assets");
 
-            // Clean up if exists from previous run
-            if (Directory.Exists(testPath))
-            {
-                Directory.Delete(testPath, true);
-            }
-
             // Verify directories don't exist
             Assert.That(Directory.Exists(dataPath), Is.False);
             Assert.That(Directory.Exists(assetsPath), Is.False);
@@ -1151,10 +1127,6 @@ namespace UnitTests.Services
             if (Directory.Exists(assetsPath))
             {
                 var files = Directory.GetFiles(assetsPath);
-                foreach (var file in files)
-                {
-                    File.Delete(file);
-                }
                 Directory.Delete(assetsPath);
             }
 
