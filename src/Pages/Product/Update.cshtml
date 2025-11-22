@@ -10,19 +10,20 @@
 }
 
 <h1>Update</h1>
+
 <form method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Product.Id" />
     <div>
         <label class="col-form-label theme-label">Product Brand:</label>
-        <input asp-for="Product.Brand" class="form-control mb-2" placeholder="Update the brand of product" />
+        <input asp-for="Product.Brand" class="form-control theme-input mb-2" placeholder="Update the brand of product" />
     </div>
     <div>
         <label class="col-form-label theme-label">Product Name:</label>
-        <input asp-for="Product.ProductName" class="form-control mb-2" placeholder="Update the product name" />
+        <input asp-for="Product.ProductName" class="form-control theme-input mb-2" placeholder="Update the product name" />
     </div>
     <div>
         <label class="col-form-label theme-label">Upload Product Image:</label>
-        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+        <input asp-for="ImageFile" type="file" class="form-control theme-input" accept="image/*" />
     </div>
     <div>
         <label class="col-form-label theme-label">Product Description:</label>
@@ -31,11 +32,11 @@
     </div>
     <div>
         <label class="col-form-label theme-label">Product Url:</label>
-        <input asp-for="Product.Url" class="form-control mb-2" placeholder="Update URL of product website" />
+        <input asp-for="Product.Url" class="form-control theme-input mb-2" placeholder="Update URL of product website" />
     </div>
     <div>
         <label class="col-form-label theme-label">Product Type:</label>
-        <select asp-for="Product.ProductType" class="form-control mb-2">
+        <select asp-for="Product.ProductType" class="form-control theme-input mb-2">
             @foreach (var item in Enum.GetValues(typeof(ProductTypeEnum)))
             {
                 <option value="@((int)item)">@(((ProductTypeEnum)item).DisplayName())</option>
