@@ -40,6 +40,24 @@ namespace UnitTests.Pages.Components
             TestContext.Services.AddSingleton<ThemeService>();
         }
 
+        #region HelperMethods
+
+        /// <summary>
+        /// Helper to setup JSRuntime mock to return null theme
+        /// </summary>
+        private void SetupMockJSRuntimeWithNullTheme()
+        {
+            MockJSRuntime
+                .Setup(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()))
+                .ReturnsAsync((string)null);
+
+            MockJSRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>("themeManager.setTheme", It.IsAny<object[]>()))
+                .Returns(new ValueTask<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(default(Microsoft.JSInterop.Infrastructure.IJSVoidResult)));
+        }
+
+        #endregion HelperMethods
+
         /// <summary>
         /// Tests that component renders successfully with valid setup
         /// </summary>
@@ -330,5 +348,332 @@ namespace UnitTests.Pages.Components
                 .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>("themeManager.setTheme", It.IsAny<object[]>()))
                 .Returns(new ValueTask<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(default(Microsoft.JSInterop.Infrastructure.IJSVoidResult)));
         }
+
+        #region HandleToggleClick
+
+        /// <summary>
+        /// Test HandleToggleClick when IsToggling is true should return early
+        /// </summary>
+        [Test]
+        public async Task HandleToggleClick_Invalid_IsToggling_True_Should_Return_Early()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Set IsToggling to true directly
+            component.Instance.IsToggling = true;
+
+            // Act
+            await component.Instance.HandleToggleClick();
+
+            // Assert - setTheme should NOT be called because IsToggling was true
+            MockJSRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "themeManager.setTheme",
+                    It.IsAny<object[]>()),
+                Times.Never);
+        }
+
+        /// <summary>
+        /// Test HandleToggleClick when IsToggling is false should toggle theme
+        /// </summary>
+        [Test]
+        public async Task HandleToggleClick_Valid_IsToggling_False_Should_Toggle_Theme()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            await component.InvokeAsync(() => component.Instance.HandleToggleClick());
+
+            // Assert
+            MockJSRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "themeManager.setTheme",
+                    It.Is<object[]>(args => args.Length == 1 && args[0].ToString() == "dark")),
+                Times.Once);
+        }
+
+        #endregion HandleToggleClick
+
+        #region GetThemeName
+
+        /// <summary>
+        /// Test GetThemeName returns dark when theme is dark
+        /// </summary>
+        [Test]
+        public void GetThemeName_Valid_DarkTheme_Should_Return_Dark()
+        {
+            // Arrange
+            SetupMockJSRuntime("dark");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+
+            // Act
+            var result = component.Instance.GetThemeName();
+
+            // Assert
+            Assert.That(result, Is.EqualTo("dark"));
+        }
+
+        /// <summary>
+        /// Test GetThemeName returns light when theme is light
+        /// </summary>
+        [Test]
+        public void GetThemeName_Valid_LightTheme_Should_Return_Light()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            var result = component.Instance.GetThemeName();
+
+            // Assert
+            Assert.That(result, Is.EqualTo("light"));
+        }
+
+        #endregion GetThemeName
+
+        #region UpdateBrowserTheme
+
+        /// <summary>
+        /// Test UpdateBrowserTheme with valid theme calls JavaScript
+        /// </summary>
+        [Test]
+        public async Task UpdateBrowserTheme_Valid_ThemeName_Should_Call_JavaScript()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            await component.Instance.UpdateBrowserTheme("dark");
+
+            // Assert
+            MockJSRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "themeManager.setTheme",
+                    It.Is<object[]>(args => args.Length == 1 && args[0].ToString() == "dark")),
+                Times.Once);
+        }
+
+        /// <summary>
+        /// Test UpdateBrowserTheme with null theme does not call JavaScript
+        /// </summary>
+        [Test]
+        public async Task UpdateBrowserTheme_Invalid_Null_Should_Not_Call_JavaScript()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            await component.Instance.UpdateBrowserTheme(null);
+
+            // Assert
+            MockJSRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "themeManager.setTheme",
+                    It.IsAny<object[]>()),
+                Times.Never);
+        }
+
+        /// <summary>
+        /// Test UpdateBrowserTheme with empty string does not call JavaScript
+        /// </summary>
+        [Test]
+        public async Task UpdateBrowserTheme_Invalid_Empty_Should_Not_Call_JavaScript()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            await component.Instance.UpdateBrowserTheme(string.Empty);
+
+            // Assert
+            MockJSRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "themeManager.setTheme",
+                    It.IsAny<object[]>()),
+                Times.Never);
+        }
+
+        /// <summary>
+        /// Test UpdateBrowserTheme with whitespace does not call JavaScript
+        /// </summary>
+        [Test]
+        public async Task UpdateBrowserTheme_Invalid_Whitespace_Should_Not_Call_JavaScript()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            await component.Instance.UpdateBrowserTheme("   ");
+
+            // Assert
+            MockJSRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "themeManager.setTheme",
+                    It.IsAny<object[]>()),
+                Times.Never);
+        }
+
+        #endregion UpdateBrowserTheme
+
+        #region LoadSavedTheme
+
+        /// <summary>
+        /// Test LoadSavedTheme returns saved theme from JavaScript
+        /// </summary>
+        [Test]
+        public async Task LoadSavedTheme_Valid_JavaScript_Returns_Dark_Should_Return_Dark()
+        {
+            // Arrange
+            SetupMockJSRuntime("dark");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+
+            // Act
+            var result = await component.Instance.LoadSavedTheme();
+
+            // Assert
+            Assert.That(result, Is.EqualTo("dark"));
+        }
+
+        /// <summary>
+        /// Test LoadSavedTheme returns light when JavaScript returns null
+        /// </summary>
+        [Test]
+        public async Task LoadSavedTheme_Invalid_JavaScript_Returns_Null_Should_Return_Light()
+        {
+            // Arrange
+            SetupMockJSRuntimeWithNullTheme();
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("button") != null);
+
+            // Act
+            var result = await component.Instance.LoadSavedTheme();
+
+            // Assert
+            Assert.That(result, Is.EqualTo("light"));
+        }
+
+        #endregion LoadSavedTheme
+
+        #region UpdateServiceTheme
+
+        /// <summary>
+        /// Test UpdateServiceTheme with dark sets dark theme
+        /// </summary>
+        [Test]
+        public void UpdateServiceTheme_Valid_Dark_Should_Set_Dark_Theme()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            component.Instance.UpdateServiceTheme("dark");
+            component.Render();
+
+            // Assert
+            var iconElement = component.Find("i.fa-sun-o");
+            Assert.That(iconElement, Is.Not.Null);
+        }
+
+        /// <summary>
+        /// Test UpdateServiceTheme with light sets light theme
+        /// </summary>
+        [Test]
+        public void UpdateServiceTheme_Valid_Light_Should_Set_Light_Theme()
+        {
+            // Arrange
+            SetupMockJSRuntime("dark");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+
+            // Act
+            component.Instance.UpdateServiceTheme("light");
+            component.Render();
+
+            // Assert
+            var iconElement = component.Find("i.fa-moon-o");
+            Assert.That(iconElement, Is.Not.Null);
+        }
+
+        /// <summary>
+        /// Test UpdateServiceTheme with null does not change theme
+        /// </summary>
+        [Test]
+        public void UpdateServiceTheme_Invalid_Null_Should_Not_Change_Theme()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            component.Instance.UpdateServiceTheme(null);
+            component.Render();
+
+            // Assert - Should still be light theme (moon icon)
+            var iconElement = component.Find("i.fa-moon-o");
+            Assert.That(iconElement, Is.Not.Null);
+        }
+
+        /// <summary>
+        /// Test UpdateServiceTheme with empty string does not change theme
+        /// </summary>
+        [Test]
+        public void UpdateServiceTheme_Invalid_Empty_Should_Not_Change_Theme()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            component.Instance.UpdateServiceTheme(string.Empty);
+            component.Render();
+
+            // Assert
+            var iconElement = component.Find("i.fa-moon-o");
+            Assert.That(iconElement, Is.Not.Null);
+        }
+
+        /// <summary>
+        /// Test UpdateServiceTheme with whitespace does not change theme
+        /// </summary>
+        [Test]
+        public void UpdateServiceTheme_Invalid_Whitespace_Should_Not_Change_Theme()
+        {
+            // Arrange
+            SetupMockJSRuntime("light");
+            var component = TestContext.Render<ThemeToggle>();
+            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+
+            // Act
+            component.Instance.UpdateServiceTheme("   ");
+            component.Render();
+
+            // Assert
+            var iconElement = component.Find("i.fa-moon-o");
+            Assert.That(iconElement, Is.Not.Null);
+        }
+
+        #endregion UpdateServiceTheme
     }
 }
