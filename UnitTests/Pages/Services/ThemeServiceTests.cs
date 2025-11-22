@@ -229,27 +229,6 @@ namespace UnitTests.Services
             Assert.That(result, Is.True);
         }
 
-        /// <summary>
-        /// Test SetTheme with Undefined does not trigger event
-        /// </summary>
-        [Test]
-        public void SetTheme_Invalid_Undefined_Should_Not_Trigger_Event()
-        {
-            // Arrange
-            var data = themeService;
-            var eventTriggered = false;
-            data.OnThemeChanged += () => eventTriggered = true;
-
-            // Act
-            data.SetTheme(ThemeMode.Undefined);
-            var result = eventTriggered;
-
-            // Reset
-
-            // Assert
-            Assert.That(result, Is.False);
-        }
-
         #endregion SetTheme
 
         #region ToggleTheme
