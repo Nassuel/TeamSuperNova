@@ -102,15 +102,6 @@ namespace UnitTests.Pages.Components
             _testContext.Services.AddSingleton<JsonFileProductService>(MockProductService.Object);
         }
 
-        /// <summary>
-        /// Clean up after each test
-        /// </summary>
-        [TearDown]
-        public void TestCleanup()
-        {
-            _testContext?.Dispose();
-        }
-
         #endregion TestSetup
 
         #region ComponentRendering
@@ -327,12 +318,6 @@ namespace UnitTests.Pages.Components
             // Try to find rating filter - adjust selector based on your actual component
             var ratingSelect = component.FindAll("select").Skip(2).FirstOrDefault(); // Third select is usually rating
 
-            if (ratingSelect == null)
-            {
-                Assert.Inconclusive("Rating filter element not found in component");
-                return;
-            }
-
             // Act
             ratingSelect.Change("4");
 
@@ -354,12 +339,6 @@ namespace UnitTests.Pages.Components
             // Try to find rating filter - adjust selector based on your actual component
             var ratingSelect = component.FindAll("select").Skip(2).FirstOrDefault(); // Third select is usually rating
 
-            if (ratingSelect == null)
-            {
-                Assert.Inconclusive("Rating filter element not found in component");
-                return;
-            }
-
             // Act
             ratingSelect.Change("1");
 
@@ -380,12 +359,6 @@ namespace UnitTests.Pages.Components
             var component = _testContext.Render<ProductList>();
             // Try to find rating filter - adjust selector based on your actual component
             var ratingSelect = component.FindAll("select").Skip(2).FirstOrDefault(); // Third select is usually rating
-
-            if (ratingSelect == null)
-            {
-                Assert.Inconclusive("Rating filter element not found in component");
-                return;
-            }
 
             // Act
             ratingSelect.Change("0");
@@ -518,13 +491,6 @@ namespace UnitTests.Pages.Components
 
             // Try to find clear button - use FirstOrDefault to avoid exception
             var clearButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Clear"));
-
-            if (clearButton == null)
-            {
-                // If no clear button exists, skip this test
-                Assert.Inconclusive("Clear Filters button not found in component");
-                return;
-            }
 
             // Act
             clearButton.Click();
