@@ -19,10 +19,10 @@
             <a asp-page="/Product/Delete" asp-route-id="@Model.Product.Id" class="btn btn-primary text-danger float-right animate-up-2 btn-block mb-4">Delete</a>
         </div>
         <div class="col-md-9">
-            <div class="card-body">
-                <h4 class="card-title">@Model.Product.Brand</h4>
-                <h6 class="card-subtitle text-muted mb-2">@(Model.Product.ProductType.DisplayName())</h6>
-                <p class="card-text">@Model.Product.ProductDescription</p>
+            <div class="card-body theme-card-body">
+                <h4 class="card-title theme-card-title">@Model.Product.Brand</h4>
+                <h6 class="card-subtitle theme-card-subtitle text-muted mb-2">@(Model.Product.ProductType.DisplayName())</h6>
+                <p class="card-text theme-card-text">@Model.Product.ProductDescription</p>
             </div>
         </div>
     </div>
