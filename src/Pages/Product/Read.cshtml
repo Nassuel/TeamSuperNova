@@ -11,12 +11,12 @@
 
 <h1 class="">Read</h1>
 
-<div class="card bg-primary border-light shadow-soft mb-3 page_enter">
+<div class="card theme-card mb-3 page_enter">
     <div class="row g-0">
         <div class="d-flex flex-column col-md-2 ml-2 mt-2">
             <img src="@Model.Product.Image" class="card-img-top rounded mb-4" alt="@Model.Product.Image" />
-            <a asp-page="/Product/Update" asp-route-id="@Model.Product.Id" class="btn btn-primary float-right animate-up-2 btn-block mb-4">Update</a>
-            <a asp-page="/Product/Delete" asp-route-id="@Model.Product.Id" class="btn btn-primary text-danger float-right animate-up-2 btn-block mb-4">Delete</a>
+            <a asp-page="/Product/Update" asp-route-id="@Model.Product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-4">Update</a>
+            <a asp-page="/Product/Delete" asp-route-id="@Model.Product.Id" class="btn btn-primary theme-btn-primary text-danger float-right animate-up-2 btn-block mb-4">Delete</a>
         </div>
         <div class="col-md-9">
             <div class="card-body theme-card-body">
