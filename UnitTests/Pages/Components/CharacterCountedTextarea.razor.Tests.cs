@@ -26,16 +26,6 @@ namespace UnitTests.Pages.Components
             TestContext = new BunitContext();
         }
 
-        /// <summary>
-        /// Cleans up test context after each test
-        /// </summary>
-        [TearDown]
-        public void TearDown()
-        {
-            // Dispose test context
-            //TestContext?.Dispose();
-        }
-
         #region Render Tests
 
         /// <summary>
