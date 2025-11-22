@@ -3,10 +3,11 @@
 @using Microsoft.AspNetCore.Components.Web
 
 <div>
-    <label class="col-form-label">@Label</label>
-    <textarea @bind="InternalValue"
-              @bind:event="oninput"
-              class="form-control mb-2"
+    <label class="col-form-label theme-label">@Label</label>
+
+    <textarea value="@InternalValue"
+              @oninput="HandleInput"
+              class="form-control theme-input mb-2"
               placeholder="@Placeholder"
               maxlength="@MaxLength"
               rows="@Rows"
