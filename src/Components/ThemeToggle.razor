@@ -24,12 +24,12 @@
 
 @code {
     // Flag to prevent multiple clicks
-    private bool IsToggling = false;
+    public bool IsToggling = false;
 
     /// <summary>
     /// Handles the theme toggle button click event
     /// </summary>
-    private async Task HandleToggleClick()
+    public async Task HandleToggleClick()
     {
 
         // Fast fail: prevent multiple clicks
@@ -62,7 +62,7 @@
     /// Gets the current theme name as string
     /// </summary>
     /// <returns>Theme name</returns>
-    private string GetThemeName()
+    public string GetThemeName()
     {
 
         // Get current theme
@@ -83,7 +83,7 @@
     /// Updates the theme in the browser using JavaScript
     /// </summary>
     /// <param name="themeName">Name of theme to apply</param>
-    private async Task UpdateBrowserTheme(string themeName)
+    public async Task UpdateBrowserTheme(string themeName)
     {
 
         // Defensive programming: validate input
@@ -124,7 +124,7 @@
     /// Loads saved theme from browser storage
     /// </summary>
     /// <returns>Saved theme name</returns>
-    private async Task<string> LoadSavedTheme()
+    public async Task<string> LoadSavedTheme()
     {
 
         // Get theme from JavaScript
@@ -144,7 +144,7 @@
     /// Updates the theme service based on saved theme
     /// </summary>
     /// <param name="themeName">Name of theme to set</param>
-    private void UpdateServiceTheme(string themeName)
+    public void UpdateServiceTheme(string themeName)
     {
 
         // Defensive programming: validate input
