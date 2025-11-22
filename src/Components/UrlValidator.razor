@@ -2,6 +2,7 @@
 @using ContosoCrafts.WebSite.Models
 @using ContosoCrafts.WebSite.Services
 @using Microsoft.AspNetCore.Components.Web
+@using System.Threading
 @inject IHttpClientFactory HttpClientFactory
 
 <div class="mb-3">
@@ -19,9 +20,7 @@
 
         <button class="btn btn-secondary ml-2"
                 type="button"
-                @onclick="ValidateUrlAsync"
-                
-        >
+                @onclick="ValidateUrlAsync">
             @if (IsValidating)
             {
                 <span class="spinner-border spinner-border-sm me-2"></span>
@@ -170,10 +169,11 @@
         // Create HTTP client
         var client = HttpClientFactory.CreateClient();
 
-        client.Timeout = TimeSpan.FromSeconds(10);
+        // Use CancellationTokenSource for timeout instead of setting HttpClient.Timeout
+        using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
         // Attempt HTTP request
-        await AttemptHttpRequest(client);
+        await AttemptHttpRequest(client, cancellationTokenSource.Token);
 
         // Reset validating state
         IsValidating = false;
@@ -187,41 +187,30 @@
     /// Attempts HTTP request and handles various response scenarios
     /// </summary>
     /// <param name="client">HTTP client to use for request</param>
-    private async Task AttemptHttpRequest(HttpClient client)
+    /// <param name="cancellationToken">Cancellation token for timeout</param>
+    private async Task AttemptHttpRequest(HttpClient client, CancellationToken cancellationToken)
     {
 
-        try
-        {
-            // Send GET request to URL
-            var response = await client.GetAsync(UrlValue);
+        // Send GET request to URL
+        var response = await client.GetAsync(UrlValue, cancellationToken);
 
-            // Check if response is OK
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                ValidationMessage = $"✓ URL is valid and accessible (Status: {(int)response.StatusCode})";
-                IsValid = true;
-                IsValidated = true;
-                Console.WriteLine($"=== AttemptHttpRequest: Success {(int)response.StatusCode} ===");
-                StateHasChanged();
-                return;
-            }
-
-            // Response is not OK
-            ValidationMessage = $"✗ URL returned status code {(int)response.StatusCode}. Expected 200 OK.";
-            IsValid = false;
-            IsValidated = true;
-            Console.WriteLine($"=== AttemptHttpRequest: Non-OK {(int)response.StatusCode} ===");
-            StateHasChanged();
-        }
-        catch (Exception ex)
+        // Check if response is OK
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            // Handle exceptions (e.g., DNS failure, timeout)
-            ValidationMessage = $"✗ Error checking URL: {ex.Message}";
-            IsValid = false;
+            ValidationMessage = $"✓ URL is valid and accessible (Status: {(int)response.StatusCode})";
+            IsValid = true;
             IsValidated = true;
-            Console.WriteLine($"=== AttemptHttpRequest: Exception {ex.Message} ===");
+            Console.WriteLine($"=== AttemptHttpRequest: Success {(int)response.StatusCode} ===");
             StateHasChanged();
+            return;
         }
+
+        // Response is not OK
+        ValidationMessage = $"✗ URL returned status code {(int)response.StatusCode}. Expected 200 OK.";
+        IsValid = false;
+        IsValidated = true;
+        Console.WriteLine($"=== AttemptHttpRequest: Non-OK {(int)response.StatusCode} ===");
+        StateHasChanged();
 
     }
 
