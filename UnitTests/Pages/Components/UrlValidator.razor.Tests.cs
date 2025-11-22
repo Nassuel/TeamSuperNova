@@ -1209,6 +1209,439 @@ namespace UnitTests.Pages.Components
         }
 
         #endregion
+
+        #region ValidateUrlAsync Tests
+
+        /// <summary>
+        /// Test ValidateUrlAsync with empty URL shows error message
+        /// </summary>
+        [Test]
+        public void ValidateUrlAsync_Invalid_EmptyUrl_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var buttonElement = component.Find("button");
+
+            // Act - Click validate without entering URL
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("Please enter a URL first"));
+        }
+
+        /// <summary>
+        /// Test ValidateUrlAsync with whitespace URL shows error message
+        /// </summary>
+        [Test]
+        public void ValidateUrlAsync_Invalid_WhitespaceUrl_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("   ");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("Please enter a URL first"));
+        }
+
+        /// <summary>
+        /// Test ValidateUrlAsync with invalid URL format shows error message
+        /// </summary>
+        [Test]
+        public void ValidateUrlAsync_Invalid_InvalidUrlFormat_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("not-a-valid-url");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("Invalid URL format"));
+        }
+
+        /// <summary>
+        /// Test ValidateUrlAsync with FTP scheme shows error message
+        /// </summary>
+        [Test]
+        public void ValidateUrlAsync_Invalid_FtpScheme_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("ftp://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("Invalid URL format"));
+        }
+
+        /// <summary>
+        /// Test ValidateUrlAsync with file scheme shows error message
+        /// </summary>
+        [Test]
+        public void ValidateUrlAsync_Invalid_FileScheme_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("file:///C:/test.txt");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("Invalid URL format"));
+        }
+
+        /// <summary>
+        /// Test ValidateUrlAsync with HTTP scheme (not HTTPS) validates successfully
+        /// </summary>
+        [Test]
+        public void ValidateUrlAsync_Valid_HttpScheme_Should_Return_Success()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("http://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-success").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-success");
+            Assert.That(alertElement.TextContent, Does.Contain("URL is valid and accessible"));
+        }
+
+        /// <summary>
+        /// Test ValidateUrlAsync with HTTPS scheme validates successfully
+        /// </summary>
+        [Test]
+        public void ValidateUrlAsync_Valid_HttpsScheme_Should_Return_Success()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-success").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-success");
+            Assert.That(alertElement.TextContent, Does.Contain("URL is valid and accessible"));
+        }
+
+        #endregion ValidateUrlAsync Tests
+
+        #region AttemptHttpRequest Tests
+
+        /// <summary>
+        /// Test AttemptHttpRequest with 200 OK shows success message
+        /// </summary>
+        [Test]
+        public void AttemptHttpRequest_Valid_StatusCode200_Should_Return_SuccessMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-success").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-success");
+            Assert.That(alertElement.TextContent, Does.Contain("Status: 200"));
+        }
+
+        /// <summary>
+        /// Test AttemptHttpRequest with 404 Not Found shows error message
+        /// </summary>
+        [Test]
+        public void AttemptHttpRequest_Invalid_StatusCode404_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.NotFound);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("404"));
+        }
+
+        /// <summary>
+        /// Test AttemptHttpRequest with 500 Internal Server Error shows error message
+        /// </summary>
+        [Test]
+        public void AttemptHttpRequest_Invalid_StatusCode500_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.InternalServerError);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("500"));
+        }
+
+        /// <summary>
+        /// Test AttemptHttpRequest with 301 Redirect shows error message
+        /// </summary>
+        [Test]
+        public void AttemptHttpRequest_Invalid_StatusCode301_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.MovedPermanently);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("301"));
+        }
+
+        /// <summary>
+        /// Test AttemptHttpRequest with 403 Forbidden shows error message
+        /// </summary>
+        [Test]
+        public void AttemptHttpRequest_Invalid_StatusCode403_Should_Return_ErrorMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.Forbidden);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert-danger").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert
+            var alertElement = component.Find(".alert-danger");
+            Assert.That(alertElement.TextContent, Does.Contain("403"));
+        }
+
+        #endregion AttemptHttpRequest Tests
+
+        #region OnUrlChanged Tests
+
+        /// <summary>
+        /// Test OnUrlChanged clears validation message after URL change
+        /// </summary>
+        [Test]
+        public void OnUrlChanged_Valid_AfterValidation_Should_Clear_ValidationMessage()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // First validate
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation message
+            component.WaitForState(() => component.FindAll(".alert").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Act - Change URL using Change event (triggers OnUrlChanged)
+            inputElement.Change("https://newurl.com");
+
+            // Assert - Alert should be cleared
+            var alertElements = component.FindAll(".alert");
+            Assert.That(alertElements.Count, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// Test OnUrlChanged resets IsValid to false
+        /// </summary>
+        [Test]
+        public void OnUrlChanged_Valid_AfterSuccessfulValidation_Should_Reset_IsValid()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // First validate successfully
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for success
+            component.WaitForState(() => component.FindAll(".is-valid").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Act - Change URL
+            inputElement.Change("https://newurl.com");
+
+            // Assert - is-valid class should be removed
+            var validInputs = component.FindAll("input.is-valid");
+            Assert.That(validInputs.Count, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// Test OnUrlChanged resets IsValidated to false
+        /// </summary>
+        [Test]
+        public void OnUrlChanged_Valid_AfterFailedValidation_Should_Reset_IsValidated()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.NotFound);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // First validate with failure
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for failure
+            component.WaitForState(() => component.FindAll(".is-invalid").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Act - Change URL
+            inputElement.Change("https://newurl.com");
+
+            // Assert - is-invalid class should be removed
+            var invalidInputs = component.FindAll("input.is-invalid");
+            Assert.That(invalidInputs.Count, Is.EqualTo(0));
+        }
+
+        #endregion OnUrlChanged Tests
+
+        #region PerformHttpValidation Tests
+
+        /// <summary>
+        /// Test PerformHttpValidation sets IsValidating to true during validation
+        /// </summary>
+        [Test]
+        public void PerformHttpValidation_Valid_DuringValidation_Should_Set_IsValidating_True()
+        {
+            // Arrange
+            var delayHandler = new DelayedHttpMessageHandler(HttpStatusCode.OK, TimeSpan.FromMilliseconds(500));
+            var httpClient = new HttpClient(delayHandler) { Timeout = TimeSpan.FromSeconds(10) };
+            MockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Assert - Check for spinner immediately
+            var spinners = component.FindAll(".spinner-border");
+            Assert.That(spinners.Count, Is.GreaterThan(0));
+        }
+
+        /// <summary>
+        /// Test PerformHttpValidation sets IsValidating to false after validation
+        /// </summary>
+        [Test]
+        public void PerformHttpValidation_Valid_AfterValidation_Should_Set_IsValidating_False()
+        {
+            // Arrange
+            SetupMockHttpClient(HttpStatusCode.OK);
+            var component = TestContext.Render<UrlValidator>();
+            var inputElement = component.Find("input[type='text']");
+            var buttonElement = component.Find("button");
+
+            // Act
+            inputElement.Input("https://example.com");
+            buttonElement.Click();
+
+            // Wait for validation to complete
+            component.WaitForState(() => component.FindAll(".alert").Count > 0, TimeSpan.FromSeconds(5));
+
+            // Assert - Spinner should be gone
+            var spinners = component.FindAll(".spinner-border");
+            Assert.That(spinners.Count, Is.EqualTo(0));
+        }
+
+        #endregion PerformHttpValidation Tests
+
     }
+
 }
 
