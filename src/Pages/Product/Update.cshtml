@@ -13,28 +13,28 @@
 <form method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Product.Id" />
     <div>
-        <label>Product Brand:</label>
+        <label class="col-form-label theme-label">Product Brand:</label>
         <input asp-for="Product.Brand" class="form-control mb-2" placeholder="Update the brand of product" />
     </div>
     <div>
-        <label>Product Name:</label>
+        <label class="col-form-label theme-label">Product Name:</label>
         <input asp-for="Product.ProductName" class="form-control mb-2" placeholder="Update the product name" />
     </div>
     <div>
-        <label>Upload Product Image:</label>
+        <label class="col-form-label theme-label">Upload Product Image:</label>
         <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
     </div>
     <div>
-        <label>Product Description:</label>
+        <label class="col-form-label theme-label">Product Description:</label>
         <textarea asp-for="Product.ProductDescription" class="form-control mb-2" placeholder="Update description here" maxlength="5000" rows="10"></textarea>
         <small class="text-muted">Maximum 5000 characters.</small>
     </div>
     <div>
-        <label>Product Url:</label>
+        <label class="col-form-label theme-label">Product Url:</label>
         <input asp-for="Product.Url" class="form-control mb-2" placeholder="Update URL of product website" />
     </div>
     <div>
-        <label>Product Type:</label>
+        <label class="col-form-label theme-label">Product Type:</label>
         <select asp-for="Product.ProductType" class="form-control mb-2">
             @foreach (var item in Enum.GetValues(typeof(ProductTypeEnum)))
             {
