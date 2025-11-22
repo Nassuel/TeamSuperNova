@@ -10,7 +10,7 @@
         <!-- Search Box -->
         <div class="col-md-12 mb-3">
             <input type="text"
-                   class="form-control"
+                   class="form-control theme-input"
                    placeholder="Search Brands..."
                    @bind="SearchTerm" />
         </div>
@@ -18,8 +18,8 @@
     <div class="row">
         <!-- Product Type Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
-            <label class="col-form-label">Product Type</label>
-            <select class="form-control" @bind="SelectedProductType">
+            <label class="col-form-label theme-label">Product Type</label>
+            <select class="form-control theme-input" @bind="SelectedProductType">
                 <option value="">All Types</option>
                 @foreach (var productType in GetAllProductTypes())
                 {
@@ -29,8 +29,8 @@
         </div>
         <!-- Brand Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
-            <label class="col-form-label">Brand</label>
-            <select class="form-control" @bind="SelectedBrand">
+            <label class="col-form-label theme-label">Brand</label>
+            <select class="form-control theme-input" @bind="SelectedBrand">
                 <option value="">All Brands</option>
                 @foreach (var brand in GetAllBrands())
                 {
@@ -40,8 +40,8 @@
         </div>
         <!-- Min Rating Filter -->
         <div class="col-md-2 mb-2">
-            <label class="col-form-label">Min Rating</label>
-            <select class="form-control" @bind="MinRating">
+            <label class="col-form-label theme-label">Min Rating</label>
+            <select class="form-control theme-input" @bind="MinRating">
                 <option value="0">All Ratings</option>
                 <option value="1">1+ Stars</option>
                 <option value="2">2+ Stars</option>
@@ -52,8 +52,8 @@
         </div>
         <!-- Sort By -->
         <div class="col-md-2 mb-2">
-            <label class="col-form-label">Sort By</label>
-            <select class="form-control" @bind="SortBy">
+            <label class="col-form-label theme-label">Sort By</label>
+            <select class="form-control theme-input" @bind="SortBy">
                 <option value="">Default</option>
                 <option value="BrandAZ">Brand: A-Z</option>
                 <option value="BrandZA">Brand: Z-A</option>
@@ -63,7 +63,7 @@
         </div>
         <!-- Clear Filters Button -->
         <div class="col-md-2 mb-2 d-flex align-items-end">
-            <button class="btn btn-secondary w-100" @onclick="ClearFilters">Clear All</button>
+            <button class="btn btn-secondary w-100 theme-btn-secondary" @onclick="ClearFilters">Clear All</button>
         </div>
     </div>
 </div>
@@ -72,17 +72,17 @@
     <div class="card-columns">
         @foreach (var product in CurrentProductList)
         {
-            <div class="card">
+            <div class="card theme-card">
                 <div class="card-img" style="background-image: url('@product.Image');">
                 </div>
-                <div class="card-body">
-                    <h4 class="card-title">@product.Brand</h4>
-                    <h6 class="card-subtitle text-muted">@(product.ProductType.DisplayName())</h6>
+                <div class="card-body theme-card-body">
+                    <h4 class="card-title theme-card-title">@product.Brand</h4>
+                    <h6 class="card-subtitle theme-card-subtitle">@(product.ProductType.DisplayName())</h6>
                 </div>
-                <div class="card-footer">
-                    <small class="text-muted">
+                <div class="card-footer theme-card-footer">
+                    <small>
                         <button @onclick="(e => SelectProduct(product.Id))"
-                                data-toggle="modal" data-target="#productModal" class="btn btn-primary">
+                                data-toggle="modal" data-target="#productModal" class="btn btn-primary theme-btn-primary">
                             More Info
                         </button>
                     </small>
@@ -94,7 +94,7 @@
 
 @if (CurrentProductList.Count() == 0)
 {
-    <div class="alert alert-info text-center mt-4" role="alert">
+    <div class="alert theme-alert text-center mt-4" role="alert">
         No products are found which matches your filters. Try adjusting your search criteria.
     </div>
 }
@@ -103,28 +103,28 @@
 {
     <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="productTitle">@SelectedProduct.Brand</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <div class="modal-content theme-modal-content">
+                <div class="modal-header theme-modal-header">
+                    <h5 class="modal-title theme-modal-title" id="productTitle">@SelectedProduct.Brand</h5>
+                    <button type="button" class="close theme-close-btn" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body theme-modal-body">
                     <!-- Main card body -->
-                    <div class="card">
+                    <div class="card theme-card">
                         <div class="card-img" style="background-image: url('@SelectedProduct.Image');">
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">@SelectedProduct.ProductDescription</p>
+                        <div class="card-body theme-card-body">
+                            <p class="card-text theme-card-text">@SelectedProduct.ProductDescription</p>
                         </div>
                     </div>
 
                     <!-- Comments -->
-                    <hr />
+                    <hr class="theme-hr" />
                     <div class="row">
                         <div class="col">
-                            <h5>
+                            <h5 class="theme-heading">
                                 <i class="fa fa-commenting-o mr-2" aria-hidden="true"></i>
                                 Comments
                             </h5>
@@ -136,12 +136,12 @@
                         <ul class="list-unstyled mb-4">
                             @foreach (var comment in SelectedProduct.CommentList)
                             {
-                                <li class="list-group-item pb-2">
-                                    <small class="text-muted">
+                                <li class="list-group-item theme-list-item pb-2">
+                                    <small class="theme-text-muted">
                                         @(comment.CreatedAt.ToShortDateString() + " " + comment.CreatedAt.ToShortTimeString())
                                     </small>
                                     <br />
-                                    @comment.Comment
+                                    <span class="theme-text">@comment.Comment</span>
                                 </li>
                             }
                         </ul>
@@ -149,35 +149,35 @@
 
                     @if (SelectedProduct.CommentList == null)
                     {
-                        <p>No comments yet — be the first!</p>
+                        <p class="theme-text">No comments yet — be the first!</p>
                     }
                 </div>
 
-                <div class="modal-footer">
-                    <textarea class="form-control"
+                <div class="modal-footer theme-modal-footer">
+                    <textarea class="form-control theme-input"
                               @bind="NewComment"
                               placeholder="Type your comment..."
                               rows="2"
                               @onkeydown="@(e => UsingEnterKey(e))">
-                    </textarea>
+                        </textarea>
 
-                    <button class="btn btn-primary mt-2" @onclick="AddComment">Submit Comment</button>
+                    <button class="btn btn-primary mt-2 theme-btn-primary" @onclick="AddComment">Submit Comment</button>
                 </div>
-                <div class="modal-footer justify-content-between">
+                <div class="modal-footer theme-modal-footer justify-content-between">
                     @if (string.IsNullOrEmpty(SelectedProduct.Url) == false)
                     {
-                        <a href="@SelectedProduct.Url" target="_blank" class="btn btn-primary">View Product</a>
+                        <a href="@SelectedProduct.Url" target="_blank" class="btn btn-primary theme-btn-primary">View Product</a>
                     }
 
                     <!-- Ratings -->
                     @if (VoteCount == 0)
                     {
-                        <span>Be the first to vote!</span>
+                        <span class="theme-text">Be the first to vote!</span>
                     }
 
                     @if (VoteCount > 0)
                     {
-                        <span>@VoteCount @VoteLabel</span>
+                        <span class="theme-text">@VoteCount @VoteLabel</span>
                     }
 
                     @for (int i = 1; i < 6; i++)
@@ -191,7 +191,7 @@
 
                         if (i > CurrentRating)
                         {
-                            <span class="fa fa-star" @onclick="(e => SubmitRating(currentStar))"></span>
+                            <span class="fa fa-star theme-star" @onclick="(e => SubmitRating(currentStar))"></span>
                         }
                     }
                 </div>
@@ -201,6 +201,7 @@
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
 
 @code
