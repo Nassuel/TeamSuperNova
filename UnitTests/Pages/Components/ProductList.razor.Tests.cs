@@ -1638,6 +1638,164 @@ namespace UnitTests.Pages.Components
 
         #endregion BuildRenderTree
 
+        #region StarRating
+
+        /// <summary>
+        /// Test clicking unchecked star submits correct rating
+        /// </summary>
+        [Test]
+        public void SubmitRating_Valid_Click_Unchecked_Star_Should_Submit_Rating()
+        {
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 2, 2, 2 }; // Average = 2, so stars 3, 4, 5 are unchecked
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Get all star elements (both checked and unchecked)
+            var allStars = component.FindAll("span.fa-star");
+
+            // Act - Click the 5th star (index 4), which should be unchecked
+            allStars[4].Click();
+
+            // Assert
+            MockProductService.Verify(x => x.AddRating("test-laptop-1", 5), Times.Once);
+        }
+
+        /// <summary>
+        /// Test clicking unchecked star when current rating is 1
+        /// </summary>
+        [Test]
+        public void SubmitRating_Valid_Click_Unchecked_Star_Rating_1_Should_Submit_Rating_3()
+        {
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 1, 1, 1 }; // Average = 1, so stars 2, 3, 4, 5 are unchecked
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Get all star elements
+            var allStars = component.FindAll("span.fa-star");
+
+            // Act - Click the 3rd star (index 2), which should be unchecked
+            allStars[2].Click();
+
+            // Assert
+            MockProductService.Verify(x => x.AddRating("test-laptop-1", 3), Times.Once);
+        }
+
+        /// <summary>
+        /// Test clicking checked star submits correct rating
+        /// </summary>
+        [Test]
+        public void SubmitRating_Valid_Click_Checked_Star_Should_Submit_Rating()
+        {
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 4, 4, 4 }; // Average = 4, so stars 1, 2, 3, 4 are checked
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Get checked star elements
+            var checkedStars = component.FindAll("span.fa-star.checked");
+
+            // Act - Click the 2nd checked star (index 1)
+            checkedStars[1].Click();
+
+            // Assert
+            MockProductService.Verify(x => x.AddRating("test-laptop-1", 2), Times.Once);
+        }
+
+        /// <summary>
+        /// Test both checked and unchecked stars are rendered correctly
+        /// </summary>
+        [Test]
+        public void Modal_Valid_Rating_3_Should_Render_3_Checked_And_2_Unchecked_Stars()
+        {
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 3, 3, 3 }; // Average = 3
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[0].Click();
+
+            // Assert
+            var checkedStars = component.FindAll("span.fa-star.checked");
+            var uncheckedStars = component.FindAll("span.fa-star:not(.checked)");
+
+            Assert.That(checkedStars.Count, Is.EqualTo(3));
+            Assert.That(uncheckedStars.Count, Is.EqualTo(2));
+        }
+
+        /// <summary>
+        /// Test clicking each unchecked star individually
+        /// </summary>
+        [Test]
+        public void SubmitRating_Valid_Click_Each_Unchecked_Star_Should_Submit_Correct_Rating()
+        {
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 1, 1, 1 }; // Average = 1, stars 2-5 are unchecked
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Get unchecked stars
+            var uncheckedStars = component.FindAll("span.fa-star:not(.checked)");
+
+            // Act - Click the first unchecked star (should be star 2)
+            uncheckedStars[0].Click();
+
+            // Assert
+            MockProductService.Verify(x => x.AddRating("test-laptop-1", 2), Times.Once);
+        }
+
+        /// <summary>
+        /// Test product with 0 rating shows all unchecked stars
+        /// </summary>
+        [Test]
+        public void Modal_Valid_Rating_0_Should_Render_All_Unchecked_Stars()
+        {
+            // Arrange
+            TestProducts[0].Ratings = null; // No ratings = 0 average
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[0].Click();
+
+            // Assert
+            var checkedStars = component.FindAll("span.fa-star.checked");
+            var uncheckedStars = component.FindAll("span.fa-star:not(.checked)");
+
+            Assert.That(checkedStars.Count, Is.EqualTo(0));
+            Assert.That(uncheckedStars.Count, Is.EqualTo(5));
+        }
+
+        /// <summary>
+        /// Test clicking unchecked star when no ratings exist
+        /// </summary>
+        [Test]
+        public void SubmitRating_Valid_No_Ratings_Click_Unchecked_Star_Should_Submit_Rating()
+        {
+            // Arrange
+            TestProducts[0].Ratings = null; // No ratings, all stars unchecked
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Get all unchecked stars
+            var uncheckedStars = component.FindAll("span.fa-star:not(.checked)");
+
+            // Act - Click the 4th star (index 3)
+            uncheckedStars[3].Click();
+
+            // Assert
+            MockProductService.Verify(x => x.AddRating("test-laptop-1", 4), Times.Once);
+        }
+
+        #endregion StarRating
+
     }
 
 }
