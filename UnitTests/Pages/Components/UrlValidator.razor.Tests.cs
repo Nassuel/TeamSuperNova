@@ -99,19 +99,6 @@ namespace UnitTests.Pages.Components
             TestContext.Services.AddSingleton(MockHttpClientFactory.Object);
         }
 
-        /// <summary>
-        /// Cleans up test context after each test
-        /// </summary>
-        [TearDown]
-        public void TearDown()
-        {
-            // Dispose test context
-            TestContext?.Dispose();
-
-            // Dispose mock HTTP message handler
-            MockHttpMessageHandler?.Object?.Dispose();
-        }
-
         #region Render Tests
 
         /// <summary>
@@ -603,7 +590,8 @@ namespace UnitTests.Pages.Components
 
             // Check classes
             var hasFormControl = inputElement.ClassList.Contains("form-control");
-            var hasValidation = inputElement.ClassList.Contains("is-valid") || inputElement.ClassList.Contains("is-invalid");
+            var hasValidation = inputElement.ClassList.Contains("is-valid");
+            var hasInvalid = inputElement.ClassList.Contains("is-invalid");
 
             // Reset
             // (No reset needed)
@@ -611,6 +599,7 @@ namespace UnitTests.Pages.Components
             // Assert
             Assert.That(hasFormControl, Is.True);
             Assert.That(hasValidation, Is.False);
+            Assert.That(hasInvalid, Is.False);
         }
 
         /// <summary>
