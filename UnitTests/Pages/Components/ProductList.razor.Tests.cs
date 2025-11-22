@@ -224,7 +224,7 @@ namespace UnitTests.Pages.Components
             // Reset
 
             // Assert
-            var alert = component.Find(".alert-info");
+            var alert = component.Find(".alert");
             Assert.That(alert, Is.Not.Null);
             Assert.That(alert.TextContent.Contains("No products are found"));
         }
@@ -1632,7 +1632,7 @@ namespace UnitTests.Pages.Components
             // Reset
 
             // Assert
-            var alert = component.Find(".alert-info");
+            var alert = component.Find(".alert");
             Assert.That(alert.TextContent.Contains("No products are found"), Is.True);
         }
 
