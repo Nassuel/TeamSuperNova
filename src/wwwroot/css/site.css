@@ -30,6 +30,34 @@
     --button-hover: #3d8bfd;
 }
 
+/* Light theme background (default) */
+body {
+    /* Image for body */
+    background-image: url('/assets/SuperNovaBackground.png');
+    background-repeat: repeat;
+    /* Other styling */
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Roboto', sans-serif !important;
+    /* Margin bottom by footer height */
+    margin-bottom: 400px;
+}
+
+/* Dark theme background */
+[data-theme="dark"] body {
+    /* Image for body */
+    background-image: url('/assets/SuperNovaBackground_dark.png');
+    background-repeat: repeat;
+    /* Other styling */
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Roboto', sans-serif !important;
+    /* Margin bottom by footer height */
+    margin-bottom: 400px;
+}
+
 .theme-toggle {
     background: none;
     border: 2px solid var(--border-color);
@@ -56,15 +84,6 @@
 
 .theme-icon {
     font-size: 20px;
-}
-
-body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    font-family: 'Roboto', sans-serif !important;
-    /* Margin bottom by footer height */
-    margin-bottom: 400px;
 }
 
 .navbar {
