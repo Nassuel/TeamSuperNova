@@ -1551,16 +1551,17 @@ namespace UnitTests.Pages.Components
             var component = _testContext.Render<ProductList>();
             var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
             moreInfoButtons[0].Click();
-
             var stars = component.FindAll("span.fa-star");
 
             // Act - Click the 3rd star (index 2)
             stars[2].Click();
 
-            // Reset
-
             // Assert
-            MockProductService.Verify(x => x.AddRating("test-laptop-1", 3), Times.Once);
+            var addRatingCalls = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddRating" &&
+                                    invocation.Arguments[0].ToString() == "test-laptop-1" &&
+                                    (int)invocation.Arguments[1] == 3);
+            Assert.That(addRatingCalls, Is.EqualTo(1));
         }
 
         /// <summary>
