@@ -568,12 +568,12 @@
     /// <summary>
     /// Save comment to the data store
     /// </summary>
-    async Task<bool> AddComment()
+    public void AddComment()
     {
         // Fast fail: Check if new comment text is empty
         if (string.IsNullOrWhiteSpace(NewComment))
         {
-            return false;
+            return;
         }
 
         // Add the new comment to the selected product
@@ -588,30 +588,24 @@
         // UI Refresh
         StateHasChanged();
 
-        return true;
-
     }
 
     /// <summary>
     /// Checks for Enter key press to submit comment
     /// </summary>
-    /// <param name="e"></param>
+    /// <param name="e">Keyboard event arguments</param>
     public void UsingEnterKey(KeyboardEventArgs e)
     {
-        // Fast fail: Check if key is not Enter
-        if (e.Key != "Enter")
+        // Check if Enter key is pressed
+        if (e.Key == "Enter")
         {
-            return;
+            // Check if Shift key is not pressed
+            if (e.ShiftKey == false)
+            {
+                // Submit the comment
+                AddComment();
+            }
         }
-
-        // Fast fail: Check if Shift key is pressed
-        if (e.ShiftKey == true)
-        {
-            return;
-        }
-
-        // Submit the comment
-        AddComment();
     }
 
     /// <summary>
