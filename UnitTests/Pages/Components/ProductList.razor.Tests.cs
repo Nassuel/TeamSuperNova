@@ -1051,17 +1051,16 @@ namespace UnitTests.Pages.Components
             var component = _testContext.Render<ProductList>();
             var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
             moreInfoButtons[0].Click();
-
             var textarea = component.Find("textarea");
             textarea.Change("Test comment via Enter");
 
             // Act
             textarea.KeyDown(new KeyboardEventArgs { Key = "Enter", ShiftKey = false });
 
-            // Reset
-
             // Assert
-            MockProductService.Verify(x => x.AddCommentToProduct(It.IsAny<string>(), It.IsAny<CommentModel>()), Times.Once);
+            var addCommentCalls = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddCommentToProduct");
+            Assert.That(addCommentCalls, Is.EqualTo(1));
         }
 
         /// <summary>
