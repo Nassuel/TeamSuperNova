@@ -568,12 +568,12 @@
     /// <summary>
     /// Save comment to the data store
     /// </summary>
-    void AddComment()
+    async Task<bool> AddComment()
     {
         // Fast fail: Check if new comment text is empty
         if (string.IsNullOrWhiteSpace(NewComment))
         {
-            return;
+            return false;
         }
 
         // Add the new comment to the selected product
@@ -584,6 +584,8 @@
 
         // UI Refresh
         StateHasChanged();
+
+        return true;
 
     }
 
