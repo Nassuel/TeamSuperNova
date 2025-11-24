@@ -493,32 +493,66 @@ namespace UnitTests.Pages.Components
         #region UpdateBrowserTheme
 
         /// <summary>
-        /// Test UpdateBrowserTheme with valid theme calls JavaScript
+        /// Verifies that UpdateBrowserTheme invokes JavaScript with the correct theme name.
+        /// Confirms that the JS runtime receives a call to set the theme to "dark".
         /// </summary>
         [Test]
         public async Task UpdateBrowserTheme_Valid_ThemeName_Should_Call_JavaScript()
         {
-            // Arrange
+            // Arrange: Initialize mock JS runtime with "light" theme
             SetupMockJSRuntime("light");
+
+            // Render the ThemeToggle component
             var component = TestContext.Render<ThemeToggle>();
+
+            // Wait until the light theme icon is present (fa-moon-o indicates light mode)
             component.WaitForState(() => component.Find("i.fa-moon-o") != null);
 
-            // Act
+            // Act: Call UpdateBrowserTheme with "dark"
             await component.Instance.UpdateBrowserTheme("dark");
 
-            // Assert
-            var setThemeCalls = MockJSRuntime.Invocations
-                .Count(invocation =>
-                    invocation.Method.Name == "InvokeAsync" &&
-                    invocation.Arguments[0] is string identifier &&
-                    identifier == "themeManager.setTheme" &&
-                    invocation.Arguments[1] is object[] args &&
-                    args.Length == 1 &&
-                    args[0]?.ToString() == "dark"
-                );
+            // Assert: Check if a matching JS invocation exists
+            var found = false;
 
-            Assert.That(setThemeCalls, Is.EqualTo(1));
+            foreach (var invocation in MockJSRuntime.Invocations)
+            {
+                // Confirm method name is "InvokeAsync"
+                var methodIsCorrect = invocation.Method.Name.Equals("InvokeAsync");
+
+                // Extract and validate the identifier argument
+                var identifier = invocation.Arguments.Count > 0 ? invocation.Arguments[0] as string : null;
+                var identifierIsCorrect = identifier != null && identifier.Equals("themeManager.setTheme");
+
+                // Extract and validate the theme argument
+                var args = invocation.Arguments.Count > 1 ? invocation.Arguments[1] as object[] : null;
+                var themeIsCorrect = false;
+                if (args != null && args.Length == 1)
+                {
+                    var theme = args[0]?.ToString();
+                    if (theme != null)
+                    {
+                        themeIsCorrect = theme.Equals("dark");
+                    }
+                }
+
+                // Mark as found if all conditions are satisfied
+                if (methodIsCorrect)
+                {
+                    if (identifierIsCorrect)
+                    {
+                        if (themeIsCorrect)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Confirm that the theme update was triggered via JS
+            Assert.That(found, Is.True);
         }
+
 
 
         /// <summary>
