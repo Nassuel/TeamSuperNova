@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Moq;
 using NUnit.Framework;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace UnitTests.Pages.Components
@@ -391,12 +392,19 @@ namespace UnitTests.Pages.Components
             await component.InvokeAsync(() => component.Instance.HandleToggleClick());
 
             // Assert
-            MockJSRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "themeManager.setTheme",
-                    It.Is<object[]>(args => args.Length == 1 && args[0].ToString() == "dark")),
-                Times.Once);
+            var setThemeCalls = MockJSRuntime.Invocations
+                .Count(invocation =>
+                    invocation.Method.Name == "InvokeAsync" &&
+                    invocation.Arguments[0] is string identifier &&
+                    identifier == "themeManager.setTheme" &&
+                    invocation.Arguments[1] is object[] args &&
+                    args.Length == 1 &&
+                    args[0]?.ToString() == "dark"
+                );
+
+            Assert.That(setThemeCalls, Is.EqualTo(1));
         }
+
 
         #endregion HandleToggleClick
 
