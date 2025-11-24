@@ -658,18 +658,20 @@ namespace UnitTests.Pages.Components
         public void SubmitRating_Should_Call_ProductService_AddRating()
         {
             // Arrange
+            MockProductService.Setup(s => s.AddRating(It.IsAny<string>(), It.IsAny<int>()))
+                .Returns(true)
+                .Verifiable();
+
             var component = _testContext.Render<ProductList>();
-            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
-            moreInfoButtons[0].Click();
-            var voteButtons = component.FindAll("span").Where(b => b.ClassName != null && b.ClassName.Contains("fa-star")).ToList();
+            var moreInfoButton = component.Find("button:contains('More Info')");
+            moreInfoButton.Click();
+            var voteButton = component.Find("span.fa-star");
 
             // Act
-            voteButtons[0].Click();
-
-            // Reset
+            voteButton.Click();
 
             // Assert
-            MockProductService.Verify(x => x.AddRating(It.IsAny<string>(), It.IsAny<int>()), Times.Once);
+            MockProductService.Verify();
         }
 
         /// <summary>
