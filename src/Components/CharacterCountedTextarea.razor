@@ -98,6 +98,29 @@
     }
 
     /// <summary>
+    /// Handles input event to update value and trigger re-render for character count
+    /// </summary>
+    /// <param name="args">Change event arguments containing new value</param>
+    private void HandleInput(ChangeEventArgs args)
+    {
+        // Fast fail: Check if args is null
+        if (args == null)
+        {
+            return;
+        }
+
+        // Fast fail: Check if value is null
+        if (args.Value == null)
+        {
+            InternalValue = string.Empty;
+            return;
+        }
+
+        // Update internal value with new input
+        InternalValue = args.Value.ToString();
+    }
+
+    /// <summary>
     /// Gets the current character count of the textarea
     /// </summary>
     /// <returns>Number of characters</returns>
