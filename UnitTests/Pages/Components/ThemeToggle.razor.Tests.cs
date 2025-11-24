@@ -537,12 +537,15 @@ namespace UnitTests.Pages.Components
             await component.Instance.UpdateBrowserTheme("   ");
 
             // Assert
-            MockJSRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "themeManager.setTheme",
-                    It.IsAny<object[]>()),
-                Times.Never);
+            var setThemeCalls = MockJSRuntime.Invocations
+                .Count(invocation =>
+                    invocation.Method.Name == "InvokeAsync" &&
+                    invocation.Arguments[0] is string identifier &&
+                    identifier == "themeManager.setTheme");
+
+            Assert.That(setThemeCalls, Is.EqualTo(0));
         }
+
 
         #endregion UpdateBrowserTheme
 
