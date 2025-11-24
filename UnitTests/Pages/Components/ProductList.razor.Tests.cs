@@ -586,6 +586,14 @@ namespace UnitTests.Pages.Components
             // Act
             moreInfoButtons[0].Click();
 
+            // Wait for modal content to render
+            component.WaitForAssertion(() =>
+            {
+                // This ensures the modal is rendered before evaluating the predicate
+                var allElements = component.FindAll("*");
+                Assert.That(allElements.Count, Is.GreaterThan(0));
+            });
+
             // Assert
             var viewLinks = component.FindAll("*")
                                      .Where(e => e.TagName.Equals("A", StringComparison.OrdinalIgnoreCase) &&
@@ -594,6 +602,7 @@ namespace UnitTests.Pages.Components
 
             Assert.That(viewLinks.Count, Is.EqualTo(0));
         }
+
 
 
         /// <summary>
@@ -1396,17 +1405,30 @@ namespace UnitTests.Pages.Components
             // Arrange
             TestProducts[0].Url = null;
             var component = _testContext.Render<ProductList>();
-            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            var moreInfoButtons = component.FindAll("button")
+                                           .Where(b => b.TextContent.Contains("More Info"))
+                                           .ToList();
 
             // Act
             moreInfoButtons[0].Click();
 
-            // Reset
+            // Wait for modal content to render
+            component.WaitForAssertion(() =>
+            {
+                var allElements = component.FindAll("*");
+                Assert.That(allElements.Count, Is.GreaterThan(0));
+            });
 
             // Assert
-            var viewProductLinks = component.FindAll("a").Where(a => a.TextContent.Contains("View Product")).ToList();
+            var viewProductLinks = component.FindAll("*")
+                                            .Where(e => e.TagName.Equals("A", StringComparison.OrdinalIgnoreCase) &&
+                                                        e.TextContent.Contains("View Product"))
+                                            .ToList();
+
             Assert.That(viewProductLinks.Count, Is.EqualTo(0));
         }
+
+
 
         /// <summary>
         /// Test star rating renders checked stars correctly
