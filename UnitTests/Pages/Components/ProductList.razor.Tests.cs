@@ -1749,15 +1749,21 @@ namespace UnitTests.Pages.Components
             var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
             moreInfoButtons[0].Click();
 
-            // Get unchecked stars
+            // Get unchecked stars (stars 2–5)
             var uncheckedStars = component.FindAll("span.fa-star:not(.checked)");
 
-            // Act - Click the first unchecked star (should be star 2)
+            // Act - Click the first unchecked star (should correspond to rating 2)
             uncheckedStars[0].Click();
 
             // Assert
-            MockProductService.Verify(x => x.AddRating("test-laptop-1", 2), Times.Once);
+            var addRatingCalls = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddRating" &&
+                                     invocation.Arguments[0].ToString() == "test-laptop-1" &&
+                                     (int)invocation.Arguments[1] == 2);
+
+            Assert.That(addRatingCalls, Is.EqualTo(1));
         }
+
 
         /// <summary>
         /// Test product with 0 rating shows all unchecked stars
