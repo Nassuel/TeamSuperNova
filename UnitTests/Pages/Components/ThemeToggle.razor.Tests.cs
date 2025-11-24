@@ -553,31 +553,52 @@ namespace UnitTests.Pages.Components
             Assert.That(found, Is.True);
         }
 
-
-
         /// <summary>
-        /// Test UpdateBrowserTheme with null theme does not call JavaScript
+        /// Verifies that UpdateBrowserTheme does not invoke JavaScript when the theme name is null.
+        /// Confirms that no JS runtime call is made to "themeManager.setTheme".
         /// </summary>
         [Test]
         public async Task UpdateBrowserTheme_Invalid_Null_Should_Not_Call_JavaScript()
         {
-            // Arrange
+            // Arrange: Initialize mock JS runtime with "light" theme
             SetupMockJSRuntime("light");
+
+            // Render the ThemeToggle component
             var component = TestContext.Render<ThemeToggle>();
+
+            // Wait until the light theme icon is present (fa-moon-o indicates light mode)
             component.WaitForState(() => component.Find("i.fa-moon-o") != null);
 
-            // Act
+            // Act: Call UpdateBrowserTheme with null theme
             await component.Instance.UpdateBrowserTheme(null);
 
-            // Assert
-            var setThemeCalls = MockJSRuntime.Invocations
-                .Count(invocation =>
-                    invocation.Method.Name == "InvokeAsync" &&
-                    invocation.Arguments[0] is string identifier &&
-                    identifier == "themeManager.setTheme");
+            // Assert: Verify that no matching JS invocation exists
+            var found = false;
 
-            Assert.That(setThemeCalls, Is.EqualTo(0));
+            foreach (var invocation in MockJSRuntime.Invocations)
+            {
+                // Confirm method name is "InvokeAsync"
+                var methodIsCorrect = invocation.Method.Name.Equals("InvokeAsync");
+
+                // Extract and validate the identifier argument
+                var identifier = invocation.Arguments.Count > 0 ? invocation.Arguments[0] as string : null;
+                var identifierIsCorrect = identifier != null && identifier.Equals("themeManager.setTheme");
+
+                // If both method and identifier match, mark as found
+                if (methodIsCorrect)
+                {
+                    if (identifierIsCorrect)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            // Confirm that no theme update was triggered via JS
+            Assert.That(found, Is.False);
         }
+
 
 
         /// <summary>
