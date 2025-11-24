@@ -513,7 +513,7 @@ namespace UnitTests.Pages.Components
             // (No reset needed)
 
             // Assert
-            Assert.That(cssClass, Is.EqualTo("text-muted"));
+            Assert.That(cssClass, Is.EqualTo("text-muted theme-text-muted"));
         }
 
         /// <summary>
@@ -597,7 +597,7 @@ namespace UnitTests.Pages.Components
             // (No reset needed)
 
             // Assert
-            Assert.That(cssClass, Is.EqualTo("text-muted"));
+            Assert.That(cssClass, Is.EqualTo("text-muted theme-text-muted"));
         }
 
         /// <summary>
@@ -625,7 +625,7 @@ namespace UnitTests.Pages.Components
             // (No reset needed)
 
             // Assert
-            Assert.That(cssClass, Is.EqualTo("text-muted"));
+            Assert.That(cssClass, Is.EqualTo("text-muted theme-text-muted"));
         }
 
         #endregion
