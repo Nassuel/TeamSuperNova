@@ -465,12 +465,19 @@ namespace UnitTests.Pages.Components
             await component.Instance.UpdateBrowserTheme("dark");
 
             // Assert
-            MockJSRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "themeManager.setTheme",
-                    It.Is<object[]>(args => args.Length == 1 && args[0].ToString() == "dark")),
-                Times.Once);
+            var setThemeCalls = MockJSRuntime.Invocations
+                .Count(invocation =>
+                    invocation.Method.Name == "InvokeAsync" &&
+                    invocation.Arguments[0] is string identifier &&
+                    identifier == "themeManager.setTheme" &&
+                    invocation.Arguments[1] is object[] args &&
+                    args.Length == 1 &&
+                    args[0]?.ToString() == "dark"
+                );
+
+            Assert.That(setThemeCalls, Is.EqualTo(1));
         }
+
 
         /// <summary>
         /// Test UpdateBrowserTheme with null theme does not call JavaScript
