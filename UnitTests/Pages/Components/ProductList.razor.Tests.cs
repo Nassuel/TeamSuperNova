@@ -1651,7 +1651,6 @@ namespace UnitTests.Pages.Components
             var component = _testContext.Render<ProductList>();
             var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
             moreInfoButtons[0].Click();
-
             // Get all star elements (both checked and unchecked)
             var allStars = component.FindAll("span.fa-star");
 
@@ -1659,7 +1658,11 @@ namespace UnitTests.Pages.Components
             allStars[4].Click();
 
             // Assert
-            MockProductService.Verify(x => x.AddRating("test-laptop-1", 5), Times.Once);
+            var addRatingCalls = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddRating" &&
+                                    invocation.Arguments[0].ToString() == "test-laptop-1" &&
+                                    (int)invocation.Arguments[1] == 5);
+            Assert.That(addRatingCalls, Is.EqualTo(1));
         }
 
         /// <summary>
