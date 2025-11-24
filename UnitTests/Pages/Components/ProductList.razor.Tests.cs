@@ -1018,11 +1018,11 @@ namespace UnitTests.Pages.Components
         public void AddComment_Invalid_Whitespace_Comment_Should_Not_Call_ProductService()
         {
             // Arrange
-            MockProductService.Setup(x => x.AddCommentToProduct(It.IsAny<string>(), It.IsAny<CommentModel>())).Returns(true);
+            MockProductService.Setup(x => x.AddCommentToProduct(It.IsAny<string>(), It.IsAny<CommentModel>()))
+                .Returns(true);
             var component = _testContext.Render<ProductList>();
             var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
             moreInfoButtons[0].Click();
-
             var textarea = component.Find("textarea");
             var submitButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Submit Comment"));
 
@@ -1030,10 +1030,10 @@ namespace UnitTests.Pages.Components
             textarea.Change("   ");
             submitButton.Click();
 
-            // Reset
-
             // Assert
-            MockProductService.Verify(x => x.AddCommentToProduct(It.IsAny<string>(), It.IsAny<CommentModel>()), Times.Never);
+            var addCommentCalls = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddCommentToProduct");
+            Assert.That(addCommentCalls, Is.EqualTo(0));
         }
 
         #endregion Comments
