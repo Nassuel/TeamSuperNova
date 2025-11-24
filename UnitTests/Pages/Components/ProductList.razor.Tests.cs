@@ -1806,8 +1806,14 @@ namespace UnitTests.Pages.Components
             uncheckedStars[3].Click();
 
             // Assert
-            MockProductService.Verify(x => x.AddRating("test-laptop-1", 4), Times.Once);
+            var addRatingCalls = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddRating" &&
+                                     invocation.Arguments[0].ToString() == "test-laptop-1" &&
+                                     (int)invocation.Arguments[1] == 4);
+
+            Assert.That(addRatingCalls, Is.EqualTo(1));
         }
+
 
         #endregion StarRating
 
