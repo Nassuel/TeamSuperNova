@@ -577,19 +577,24 @@ namespace UnitTests.Pages.Components
         public void Modal_Should_Hide_View_Product_Link_When_URL_Empty()
         {
             // Arrange
-            TestProducts[0].Url = "";
+            TestProducts[0].Url = string.Empty;
             var component = _testContext.Render<ProductList>();
-            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            var moreInfoButtons = component.FindAll("button")
+                                           .Where(b => b.TextContent.Contains("More Info"))
+                                           .ToList();
 
             // Act
             moreInfoButtons[0].Click();
 
-            // Reset
-
             // Assert
-            var viewLinks = component.FindAll("a").Where(a => a.TextContent.Contains("View Product")).ToList();
+            var viewLinks = component.FindAll("*")
+                                     .Where(e => e.TagName.Equals("A", StringComparison.OrdinalIgnoreCase) &&
+                                                 e.TextContent.Contains("View Product"))
+                                     .ToList();
+
             Assert.That(viewLinks.Count, Is.EqualTo(0));
         }
+
 
         /// <summary>
         /// Test modal should display vote count for product with ratings
