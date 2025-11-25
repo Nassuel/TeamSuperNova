@@ -595,12 +595,9 @@ namespace UnitTests.Pages.Components
             });
 
             // Assert
-            var viewLinks = component.FindAll("*")
-                                     .Where(e => e.TagName.Equals("A", StringComparison.OrdinalIgnoreCase) &&
-                                                 e.TextContent.Contains("View Product"))
-                                     .ToList();
+            var viewLinks = component.FindAll("*").FirstOrDefault(e => e.TextContent.Contains("View Product"));
 
-            Assert.That(viewLinks.Count, Is.EqualTo(0));
+            Assert.That(viewLinks, Is.Null);
         }
 
 
@@ -1420,12 +1417,9 @@ namespace UnitTests.Pages.Components
             });
 
             // Assert
-            var viewProductLinks = component.FindAll("*")
-                                            .Where(e => e.TagName.Equals("A", StringComparison.OrdinalIgnoreCase) &&
-                                                        e.TextContent.Contains("View Product"))
-                                            .ToList();
+            var viewProductLinks = component.FindAll("*").FirstOrDefault(e => e.TextContent.Contains("View Product"));
 
-            Assert.That(viewProductLinks.Count, Is.EqualTo(0));
+            Assert.That(viewProductLinks, Is.Null);
         }
 
 
