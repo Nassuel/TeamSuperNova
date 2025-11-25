@@ -919,5 +919,52 @@ namespace UnitTests.Pages.Components
         }
 
         #endregion
+
+        #region HandleInput Tests
+
+        /// <summary>
+        /// Tests that HandleInput processes null ChangeEventArgs correctly
+        /// </summary>
+        [Test]
+        public void HandleInput_Invalid_NullArgs_Should_ReturnEarly()
+        {
+            // Arrange
+            var result = TestContext.Render<CharacterCountedTextarea>();
+            ChangeEventArgs nullArgs = null;
+
+            // Act
+            var instance = result.Instance;
+            instance.HandleInput(nullArgs);
+
+            // Reset
+            // (No reset needed)
+
+            // Assert
+            // If it doesn't throw an exception, the fast fail worked
+            Assert.Pass();
+        }
+
+        /// <summary>
+        /// Tests that component handles very long text correctly
+        /// </summary>
+        [Test]
+        public void HandleInput_Invalid_NullValue_Should_SetInternalValueToEmpty()
+        {
+            // Arrange
+            var data = TestContext.Render<CharacterCountedTextarea>();
+            var argsWithNullValue = new ChangeEventArgs { Value = null };
+
+            // Act
+            data.Instance.HandleInput(argsWithNullValue);
+
+            // Reset
+
+            // Assert
+            var textarea = data.Find("textarea");
+            Assert.That(textarea.TextContent, Is.EqualTo(string.Empty));
+        }
+
+        #endregion
+
     }
 }
