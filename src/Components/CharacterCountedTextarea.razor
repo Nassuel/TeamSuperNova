@@ -101,7 +101,7 @@
     /// Handles input event to update value and trigger re-render for character count
     /// </summary>
     /// <param name="args">Change event arguments containing new value</param>
-    private void HandleInput(ChangeEventArgs args)
+    public void HandleInput(ChangeEventArgs args)
     {
         // Fast fail: Check if args is null
         if (args == null)
