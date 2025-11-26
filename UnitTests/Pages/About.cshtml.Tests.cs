@@ -13,7 +13,7 @@ namespace UnitTests.Pages
     {
         #region TestSetup
 
-        public static AboutModel pageModel;
+        public static AboutModel pagemodel;
 
         /// <summary>
         /// Initialize test environment before each test
@@ -21,7 +21,7 @@ namespace UnitTests.Pages
         [SetUp]
         public void TestInitialize()
         {
-            pageModel = new AboutModel();
+            pagemodel = new AboutModel();
         }
 
         #endregion TestSetup
@@ -38,8 +38,10 @@ namespace UnitTests.Pages
 
             // Act - PageModel created in TestInitialize
 
+            // Reset
+
             // Assert
-            Assert.That(pageModel, Is.Not.Null);
+            Assert.That(pagemodel, Is.Not.Null);
         }
 
         #endregion Constructor
@@ -55,10 +57,12 @@ namespace UnitTests.Pages
             // Arrange - Done in TestInitialize
 
             // Act
-            pageModel.OnGet();
+            pagemodel.OnGet();
+
+            // Reset
 
             // Assert
-            Assert.That(pageModel.ModelState.IsValid, Is.True);
+            Assert.That(pagemodel.ModelState.IsValid, Is.True);
         }
 
         /// <summary>
@@ -70,12 +74,14 @@ namespace UnitTests.Pages
             // Arrange - Done in TestInitialize
 
             // Act
-            pageModel.OnGet();
-            pageModel.OnGet();
-            pageModel.OnGet();
+            pagemodel.OnGet();
+            pagemodel.OnGet();
+            pagemodel.OnGet();
+
+            // Reset
 
             // Assert
-            Assert.That(pageModel.ModelState.IsValid,Is.True);
+            Assert.That(pagemodel.ModelState.IsValid,Is.True);
         }
 
         #endregion OnGet
