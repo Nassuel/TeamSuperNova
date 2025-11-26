@@ -931,17 +931,18 @@ namespace UnitTests.Pages.Components
             // Arrange
             var result = TestContext.Render<CharacterCountedTextarea>();
             ChangeEventArgs nullArgs = null;
+            var instance = result.Instance;
+            var initialCharCount = instance.GetCharCount();
 
             // Act
-            var instance = result.Instance;
             instance.HandleInput(nullArgs);
 
-            // Reset
-            // (No reset needed)
-
             // Assert
-            // If it doesn't throw an exception, the fast fail worked
-            Assert.Pass();
+            // Verify character count remains unchanged (fast fail worked)
+            Assert.That(instance.GetCharCount(), Is.EqualTo(initialCharCount));
+
+            // Verify the value is still empty/unchanged
+            Assert.That(instance.InternalValue, Is.EqualTo(string.Empty));
         }
 
         /// <summary>
