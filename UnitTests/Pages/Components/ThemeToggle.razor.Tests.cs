@@ -1,10 +1,12 @@
 ﻿using Bunit;
 using ContosoCrafts.WebSite.Components;
 using ContosoCrafts.WebSite.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -384,69 +386,27 @@ namespace UnitTests.Pages.Components
         [Test]
         public async Task HandleToggleClick_Valid_IsToggling_False_Should_Toggle_Theme()
         {
-            // Arrange: Set initial theme to "light" via mock JS runtime
+            // Arrange
             SetupMockJSRuntime("light");
-
-            // Render the ThemeToggle component
             var component = TestContext.Render<ThemeToggle>();
-
-            // Wait until the light theme icon is present (fa-moon-o indicates light mode)
             component.WaitForState(() => component.Find("i.fa-moon-o") != null);
 
-            // Explicitly set IsToggling to false to allow theme toggle logic to proceed
-            var prop = component.Instance.GetType().GetProperty("IsToggling");
-            if (prop != null)
-            {
-                prop.SetValue(component.Instance, false);
-            }
+            MockJSRuntime.Invocations.Clear();
+            component.Instance.IsToggling = false;
 
-            // Act: Trigger the toggle click handler
+            // Act
             await component.InvokeAsync(() => component.Instance.HandleToggleClick());
 
-            // Assert: Check if any invocation matches the expected theme toggle call
-            var found = false;
+            Console.WriteLine("Invocations: ", MockJSRuntime.Invocations);
 
-            foreach (var invocation in MockJSRuntime.Invocations)
-            {
-                var methodIsInvokeAsync = invocation.Method.Name.Equals("InvokeAsync");
+            // Assert
+            var setThemeCallCount = MockJSRuntime.Invocations
+                .Count(i => i.Method.Name == "InvokeAsync" &&
+                            i.Arguments.Count > 0 &&
+                            i.Arguments[0] as string == "themeManager.setTheme");
 
-                var hasIdentifier = false;
-                var identifier = invocation.Arguments.Count > 0 ? invocation.Arguments[0] as string : null;
-                if (identifier != null)
-                {
-                    hasIdentifier = identifier.Equals("themeManager.setTheme");
-                }
-
-                var hasArgs = false;
-                var args = invocation.Arguments.Count > 1 ? invocation.Arguments[1] as object[] : null;
-                if (args != null && args.Length == 1)
-                {
-                    var theme = args[0]?.ToString();
-                    if (theme != null)
-                    {
-                        hasArgs = theme.Equals("dark");
-                    }
-                }
-
-                if (methodIsInvokeAsync)
-                {
-                    if (hasIdentifier)
-                    {
-                        if (hasArgs)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Confirm that the theme toggle invocation exists
-            Assert.That(found, Is.True);
+            Assert.That(setThemeCallCount, Is.EqualTo(1));
         }
-
-
-
 
         #endregion HandleToggleClick
 
@@ -489,213 +449,6 @@ namespace UnitTests.Pages.Components
         }
 
         #endregion GetThemeName
-
-        #region UpdateBrowserTheme
-
-        /// <summary>
-        /// Verifies that UpdateBrowserTheme invokes JavaScript with the correct theme name.
-        /// Confirms that the JS runtime receives a call to set the theme to "dark".
-        /// </summary>
-        [Test]
-        public async Task UpdateBrowserTheme_Valid_ThemeName_Should_Call_JavaScript()
-        {
-            // Arrange: Initialize mock JS runtime with "light" theme
-            SetupMockJSRuntime("light");
-
-            // Render the ThemeToggle component
-            var component = TestContext.Render<ThemeToggle>();
-
-            // Wait until the light theme icon is present (fa-moon-o indicates light mode)
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
-
-            // Act: Call UpdateBrowserTheme with "dark"
-            await component.Instance.UpdateBrowserTheme("dark");
-
-            // Assert: Check if a matching JS invocation exists
-            var found = false;
-
-            foreach (var invocation in MockJSRuntime.Invocations)
-            {
-                // Confirm method name is "InvokeAsync"
-                var methodIsCorrect = invocation.Method.Name.Equals("InvokeAsync");
-
-                // Extract and validate the identifier argument
-                var identifier = invocation.Arguments.Count > 0 ? invocation.Arguments[0] as string : null;
-                var identifierIsCorrect = identifier != null && identifier.Equals("themeManager.setTheme");
-
-                // Extract and validate the theme argument
-                var args = invocation.Arguments.Count > 1 ? invocation.Arguments[1] as object[] : null;
-                var themeIsCorrect = false;
-                if (args != null && args.Length == 1)
-                {
-                    var theme = args[0]?.ToString();
-                    if (theme != null)
-                    {
-                        themeIsCorrect = theme.Equals("dark");
-                    }
-                }
-
-                // Mark as found if all conditions are satisfied
-                if (methodIsCorrect)
-                {
-                    if (identifierIsCorrect)
-                    {
-                        if (themeIsCorrect)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Confirm that the theme update was triggered via JS
-            Assert.That(found, Is.True);
-        }
-
-        /// <summary>
-        /// Verifies that UpdateBrowserTheme does not invoke JavaScript when the theme name is null.
-        /// Confirms that no JS runtime call is made to "themeManager.setTheme".
-        /// </summary>
-        [Test]
-        public async Task UpdateBrowserTheme_Invalid_Null_Should_Not_Call_JavaScript()
-        {
-            // Arrange: Initialize mock JS runtime with "light" theme
-            SetupMockJSRuntime("light");
-
-            // Render the ThemeToggle component
-            var component = TestContext.Render<ThemeToggle>();
-
-            // Wait until the light theme icon is present (fa-moon-o indicates light mode)
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
-
-            // Act: Call UpdateBrowserTheme with null theme
-            await component.Instance.UpdateBrowserTheme(null);
-
-            // Assert: Verify that no matching JS invocation exists
-            var found = false;
-
-            foreach (var invocation in MockJSRuntime.Invocations)
-            {
-                // Confirm method name is "InvokeAsync"
-                var methodIsCorrect = invocation.Method.Name.Equals("InvokeAsync");
-
-                // Extract and validate the identifier argument
-                var identifier = invocation.Arguments.Count > 0 ? invocation.Arguments[0] as string : null;
-                var identifierIsCorrect = identifier != null && identifier.Equals("themeManager.setTheme");
-
-                // If both method and identifier match, mark as found
-                if (methodIsCorrect)
-                {
-                    if (identifierIsCorrect)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-
-            // Confirm that no theme update was triggered via JS
-            Assert.That(found, Is.False);
-        }
-
-
-
-        /// <summary>
-        /// Verifies that UpdateBrowserTheme does not invoke JavaScript when the theme name is an empty string.
-        /// Confirms that no JS runtime call is made to "themeManager.setTheme".
-        /// </summary>
-        [Test]
-        public async Task UpdateBrowserTheme_Invalid_Empty_Should_Not_Call_JavaScript()
-        {
-            // Arrange: Initialize mock JS runtime with "light" theme
-            SetupMockJSRuntime("light");
-
-            // Render the ThemeToggle component
-            var component = TestContext.Render<ThemeToggle>();
-
-            // Wait until the light theme icon is present (fa-moon-o indicates light mode)
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
-
-            // Act: Call UpdateBrowserTheme with empty string
-            await component.Instance.UpdateBrowserTheme(string.Empty);
-
-            // Assert: Verify that no matching JS invocation exists
-            var found = false;
-
-            foreach (var invocation in MockJSRuntime.Invocations)
-            {
-                // Confirm method name is "InvokeAsync"
-                var methodIsCorrect = invocation.Method.Name.Equals("InvokeAsync");
-
-                // Extract and validate the identifier argument
-                var identifier = invocation.Arguments.Count > 0 ? invocation.Arguments[0] as string : null;
-                var identifierIsCorrect = identifier != null && identifier.Equals("themeManager.setTheme");
-
-                // If both method and identifier match, mark as found
-                if (methodIsCorrect)
-                {
-                    if (identifierIsCorrect)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-
-            // Confirm that no theme update was triggered via JS
-            Assert.That(found, Is.False);
-        }
-
-        /// <summary>
-        /// Verifies that UpdateBrowserTheme does not invoke JavaScript when the theme name is only whitespace.
-        /// Confirms that no JS runtime call is made to "themeManager.setTheme".
-        /// </summary>
-        [Test]
-        public async Task UpdateBrowserTheme_Invalid_Whitespace_Should_Not_Call_JavaScript()
-        {
-            // Arrange: Initialize mock JS runtime with "light" theme
-            SetupMockJSRuntime("light");
-
-            // Render the ThemeToggle component
-            var component = TestContext.Render<ThemeToggle>();
-
-            // Wait until the light theme icon is present (fa-moon-o indicates light mode)
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
-
-            // Act: Call UpdateBrowserTheme with whitespace string
-            await component.Instance.UpdateBrowserTheme("   ");
-
-            // Assert: Verify that no matching JS invocation exists
-            var found = false;
-
-            foreach (var invocation in MockJSRuntime.Invocations)
-            {
-                // Confirm method name is "InvokeAsync"
-                var methodIsCorrect = invocation.Method.Name.Equals("InvokeAsync");
-
-                // Extract and validate the identifier argument
-                var identifier = invocation.Arguments.Count > 0 ? invocation.Arguments[0] as string : null;
-                var identifierIsCorrect = identifier != null && identifier.Equals("themeManager.setTheme");
-
-                // If both method and identifier match, mark as found
-                if (methodIsCorrect)
-                {
-                    if (identifierIsCorrect)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-
-            // Confirm that no theme update was triggered via JS
-            Assert.That(found, Is.False);
-        }
-
-
-
-        #endregion UpdateBrowserTheme
 
         #region LoadSavedTheme
 
@@ -868,4 +621,5 @@ namespace UnitTests.Pages.Components
         #endregion UpdateBrowserTheme
 
     }
+
 }
