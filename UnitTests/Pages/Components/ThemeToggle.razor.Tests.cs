@@ -390,20 +390,29 @@ namespace UnitTests.Pages.Components
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
             component.WaitForState(() => component.Find("i.fa-moon-o") != null);
-
             MockJSRuntime.Invocations.Clear();
             component.Instance.IsToggling = false;
 
             // Act
             await component.InvokeAsync(() => component.Instance.HandleToggleClick());
-
             Console.WriteLine("Invocations: ", MockJSRuntime.Invocations);
 
             // Assert
             var setThemeCallCount = MockJSRuntime.Invocations
-                .Count(i => i.Method.Name == "InvokeAsync" &&
-                            i.Arguments.Count > 0 &&
-                            i.Arguments[0] as string == "themeManager.setTheme");
+                .Count(i =>
+                {
+                    if (i.Method.Name == "InvokeAsync")
+                    {
+                        if (i.Arguments.Count > 0)
+                        {
+                            if (i.Arguments[0] as string == "themeManager.setTheme")
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                });
 
             Assert.That(setThemeCallCount, Is.EqualTo(1));
         }
@@ -597,25 +606,26 @@ namespace UnitTests.Pages.Components
         #region UpdateBrowserTheme
 
         /// <summary>
-        /// Tests that HandleInput processes null ChangeEventArgs correctly
+        /// Tests that UpdateBrowserTheme processes null theme correctly
         /// </summary>
         [Test]
         public async Task HandleInput_Invalid_NullArgs_Should_ReturnEarly()
         {
             // Arrange
+            SetupMockJSRuntime("light");
             var result = TestContext.Render<ThemeToggle>();
             string nullArgs = null;
+            MockJSRuntime.Invocations.Clear();
 
             // Act
             var instance = result.Instance;
             await instance.UpdateBrowserTheme(nullArgs);
 
-            // Reset
-            // (No reset needed)
-
             // Assert
-            // If it doesn't throw an exception, the fast fail worked
-            Assert.Pass();
+            var invocationCount = MockJSRuntime.Invocations.Count;
+
+            // Verify no JS interop calls were made (fast fail worked)
+            Assert.That(invocationCount, Is.EqualTo(0));
         }
 
         #endregion UpdateBrowserTheme
