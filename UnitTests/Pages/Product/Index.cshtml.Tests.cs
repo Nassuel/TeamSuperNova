@@ -41,6 +41,8 @@ namespace UnitTests.Pages.Product
             // Act
             pageModel.OnGet();
 
+            // Reset
+
             // Assert 
             // How many are there?
             Assert.That(pageModel.ModelState.IsValid);
