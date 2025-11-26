@@ -29,7 +29,7 @@ namespace UnitTests.Pages
     {
         #region TestSetup
 
-        public static PrivacyModel pageModel;
+        public static PrivacyModel pagemodel;
         public static Mock<ILogger<PrivacyModel>> mockLogger;
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace UnitTests.Pages
         public void TestInitialize()
         {
             mockLogger = new Mock<ILogger<PrivacyModel>>();
-            pageModel = new PrivacyModel(mockLogger.Object);
+            pagemodel = new PrivacyModel(mockLogger.Object);
         }
 
         #endregion TestSetup
@@ -56,8 +56,10 @@ namespace UnitTests.Pages
 
             // Act - PageModel created in TestInitialize
 
+            // Reset
+
             // Assert
-            Assert.That(pageModel, Is.Not.Null);
+            Assert.That(pagemodel, Is.Not.Null);
         }
 
         /// <summary>
@@ -71,6 +73,8 @@ namespace UnitTests.Pages
 
             // Act
             var model = new PrivacyModel(logger.Object);
+
+            // Reset
 
             // Assert
             Assert.That(model, Is.Not.Null);
@@ -89,10 +93,12 @@ namespace UnitTests.Pages
             // Arrange - Done in TestInitialize
 
             // Act
-            pageModel.OnGet();
+            pagemodel.OnGet();
+
+            // Reset
 
             // Assert
-            Assert.That(pageModel.ModelState.IsValid, Is.True);
+            Assert.That(pagemodel.ModelState.IsValid, Is.True);
         }
 
         /// <summary>
@@ -104,12 +110,14 @@ namespace UnitTests.Pages
             // Arrange - Done in TestInitialize
 
             // Act
-            pageModel.OnGet();
-            pageModel.OnGet();
-            pageModel.OnGet();
+            pagemodel.OnGet();
+            pagemodel.OnGet();
+            pagemodel.OnGet();
+
+            // Reset
 
             // Assert
-            Assert.That(pageModel.ModelState.IsValid, Is.True);
+            Assert.That(pagemodel.ModelState.IsValid, Is.True);
         }
 
         #endregion OnGet
