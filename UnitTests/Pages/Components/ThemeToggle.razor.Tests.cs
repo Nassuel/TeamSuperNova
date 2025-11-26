@@ -73,6 +73,8 @@ namespace UnitTests.Pages.Components
             // Act
             var result = TestContext.Render<ThemeToggle>();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -92,6 +94,8 @@ namespace UnitTests.Pages.Components
             // Get button
             var buttonElement = result.Find("button");
 
+            // Reset
+
             // Assert
             Assert.That(buttonElement, Is.Not.Null);
         }
@@ -110,6 +114,8 @@ namespace UnitTests.Pages.Components
 
             // Get button with class
             var buttonElement = result.Find("button.theme-toggle");
+
+            // Reset
 
             // Assert
             Assert.That(buttonElement, Is.Not.Null);
@@ -133,6 +139,8 @@ namespace UnitTests.Pages.Components
             // Get type attribute
             var typeAttribute = buttonElement.GetAttribute("type");
 
+            // Reset
+
             // Assert
             Assert.That(typeAttribute, Is.EqualTo("button"));
         }
@@ -154,6 +162,8 @@ namespace UnitTests.Pages.Components
 
             // Get title attribute
             var titleAttribute = buttonElement.GetAttribute("title");
+
+            // Reset
 
             // Assert
             Assert.That(titleAttribute, Is.Not.Null);
@@ -177,6 +187,8 @@ namespace UnitTests.Pages.Components
             // Get icon element
             var iconElement = result.Find("i.fa-moon-o");
 
+            // Reset
+
             // Assert
             Assert.That(iconElement, Is.Not.Null);
         }
@@ -199,6 +211,8 @@ namespace UnitTests.Pages.Components
             // Get icon element
             var iconElement = result.Find("i.fa-sun-o");
 
+            // Reset
+
             // Assert
             Assert.That(iconElement, Is.Not.Null);
         }
@@ -220,6 +234,8 @@ namespace UnitTests.Pages.Components
 
             // Get icon element
             var iconElement = result.Find("i.theme-icon");
+
+            // Reset
 
             // Assert
             Assert.That(iconElement, Is.Not.Null);
@@ -245,6 +261,8 @@ namespace UnitTests.Pages.Components
 
             // Act
             buttonElement.Click();
+
+            // Reset
 
             // Assert - Verify that InvokeAsync was called with setTheme (IJSVoidResult)
             MockJSRuntime.Verify(
@@ -281,6 +299,8 @@ namespace UnitTests.Pages.Components
             // Get result icon
             var result = component.Find("i.fa-sun-o");
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -312,6 +332,8 @@ namespace UnitTests.Pages.Components
             // Get result icon
             var result = component.Find("i.fa-moon-o");
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -330,6 +352,8 @@ namespace UnitTests.Pages.Components
 
             // Wait for initialization
             result.WaitForState(() => result.Find("i.fa-moon-o") != null);
+
+            // Reset
 
             // Assert
             MockJSRuntime.Verify(x => x.InvokeAsync<string>("themeManager.getTheme", It.IsAny<object[]>()),
@@ -371,6 +395,8 @@ namespace UnitTests.Pages.Components
             // Act
             await component.Instance.HandleToggleClick();
 
+            // Reset
+
             // Assert - setTheme should NOT be called because IsToggling was true
             MockJSRuntime.Verify(
                 x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
@@ -395,6 +421,8 @@ namespace UnitTests.Pages.Components
 
             // Act
             await component.InvokeAsync(() => component.Instance.HandleToggleClick());
+
+            // Reset
 
             // Assert
             var setThemeInvocations = MockJSRuntime.Invocations
@@ -438,6 +466,8 @@ namespace UnitTests.Pages.Components
             // Act
             var result = component.Instance.GetThemeName();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.EqualTo("dark"));
         }
@@ -455,6 +485,8 @@ namespace UnitTests.Pages.Components
 
             // Act
             var result = component.Instance.GetThemeName();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.EqualTo("light"));
@@ -477,9 +509,11 @@ namespace UnitTests.Pages.Components
 
             // Act
             var result = await component.Instance.LoadSavedTheme();
+            
+           // Reset
 
-            // Assert
-            Assert.That(result, Is.EqualTo("dark"));
+           // Assert
+           Assert.That(result, Is.EqualTo("dark"));
         }
 
         /// <summary>
@@ -495,6 +529,8 @@ namespace UnitTests.Pages.Components
 
             // Act
             var result = await component.Instance.LoadSavedTheme();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.EqualTo("light"));
@@ -519,6 +555,8 @@ namespace UnitTests.Pages.Components
             component.Instance.UpdateServiceTheme("dark");
             component.Render();
 
+            // Reset
+
             // Assert
             var iconElement = component.Find("i.fa-sun-o");
             Assert.That(iconElement, Is.Not.Null);
@@ -538,6 +576,8 @@ namespace UnitTests.Pages.Components
             // Act
             component.Instance.UpdateServiceTheme("light");
             component.Render();
+
+            // Reset
 
             // Assert
             var iconElement = component.Find("i.fa-moon-o");
@@ -559,6 +599,8 @@ namespace UnitTests.Pages.Components
             component.Instance.UpdateServiceTheme(null);
             component.Render();
 
+            // Reset
+
             // Assert - Should still be light theme (moon icon)
             var iconElement = component.Find("i.fa-moon-o");
             Assert.That(iconElement, Is.Not.Null);
@@ -579,6 +621,8 @@ namespace UnitTests.Pages.Components
             component.Instance.UpdateServiceTheme(string.Empty);
             component.Render();
 
+            // Reset
+
             // Assert
             var iconElement = component.Find("i.fa-moon-o");
             Assert.That(iconElement, Is.Not.Null);
@@ -598,6 +642,8 @@ namespace UnitTests.Pages.Components
             // Act
             component.Instance.UpdateServiceTheme("   ");
             component.Render();
+
+            // Reset
 
             // Assert
             var iconElement = component.Find("i.fa-moon-o");
@@ -623,6 +669,8 @@ namespace UnitTests.Pages.Components
             // Act
             var instance = result.Instance;
             await instance.UpdateBrowserTheme(nullArgs);
+
+            // Reset
 
             // Assert
             var invocationCount = MockJSRuntime.Invocations.Count;
