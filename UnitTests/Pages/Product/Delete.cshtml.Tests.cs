@@ -47,6 +47,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnGet(productId);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
         }
@@ -62,6 +64,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.OnGet(productId);
+
+            // Reset
 
             // Assert
             Assert.That(pageModel.Product, Is.Not.Null);
@@ -79,6 +83,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.OnGet(productId);
+
+            // Reset
 
             // Assert
             Assert.That(pageModel.Product.Id, Is.Not.Null);
@@ -98,6 +104,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnGet(productId);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -113,6 +121,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
@@ -130,6 +140,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnGet(productId);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -145,6 +157,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
@@ -162,6 +176,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnGet(productId);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -177,6 +193,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
@@ -194,6 +212,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnGet(productId);
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -210,6 +230,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnGet(productId) as RedirectToPageResult;
 
+            // Reset
+
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
@@ -225,6 +247,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.OnGet(productId);
+
+            // Reset
 
             // Assert
             Assert.That(pageModel.Product, Is.Null);
@@ -252,6 +276,8 @@ namespace UnitTests.Pages.Product
             pageModel.OnGet(lastProductId);
             var lastProduct = pageModel.Product;
 
+            // Reset
+
             // Assert
             Assert.That(firstProduct, Is.Not.Null);
             Assert.That(lastProduct, Is.Not.Null);
@@ -275,6 +301,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnPost() as RedirectToPageResult;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
@@ -296,6 +324,8 @@ namespace UnitTests.Pages.Product
             // Act
             pageModel.OnPost();
 
+            // Reset
+
             // Assert
             var updatedProducts = TestHelper.ProductService.GetProducts();
             Assert.That(updatedProducts.Count(), Is.EqualTo(initialCount - 1));
@@ -314,6 +344,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnPost();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -329,6 +361,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = pageModel.OnPost() as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
@@ -350,6 +384,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnPost();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -369,6 +405,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = pageModel.OnPost() as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
@@ -390,6 +428,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnPost();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -410,6 +450,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnPost() as RedirectToPageResult;
 
+            // Reset
+
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
@@ -429,6 +471,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.OnPost();
+
+            // Reset
 
             // Assert
             var updatedProducts = TestHelper.ProductService.GetProducts();
@@ -452,6 +496,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = newPageModel.Product;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -468,6 +514,8 @@ namespace UnitTests.Pages.Product
             // Act
             pageModel.OnGet(productId);
             var result = pageModel.Product;
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -487,6 +535,8 @@ namespace UnitTests.Pages.Product
             pageModel.OnGet(productId);
             var result = pageModel.Product;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -502,6 +552,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
@@ -522,6 +574,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.Product = testProduct;
+
+            // Reset
 
             // Assert
             Assert.That(pageModel.Product.Id, Is.EqualTo("manual-id"));
