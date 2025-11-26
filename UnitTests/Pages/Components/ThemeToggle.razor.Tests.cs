@@ -395,26 +395,29 @@ namespace UnitTests.Pages.Components
 
             // Act
             await component.InvokeAsync(() => component.Instance.HandleToggleClick());
-            Console.WriteLine("Invocations: ", MockJSRuntime.Invocations);
 
             // Assert
-            var setThemeCallCount = MockJSRuntime.Invocations
-                .Count(i =>
-                {
-                    if (i.Method.Name == "InvokeAsync")
-                    {
-                        if (i.Arguments.Count > 0)
-                        {
-                            if (i.Arguments[0] as string == "themeManager.setTheme")
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                });
+            var setThemeInvocations = MockJSRuntime.Invocations
+                .Where(i => i.Method.Name == "InvokeAsync")
+                .Where(i => i.Arguments.Count > 0)
+                .Where(i => i.Arguments[0] as string == "themeManager.setTheme")
+                .ToList();
 
-            Assert.That(setThemeCallCount, Is.EqualTo(1));
+            Assert.That(setThemeInvocations.Count, Is.EqualTo(1));
+
+            // Verify the theme was toggled to dark
+            var setThemeInvocation = setThemeInvocations.FirstOrDefault();
+
+            Assert.That(setThemeInvocation, Is.Not.Null);
+            Assert.That(setThemeInvocation.Arguments.Count, Is.GreaterThanOrEqualTo(2));
+
+            // Extract the theme argument (it's an object array)
+            var themeArgs = setThemeInvocation.Arguments[1] as object[];
+            Assert.That(themeArgs, Is.Not.Null);
+            Assert.That(themeArgs[0], Is.EqualTo("dark"));
+
+            // Verify IsToggling is set back to false after toggle
+            Assert.That(component.Instance.IsToggling, Is.EqualTo(false));
         }
 
         #endregion HandleToggleClick
