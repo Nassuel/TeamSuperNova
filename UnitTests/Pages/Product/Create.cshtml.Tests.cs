@@ -50,6 +50,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.EqualTo(TestHelper.ProductService));
@@ -64,6 +66,8 @@ namespace UnitTests.Pages.Product
             // Arrange - Done in TestInitialize
 
             // Act - PageModel created in TestInitialize
+
+            // Reset
 
             // Assert
             Assert.That(pageModel, Is.Not.Null);
@@ -85,6 +89,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.OnGet();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
         }
@@ -100,6 +106,8 @@ namespace UnitTests.Pages.Product
             // Act
             pageModel.OnGet();
 
+            // Reset
+
             // Assert
             Assert.That(pageModel.Product, Is.Not.Null);
         }
@@ -114,6 +122,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.OnGet();
+
+            // Reset
 
             // Assert
             Assert.That(pageModel.Product.Id, Is.Not.Null);
@@ -132,6 +142,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.OnGet();
+
+            // Reset
 
             // Assert
             Assert.That(pageModel.Product.Id, Is.Not.Null);
@@ -159,6 +171,8 @@ namespace UnitTests.Pages.Product
             pageModel.OnGet();
             var secondId = pageModel.Product.Id;
 
+            // Reset
+
             // Assert
             Assert.That(firstId, Is.Not.EqualTo(secondId));
             Assert.That(Guid.TryParse(firstId, out _), Is.True);
@@ -180,6 +194,8 @@ namespace UnitTests.Pages.Product
             pageModel.OnGet();
             var secondProduct = pageModel.Product;
 
+            // Reset
+
             // Assert
             Assert.That(firstProduct, Is.Not.Null);
             Assert.That(secondProduct, Is.Not.Null);
@@ -196,6 +212,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.OnGet();
+
+            // Reset
 
             // Assert
             Assert.That((int)pageModel.Product.ProductType, Is.EqualTo(0));
@@ -227,6 +245,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = await pageModel.OnPostAsync() as RedirectToPageResult;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
             Assert.That(result.PageName, Is.EqualTo("/Product/Read"));
@@ -250,6 +270,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = await pageModel.OnPostAsync() as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.RouteValues, Is.Not.Null);
@@ -280,6 +302,8 @@ namespace UnitTests.Pages.Product
             // Act
             await pageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             Assert.That(pageModel.Product.Image, Is.Not.Null);
         }
@@ -305,6 +329,8 @@ namespace UnitTests.Pages.Product
             // Act
             await pageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             var updatedCount = TestHelper.ProductService.GetProducts().Count();
             Assert.That(updatedCount, Is.EqualTo(initialCount + 1));
@@ -322,6 +348,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = await pageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
         }
@@ -337,6 +365,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = await pageModel.OnPostAsync() as RedirectToPageResult;
+
+            // Reset
 
             // Assert
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
@@ -359,6 +389,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = await pageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
         }
@@ -380,6 +412,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             await pageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
             var updatedCount = TestHelper.ProductService.GetProducts().Count();
@@ -404,6 +438,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = await pageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.InstanceOf<PageResult>());
         }
@@ -426,6 +462,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var result = await pageModel.OnPostAsync();
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
@@ -454,6 +492,8 @@ namespace UnitTests.Pages.Product
             // Act
             await pageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             var createdProduct = TestHelper.ProductService.GetProductById(productId);
             Assert.That(createdProduct, Is.Not.Null);
@@ -481,6 +521,8 @@ namespace UnitTests.Pages.Product
             // Act
             await pageModel.OnPostAsync();
 
+            // Reset
+
             // Assert
             var createdProduct = TestHelper.ProductService.GetProductById(productId);
             Assert.That(createdProduct, Is.Not.Null);
@@ -502,6 +544,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.EqualTo(TestHelper.ProductService));
             Assert.That(result, Is.Not.Null);
@@ -518,6 +562,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = pageModel.ProductService;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -533,6 +579,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             pageModel.ProductService = newService;
+
+            // Reset
 
             // Assert
             Assert.That(pageModel.ProductService, Is.EqualTo(newService));
@@ -554,6 +602,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = newPageModel.Product;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -569,6 +619,8 @@ namespace UnitTests.Pages.Product
             // Act
             pageModel.OnGet();
             var result = pageModel.Product;
+
+            // Reset
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -586,6 +638,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
@@ -607,6 +661,8 @@ namespace UnitTests.Pages.Product
             // Act
             var result = newPageModel.ImageFile;
 
+            // Reset
+
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -623,6 +679,8 @@ namespace UnitTests.Pages.Product
             // Act
             pageModel.ImageFile = mockFile.Object;
 
+            // Reset
+
             // Assert
             Assert.That(pageModel.ImageFile, Is.EqualTo(mockFile.Object));
         }
@@ -638,6 +696,8 @@ namespace UnitTests.Pages.Product
 
             // Act
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
+
+            // Reset
 
             // Assert
             Assert.That(attributes.Length, Is.EqualTo(1));
