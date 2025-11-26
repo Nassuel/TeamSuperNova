@@ -840,5 +840,32 @@ namespace UnitTests.Pages.Components
         }
 
         #endregion UpdateServiceTheme
+
+        #region UpdateBrowserTheme
+
+        /// <summary>
+        /// Tests that HandleInput processes null ChangeEventArgs correctly
+        /// </summary>
+        [Test]
+        public async Task HandleInput_Invalid_NullArgs_Should_ReturnEarly()
+        {
+            // Arrange
+            var result = TestContext.Render<ThemeToggle>();
+            string nullArgs = null;
+
+            // Act
+            var instance = result.Instance;
+            await instance.UpdateBrowserTheme(nullArgs);
+
+            // Reset
+            // (No reset needed)
+
+            // Assert
+            // If it doesn't throw an exception, the fast fail worked
+            Assert.Pass();
+        }
+
+        #endregion UpdateBrowserTheme
+
     }
 }
