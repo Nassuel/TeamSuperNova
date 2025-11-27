@@ -372,7 +372,207 @@ mark {
     padding: 0.2em 0.4em;
 }
 
-/* Other classes */
+/* ------------------------- Badges ------------------------- */
+/* Base badge styling for dark theme */
+[data-theme="dark"] .badge {
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Badge Primary */
+[data-theme="dark"] .badge-primary {
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] a.badge-primary:hover,
+[data-theme="dark"] a.badge-primary:focus {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+/* Badge Secondary */
+[data-theme="dark"] .badge-secondary {
+    color: #ffffff;
+    background-color: var(--link-color);
+    border-color: var(--link-hover);
+}
+
+[data-theme="dark"] a.badge-secondary:hover,
+[data-theme="dark"] a.badge-secondary:focus {
+    color: #ffffff;
+    background-color: var(--link-hover);
+}
+
+/* Badge Success */
+[data-theme="dark"] .badge-success {
+    color: #ffffff;
+    background-color: #22855e;
+    border-color: #2a9b6e;
+}
+
+[data-theme="dark"] a.badge-success:hover,
+[data-theme="dark"] a.badge-success:focus {
+    color: #ffffff;
+    background-color: #2a9b6e;
+}
+
+/* Badge Info */
+[data-theme="dark"] .badge-info {
+    color: #ffffff;
+    background-color: var(--link-color);
+    border-color: var(--link-hover);
+}
+
+[data-theme="dark"] a.badge-info:hover,
+[data-theme="dark"] a.badge-info:focus {
+    color: #ffffff;
+    background-color: var(--link-hover);
+}
+
+/* Badge Warning */
+[data-theme="dark"] .badge-warning {
+    color: var(--bg-primary);
+    background-color: #ffc107;
+    border-color: #ffcd39;
+}
+
+[data-theme="dark"] a.badge-warning:hover,
+[data-theme="dark"] a.badge-warning:focus {
+    color: var(--bg-primary);
+    background-color: #ffcd39;
+}
+
+/* Badge Danger */
+[data-theme="dark"] .badge-danger {
+    color: #ffffff;
+    background-color: #c92a38;
+    border-color: #d9434f;
+}
+
+[data-theme="dark"] a.badge-danger:hover,
+[data-theme="dark"] a.badge-danger:focus {
+    color: #ffffff;
+    background-color: #d9434f;
+}
+
+/* Badge Light */
+[data-theme="dark"] .badge-light {
+    color: var(--bg-primary);
+    background-color: var(--text-secondary);
+    border-color: var(--text-primary);
+}
+
+[data-theme="dark"] a.badge-light:hover,
+[data-theme="dark"] a.badge-light:focus {
+    color: var(--bg-primary);
+    background-color: var(--text-primary);
+}
+
+/* Badge Dark */
+[data-theme="dark"] .badge-dark {
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] a.badge-dark:hover,
+[data-theme="dark"] a.badge-dark:focus {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+/* Badge White */
+[data-theme="dark"] .badge-white {
+    color: var(--bg-primary);
+    background-color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+[data-theme="dark"] a.badge-white:hover,
+[data-theme="dark"] a.badge-white:focus {
+    color: var(--bg-primary);
+    background-color: var(--text-secondary);
+}
+
+/* Badge Default */
+[data-theme="dark"] .badge-default {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] a.badge-default:hover,
+[data-theme="dark"] a.badge-default:focus {
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+}
+
+/* Badge with neumorphic shadow for dark theme */
+[data-theme="dark"] .badge {
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), -2px -2px 4px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] a.badge:hover,
+[data-theme="dark"] a.badge:focus {
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4), -3px -3px 6px rgba(255, 255, 255, 0.08);
+}
+
+/* Badge pill variant */
+[data-theme="dark"] .badge-pill {
+    border-radius: 10rem;
+}
+
+/* Focus states using CSS variables */
+[data-theme="dark"] a.badge-primary:focus,
+[data-theme="dark"] a.badge-primary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(61, 61, 61, 0.5);
+}
+
+[data-theme="dark"] a.badge-secondary:focus,
+[data-theme="dark"] a.badge-secondary.focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+[data-theme="dark"] a.badge-success:focus,
+[data-theme="dark"] a.badge-success.focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(34, 133, 94, 0.5);
+}
+
+[data-theme="dark"] a.badge-info:focus,
+[data-theme="dark"] a.badge-info.focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+[data-theme="dark"] a.badge-warning:focus,
+[data-theme="dark"] a.badge-warning.focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
+}
+
+[data-theme="dark"] a.badge-danger:focus,
+[data-theme="dark"] a.badge-danger.focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(201, 42, 56, 0.5);
+}
+
+[data-theme="dark"] a.badge-light:focus,
+[data-theme="dark"] a.badge-light.focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+[data-theme="dark"] a.badge-dark:focus,
+[data-theme="dark"] a.badge-dark.focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+/* ------------------------- Other classes ------------------------- */
 
 .checked {
     color: orange;
@@ -520,7 +720,7 @@ html {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6,
 ul, .btn, form-control,
-col-form-label, select, label {
+col-form-label, select, label, badge {
     font-family: 'Orbitron', sans-serif !important;
 }
 
