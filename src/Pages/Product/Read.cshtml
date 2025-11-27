@@ -9,21 +9,25 @@
     ViewData["Title"] = "Read page";
 }
 
-<h1 class="">Read</h1>
+<div class="d-flex align-content-center justify-content-between w-100">
+    <h1 class="theme-heading">Read</h1>
+    <div>
+        <a asp-page="/Product/Update" asp-route-id="@Model.Product.Id" class="btn btn-primary theme-btn-primary animate-up-2 mb-4">Update</a>
+        <a asp-page="/Product/Delete" asp-route-id="@Model.Product.Id" class="btn btn-primary theme-btn-primary text-danger animate-up-2 mb-4">Delete</a>
+    </div>
+</div>
 
-<div class="card theme-card mb-3 page_enter">
+<div class="jumbotron theme-jumbotron page_enter">
+    <div class="d-flex align-content-center justify-content-between">
+        <h1 class="theme-heading">@Model.Product.Brand, @(Model.Product.ProductType.DisplayName())</h1>
+    </div>
+    <hr class="theme-hr my-2">
     <div class="row g-0">
-        <div class="d-flex flex-column col-md-2 ml-2 mt-2">
+        <div class="d-flex flex-column col-md-5 ml-2 mt-2">
             <img src="@Model.Product.Image" class="card-img-top rounded mb-4" alt="@Model.Product.Image" />
-            <a asp-page="/Product/Update" asp-route-id="@Model.Product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-4">Update</a>
-            <a asp-page="/Product/Delete" asp-route-id="@Model.Product.Id" class="btn btn-primary theme-btn-primary text-danger float-right animate-up-2 btn-block mb-4">Delete</a>
         </div>
-        <div class="col-md-9">
-            <div class="card-body theme-card-body">
-                <h4 class="card-title theme-card-title">@Model.Product.Brand</h4>
-                <h6 class="card-subtitle theme-card-subtitle text-muted theme-text-muted mb-2">@(Model.Product.ProductType.DisplayName())</h6>
-                <p class="card-text theme-card-text">@Model.Product.ProductDescription</p>
-            </div>
+        <div class="col-md-6">
+            <p class="">@Model.Product.ProductDescription</p>
         </div>
     </div>
 </div>
