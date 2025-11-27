@@ -31,6 +31,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.SanitizeComment(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo("&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt;"));
     }
@@ -46,6 +48,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.SanitizeComment(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo(string.Empty));
@@ -63,6 +67,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.SanitizeComment(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo(string.Empty));
     }
@@ -78,6 +84,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.SanitizeComment(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo(string.Empty));
@@ -95,6 +103,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.SanitizeComment(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo("This is a normal comment"));
     }
@@ -111,6 +121,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.SanitizeComment(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo("&lt;a href=&#39;javascript:alert(1)&#39;&gt;Click&lt;/a&gt;"));
     }
@@ -126,6 +138,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.SanitizeComment(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo("Test &amp; &lt; &gt; &quot; &#39; characters"));
@@ -144,6 +158,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.ValidateCommentLength(data, maxLength);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.True);
     }
@@ -160,6 +176,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.ValidateCommentLength(data, maxLength);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.False);
@@ -178,6 +196,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.ValidateCommentLength(data, maxLength);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.False);
     }
@@ -194,6 +214,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.ValidateCommentLength(data, maxLength);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.False);
@@ -212,6 +234,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.ValidateCommentLength(data, maxLength);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.True);
     }
@@ -227,6 +251,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.RemoveDangerousPatterns(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo("Hello  World"));
@@ -244,6 +270,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.RemoveDangerousPatterns(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo("<a href='alert(1)'>Click</a>"));
     }
@@ -259,6 +287,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.RemoveDangerousPatterns(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo("<div 'alert(1)'>Click me</div>"));
@@ -276,6 +306,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.RemoveDangerousPatterns(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo(string.Empty));
     }
@@ -291,6 +323,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.RemoveDangerousPatterns(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo(string.Empty));
@@ -308,6 +342,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.RemoveDangerousPatterns(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo(string.Empty));
     }
@@ -323,6 +359,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.RemoveDangerousPatterns(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo("This is a safe comment with no dangerous patterns"));
@@ -340,6 +378,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.RemoveDangerousPatterns(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo("Text"));
     }
@@ -355,6 +395,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.RemoveDangerousPatterns(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo("<body 'malicious()'>Content</body>"));
@@ -372,6 +414,8 @@ public class InputSanitizationServiceTests
         // Act
         var result = _service.RemoveDangerousPatterns(data);
 
+        // Reset
+
         // Assert
         Assert.That(result, Is.EqualTo(""));
     }
@@ -387,6 +431,8 @@ public class InputSanitizationServiceTests
 
         // Act
         var result = _service.RemoveDangerousPatterns(data);
+
+        // Reset
 
         // Assert
         Assert.That(result, Is.EqualTo("<a href='alert(1)'>Click</a>"));
