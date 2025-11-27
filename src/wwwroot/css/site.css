@@ -104,12 +104,12 @@ body {
     border-color: var(--border-color) !important;
 }
 
-.theme-nav-link {
+.theme-link {
     color: var(--text-primary) !important;
     letter-spacing: .2rem !important;
 }
 
-    .theme-nav-link:hover {
+    .theme-link:hover {
         color: var(--link-hover) !important;
         letter-spacing: .1rem !important;
     }
@@ -119,20 +119,6 @@ body {
     background-color: var(--navbar-bg) !important;
     color: var(--text-secondary) !important;
 }
-
-.theme-footer-heading {
-    color: var(--text-secondary) !important;
-}
-
-.theme-footer-link {
-    color: var(--text-primary) !important;
-    letter-spacing: .2rem;
-}
-
-    .theme-footer-link:hover {
-        color: var(--link-hover) !important;
-        letter-spacing: .1rem;
-    }
 
 /* Navbar toggler icon for dark mode */
 [data-theme="dark"] .navbar-toggler-icon {
