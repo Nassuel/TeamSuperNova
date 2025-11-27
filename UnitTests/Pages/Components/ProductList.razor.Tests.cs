@@ -260,13 +260,13 @@ namespace UnitTests.Pages.Components
             var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
-            searchInput.Input("Thai");
-            var result = component.Instance.HighlightMatch("Wonders of Thailand");
+            searchInput.Input("Mac");
+            var result = component.Instance.HighlightMatch("Macintosh");
 
             // Reset
 
             // Assert
-            Assert.That("Wonders of <mark>Thai</mark>land", Is.EqualTo(result));
+            Assert.That("<mark>Mac</mark>intosh", Is.EqualTo(result));
         }
 
         #endregion Search
