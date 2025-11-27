@@ -12,7 +12,8 @@
             <input type="text"
                    class="form-control theme-input"
                    placeholder="Search Brands..."
-                   @bind="SearchTerm" />
+                   @bind-value="SearchTerm"
+                   @bind-value:event="oninput" />
         </div>
     </div>
     <div class="row">
