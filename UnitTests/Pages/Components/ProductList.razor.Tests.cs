@@ -179,7 +179,7 @@ namespace UnitTests.Pages.Components
             var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
-            searchInput.Change("TestBrand");
+            searchInput.Input("TestBrand");
 
             // Reset
 
@@ -199,7 +199,7 @@ namespace UnitTests.Pages.Components
             var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
-            searchInput.Change("testbrand");
+            searchInput.Input("testbrand");
 
             // Reset
 
@@ -219,7 +219,7 @@ namespace UnitTests.Pages.Components
             var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
-            searchInput.Change("NonExistentBrand");
+            searchInput.Input("NonExistentBrand");
 
             // Reset
 
@@ -240,7 +240,7 @@ namespace UnitTests.Pages.Components
             var searchInput = component.Find("input[placeholder='Search Brands...']");
 
             // Act
-            searchInput.Change("");
+            searchInput.Input("");
 
             // Reset
 
@@ -511,7 +511,7 @@ namespace UnitTests.Pages.Components
             // Arrange
             var component = _testContext.Render<ProductList>();
             var searchInput = component.Find("input[placeholder='Search Brands...']");
-            searchInput.Change("TestBrand");
+            searchInput.Input("TestBrand");
 
             // Try to find clear button - use FirstOrDefault to avoid exception
             var clearButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Clear"));
@@ -742,7 +742,7 @@ namespace UnitTests.Pages.Components
             var dropdown = component.Find("select");
 
             // Act
-            searchInput.Change("Brand");
+            searchInput.Input("Brand");
             dropdown.Change(ProductTypeEnum.Keyboard.ToString());
 
             // Reset
@@ -764,7 +764,7 @@ namespace UnitTests.Pages.Components
             var typeDropdown = component.Find("select");
 
             // Act
-            searchInput.Change("TestBrand");
+            searchInput.Input("TestBrand");
             typeDropdown.Change(ProductTypeEnum.Laptop.ToString());
 
             // Reset
@@ -1296,9 +1296,9 @@ namespace UnitTests.Pages.Components
         {
             // Arrange
             TestProducts[0].CommentList = new List<CommentModel>
-    {
-        new CommentModel { Comment = "Test comment", CreatedAt = DateTime.Now }
-    };
+            {
+                new CommentModel { Comment = "Test comment", CreatedAt = DateTime.Now }
+            };
             var component = _testContext.Render<ProductList>();
             var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
 
