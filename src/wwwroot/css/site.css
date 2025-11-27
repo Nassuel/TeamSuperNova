@@ -12,6 +12,8 @@
     --shadow: rgba(0, 0, 0, 0.1);
     --link-color: #0d6efd;
     --link-hover: #0a58ca;
+    --mark-bg: #cfe2ff;
+    --mark-text: #084298;
 }
 
 [data-theme="dark"] {
@@ -28,6 +30,8 @@
     --link-hover: #9ec5fe;
     --button-bg: #0d6efd;
     --button-hover: #3d8bfd;
+    --mark-bg: #0d6efd;
+    --mark-text: #ffffff;
 }
 
 /* Light theme background (default) */
@@ -373,6 +377,13 @@ body {
     background-color: var(--bg-secondary) !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-color) !important;
+}
+
+/* Mark */
+mark {
+    background-color: var(--mark-bg);
+    color: var(--mark-text);
+    padding: 0.2em 0.4em;
 }
 
 /* Other classes */
