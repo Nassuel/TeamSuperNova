@@ -76,7 +76,7 @@
                 <div class="card-img" style="background-image: url('@product.Image');">
                 </div>
                 <div class="card-body theme-card-body">
-                    <h4 class="card-title theme-card-title">@product.Brand</h4>
+                    <h4 class="card-title theme-card-title">@((MarkupString)HighlightMatch(product.Brand))</h4>
                     <h6 class="card-subtitle theme-card-subtitle">@(product.ProductType.DisplayName())</h6>
                 </div>
                 <div class="card-footer theme-card-footer">
@@ -630,5 +630,13 @@
         return true;
 
     }
+
+    /// <summary>
+    /// Returns HTML where occurrences of the current search term in the provided text are wrapped/highlighted.
+    /// Delegates to `StringHighlighter.HighlightMatch` and uses the component's `SearchTerm` as the query.
+    /// </summary>
+    /// <param name="text">The input text to search and highlight (e.g., product brand).</param>
+    /// <returns>HTML string with highlighted matches (safe to render as MarkupString).</returns>
+    public string HighlightMatch(string text) => StringHighlighter.HighlightMatch(text, SearchTerm);
 
 }
