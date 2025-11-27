@@ -16,4 +16,5 @@ namespace ContosoCrafts.WebSite.Models
         // Time the comment was created
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
+
 }
