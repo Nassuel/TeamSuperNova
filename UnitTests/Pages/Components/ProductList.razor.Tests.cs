@@ -249,6 +249,26 @@ namespace UnitTests.Pages.Components
             Assert.That(cards.Count, Is.EqualTo(4));
         }
 
+        /// <summary>
+        /// Tests that HighlightMatch() correctly highlights a substring within a given text.
+        /// </summary>
+        [Test]
+        public void Search_HighlightMatch_FromProductList_Should_Call_StringHighlighter_Correctly()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
+
+            // Act
+            searchInput.Input("Thai");
+            var result = component.Instance.HighlightMatch("Wonders of Thailand");
+
+            // Reset
+
+            // Assert
+            Assert.That("Wonders of <mark>Thai</mark>land", Is.EqualTo(result));
+        }
+
         #endregion Search
 
         #region Filter
