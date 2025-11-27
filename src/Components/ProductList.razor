@@ -577,6 +577,11 @@
             return;
         }
 
+        // Input sanitization to avoid cross-site scripting
+        InputSanitizationService sanitizationService = new InputSanitizationService();
+        NewComment = sanitizationService.SanitizeComment(NewComment);
+        NewComment = sanitizationService.RemoveDangerousPatterns(NewComment);
+
         // Add the new comment to the selected product
         ProductService.AddCommentToProduct(SelectedProductId, new CommentModel() { Comment = NewComment });
 
