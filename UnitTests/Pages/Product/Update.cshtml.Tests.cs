@@ -85,6 +85,7 @@ namespace UnitTests.Pages.Product
 
             // Instantiate page model with mock service
             PageModel = new UpdateModel(MockProductService.Object);
+
         }
 
         #endregion TestSetup
@@ -162,9 +163,9 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That("test-laptop-1", Is.EqualTo(PageModel.Product.Id));
-            Assert.That("TestBrand", Is.EqualTo(PageModel.Product.Brand));
-            Assert.That("Test Laptop", Is.EqualTo(PageModel.Product.ProductName));
+            Assert.That("test-laptop-1", Is.EqualTo(PageModel.FormModel.Product.Id));
+            Assert.That("TestBrand", Is.EqualTo(PageModel.FormModel.Product.Brand));
+            Assert.That("Test Laptop", Is.EqualTo(PageModel.FormModel.Product.ProductName));
         }
 
         /// <summary>
@@ -182,13 +183,13 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That("test-laptop-1", Is.EqualTo(PageModel.Product.Id));
-            Assert.That("TestBrand", Is.EqualTo(PageModel.Product.Brand));
-            Assert.That("Test Laptop", Is.EqualTo(PageModel.Product.ProductName));
-            Assert.That(ProductTypeEnum.Laptop, Is.EqualTo(PageModel.Product.ProductType));
-            Assert.That("https://test.com", Is.EqualTo(PageModel.Product.Url));
-            Assert.That("Test Description", Is.EqualTo(PageModel.Product.ProductDescription));
-            Assert.That("/assets/test.png", Is.EqualTo(PageModel.Product.Image));
+            Assert.That("test-laptop-1", Is.EqualTo(PageModel.FormModel.Product.Id));
+            Assert.That("TestBrand", Is.EqualTo(PageModel.FormModel.Product.Brand));
+            Assert.That("Test Laptop", Is.EqualTo(PageModel.FormModel.Product.ProductName));
+            Assert.That(ProductTypeEnum.Laptop, Is.EqualTo(PageModel.FormModel.Product.ProductType));
+            Assert.That("https://test.com", Is.EqualTo(PageModel.FormModel.Product.Url));
+            Assert.That("Test Description", Is.EqualTo(PageModel.FormModel.Product.ProductDescription));
+            Assert.That("/assets/test.png", Is.EqualTo(PageModel.FormModel.Product.Image));
         }
 
         /// <summary>
@@ -206,8 +207,8 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That(3, Is.EqualTo(PageModel.Product.Ratings.Length));
-            Assert.That(5, Is.EqualTo(PageModel.Product.Ratings[0]));
+            Assert.That(3, Is.EqualTo(PageModel.FormModel.Product.Ratings.Length));
+            Assert.That(5, Is.EqualTo(PageModel.FormModel.Product.Ratings[0]));
         }
 
         /// <summary>
@@ -225,7 +226,7 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That(PageModel.Product.Ratings, Is.Null);
+            Assert.That(PageModel.FormModel.Product.Ratings, Is.Null);
         }
 
         /// <summary>
@@ -243,9 +244,9 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That("test-mice-1", Is.EqualTo(PageModel.Product.Id));
-            Assert.That("MiceBrand", Is.EqualTo(PageModel.Product.Brand));
-            Assert.That(ProductTypeEnum.Mice, Is.EqualTo(PageModel.Product.ProductType));
+            Assert.That("test-mice-1", Is.EqualTo(PageModel.FormModel.Product.Id));
+            Assert.That("MiceBrand", Is.EqualTo(PageModel.FormModel.Product.Brand));
+            Assert.That(ProductTypeEnum.Mice, Is.EqualTo(PageModel.FormModel.Product.ProductType));
         }
 
         /// <summary>
@@ -384,12 +385,12 @@ namespace UnitTests.Pages.Product
             var data = "non-existent-id";
 
             // Act
-            PageModel.OnGet(data);
+            var result = PageModel.OnGet(data) as RedirectToPageResult;
 
             // Reset
 
             // Assert
-            Assert.That(PageModel.Product, Is.Null);
+            Assert.That("/Product/Index", Is.EqualTo(result.PageName));
         }
 
         /// <summary>
@@ -407,7 +408,7 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That("test-laptop-1", Is.EqualTo(PageModel.Product.Id));
+            Assert.That("test-laptop-1", Is.EqualTo(PageModel.FormModel.Product.Id));
         }
 
         /// <summary>
@@ -426,7 +427,6 @@ namespace UnitTests.Pages.Product
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
-            Assert.That(PageModel.Product, Is.Null);
         }
 
         /// <summary>
@@ -452,13 +452,54 @@ namespace UnitTests.Pages.Product
         #region OnPostAsync
 
         /// <summary>
+        /// Test OnPostAsync with null FormModel returns RedirectToPageResult
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Invalid_Null_FormModel_Should_Return_RedirectToPageResult()
+        {
+            // Arrange
+            PageModel.FormModel = null;
+
+            // Act
+            var result = await PageModel.OnPostAsync();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
+        }
+
+        /// <summary>
+        /// Test OnPostAsync with null FormModel redirects to Index
+        /// </summary>
+        [Test]
+        public async Task OnPostAsync_Invalid_Null_FormModel_Should_Redirect_To_Index()
+        {
+            // Arrange
+            PageModel.FormModel = null;
+
+            // Act
+            var result = await PageModel.OnPostAsync();
+
+            var redirectResult = result as RedirectToPageResult;
+
+            // Reset
+
+            // Assert
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That("/Product/Index", Is.EqualTo(redirectResult.PageName));
+        }
+
+        /// <summary>
         /// Test OnPostAsync with valid data updates product and redirects
         /// </summary>
         [Test]
         public async Task OnPostAsync_Valid_Product_Should_Update_And_Redirect_To_Index()
         {
             // Arrange
-            PageModel.Product = new ProductModel
+            PageModel.FormModel = new ProductFormModel();
+
+            PageModel.FormModel.Product = new ProductModel
             {
                 Id = "test-laptop-1",
                 Brand = "UpdatedBrand",
@@ -490,11 +531,7 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Valid_Should_Call_SaveUploadedFileAsync()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
             PageModel.ModelState.Clear();
 
             MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
@@ -522,15 +559,20 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Valid_Should_Set_Product_Image_From_Upload()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
+
+            // Create mock image file to trigger SaveUploadedFileAsync
+            var mockImageFile = new Mock<IFormFile>();
+
+            mockImageFile.Setup(f => f.Length).Returns(100);
+
+            PageModel.FormModel.ImageFile = mockImageFile.Object;
+
             PageModel.ModelState.Clear();
 
             var data = "/assets/uploaded-image.png";
-            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(mockImageFile.Object))
                 .ReturnsAsync(data);
             MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
                 .Returns(true);
@@ -542,7 +584,7 @@ namespace UnitTests.Pages.Product
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(data, Is.EqualTo(PageModel.Product.Image));
+            Assert.That(data, Is.EqualTo(PageModel.FormModel.Product.Image));
         }
 
         /// <summary>
@@ -552,11 +594,7 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Valid_Should_Call_UpdateData()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
             PageModel.ModelState.Clear();
 
             MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
@@ -578,31 +616,14 @@ namespace UnitTests.Pages.Product
         }
 
         /// <summary>
-        /// Test OnPostAsync with null Product returns RedirectToPageResult
-        /// </summary>
-        [Test]
-        public async Task OnPostAsync_Invalid_Null_Product_Should_Return_RedirectToPageResult()
-        {
-            // Arrange
-            PageModel.Product = null;
-
-            // Act
-            var result = await PageModel.OnPostAsync();
-
-            // Reset
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
-        }
-
-        /// <summary>
         /// Test OnPostAsync with null Product redirects to Index
         /// </summary>
         [Test]
         public async Task OnPostAsync_Invalid_Null_Product_Should_Redirect_To_Index()
         {
             // Arrange
-            PageModel.Product = null;
+            PageModel.FormModel = new ProductFormModel();
+            PageModel.FormModel.Product = null;
 
             // Act
             var result = await PageModel.OnPostAsync();
@@ -622,11 +643,7 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Invalid_ModelState_Should_Return_Page_Result()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
             PageModel.ModelState.AddModelError("TestError", "Test error message");
 
             // Act
@@ -645,11 +662,7 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Invalid_ModelState_Should_Not_Call_UpdateData()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
             PageModel.ModelState.AddModelError("TestError", "Test error message");
 
             MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
@@ -673,11 +686,7 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Invalid_Multiple_ModelState_Errors_Should_Return_Page_Result()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
             PageModel.ModelState.AddModelError("Error1", "First error");
             PageModel.ModelState.AddModelError("Error2", "Second error");
 
@@ -691,21 +700,16 @@ namespace UnitTests.Pages.Product
         }
 
         /// <summary>
-        /// Test OnPostAsync with valid data and null image path
+        /// Test OnPostAsync with null ImageFile preserves existing image
         /// </summary>
         [Test]
-        public async Task OnPostAsync_Valid_With_Null_Image_Path_Should_Update_Product()
+        public async Task OnPostAsync_Valid_With_Null_ImageFile_Should_Preserve_Existing_Image()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
+
             PageModel.ModelState.Clear();
 
-            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
-                .ReturnsAsync((string)null);
             MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
                 .Returns(true);
 
@@ -716,7 +720,7 @@ namespace UnitTests.Pages.Product
 
             // Assert
             Assert.That(result, Is.InstanceOf<RedirectToPageResult>());
-            Assert.That(PageModel.Product.Image, Is.Null);
+            Assert.That(PageModel.FormModel.Product.Image, Is.EqualTo("/assets/test.png"));
         }
 
         /// <summary>
@@ -726,19 +730,28 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Valid_Complete_Product_Should_Update_All_Properties()
         {
             // Arrange
-            PageModel.Product = new ProductModel
+            var mockImageFile = new Mock<IFormFile>();
+
+            mockImageFile.Setup(f => f.Length).Returns(100);
+
+            PageModel.FormModel = new ProductFormModel
             {
-                Id = "test-laptop-1",
-                Brand = "UpdatedBrand",
-                ProductName = "Updated Laptop",
-                ProductType = ProductTypeEnum.Laptop,
-                Url = "https://updated.com",
-                ProductDescription = "Updated Description",
-                Ratings = new int[] { 5 }
+                Product = new ProductModel
+                {
+                    Id = "test-laptop-1",
+                    Brand = "UpdatedBrand",
+                    ProductName = "Updated Laptop",
+                    ProductType = ProductTypeEnum.Laptop,
+                    Url = "https://updated.com",
+                    ProductDescription = "Updated Description",
+                    Ratings = new int[] { 5 }
+                },
+                ImageFile = mockImageFile.Object
             };
+
             PageModel.ModelState.Clear();
 
-            MockProductService.Setup(x => x.SaveUploadedFileAsync(It.IsAny<IFormFile>()))
+            MockProductService.Setup(x => x.SaveUploadedFileAsync(mockImageFile.Object))
                 .ReturnsAsync("/assets/updated.png");
             MockProductService.Setup(x => x.UpdateData(It.IsAny<ProductModel>()))
                 .Returns(true);
@@ -749,9 +762,9 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That(PageModel.Product.Brand, Is.EqualTo("UpdatedBrand"));
-            Assert.That(PageModel.Product.ProductName, Is.EqualTo("Updated Laptop"));
-            Assert.That(PageModel.Product.Image, Is.EqualTo("/assets/updated.png"));
+            Assert.That(PageModel.FormModel.Product.Brand, Is.EqualTo("UpdatedBrand"));
+            Assert.That(PageModel.FormModel.Product.ProductName, Is.EqualTo("Updated Laptop"));
+            Assert.That(PageModel.FormModel.Product.Image, Is.EqualTo("/assets/updated.png"));
         }
 
         /// <summary>
@@ -761,16 +774,12 @@ namespace UnitTests.Pages.Product
         public async Task OnPostAsync_Valid_With_ImageFile_Should_Save_Image()
         {
             // Arrange
-            PageModel.Product = new ProductModel
-            {
-                Id = "test-laptop-1",
-                Brand = "TestBrand"
-            };
+            PageModel.OnGet("test-laptop-1");
 
             // Mock image file
             var mockImageFile = new Mock<IFormFile>();
             mockImageFile.Setup(f => f.Length).Returns(100);
-            PageModel.ImageFile = mockImageFile.Object;
+            PageModel.FormModel.ImageFile = mockImageFile.Object;
             PageModel.ModelState.Clear();
 
             MockProductService.Setup(x => x.SaveUploadedFileAsync(mockImageFile.Object))
@@ -789,7 +798,7 @@ namespace UnitTests.Pages.Product
             Assert.That(redirectResult, Is.Not.Null);
             Assert.That(redirectResult, Is.InstanceOf<RedirectToPageResult>());
             //MockProductService.Verify(x => x.SaveUploadedFileAsync(mockImageFile.Object), Times.Once);
-            Assert.That("/assets/new-image.png", Is.EqualTo(PageModel.Product.Image));
+            Assert.That("/assets/new-image.png", Is.EqualTo(PageModel.FormModel.Product.Image));
         }
 
         #endregion OnPostAsync
@@ -836,16 +845,16 @@ namespace UnitTests.Pages.Product
         #region Product
 
         /// <summary>
-        /// Test Product property is initially null
+        /// Test FormModel is null before OnGet is called
         /// </summary>
         [Test]
-        public void Product_Initial_Should_Be_Null()
+        public void FormModel_Initial_Should_Be_Null()
         {
             // Arrange
             var newPageModel = new UpdateModel(MockProductService.Object);
 
             // Act
-            var result = newPageModel.Product;
+            var result = newPageModel.FormModel;
 
             // Reset
 
@@ -864,7 +873,7 @@ namespace UnitTests.Pages.Product
 
             // Act
             PageModel.OnGet(data);
-            var result = PageModel.Product;
+            var result = PageModel.FormModel.Product;
 
             // Reset
 
@@ -874,32 +883,31 @@ namespace UnitTests.Pages.Product
         }
 
         /// <summary>
-        /// Test Product property remains null after OnGet with invalid ID
+        /// Test FormModel remains null after OnGet with invalid ID
         /// </summary>
         [Test]
-        public void Product_After_Invalid_OnGet_Should_Remain_Null()
+        public void FormModel_After_Invalid_OnGet_Should_Remain_Null()
         {
             // Arrange
             var data = "non-existent-id";
 
             // Act
             PageModel.OnGet(data);
-            var result = PageModel.Product;
 
             // Reset
 
             // Assert
-            Assert.That(null, Is.EqualTo(result));
+            Assert.That(PageModel.FormModel, Is.Null);
         }
 
         /// <summary>
-        /// Test Product property has BindProperty attribute
+        /// Test FormModel property has BindProperty attribute
         /// </summary>
         [Test]
-        public void Product_Should_Have_BindProperty_Attribute()
+        public void FormModel_Should_Have_BindProperty_Attribute()
         {
             // Arrange
-            var propertyInfo = typeof(UpdateModel).GetProperty("Product");
+            var propertyInfo = typeof(UpdateModel).GetProperty("FormModel");
 
             // Act
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
@@ -915,7 +923,7 @@ namespace UnitTests.Pages.Product
         #region ImageFile
 
         /// <summary>
-        /// Test ImageFile property is initially null
+        /// Test ImageFile property is null after OnGet
         /// </summary>
         [Test]
         public void ImageFile_Initial_Should_Be_Null()
@@ -923,13 +931,15 @@ namespace UnitTests.Pages.Product
             // Arrange
             var newPageModel = new UpdateModel(MockProductService.Object);
 
+            newPageModel.OnGet("test-laptop-1");
+
             // Act
-            var result = newPageModel.ImageFile;
+            var result = newPageModel.FormModel.ImageFile;
 
             // Reset
 
             // Assert
-            Assert.That(null, Is.EqualTo(result));
+            Assert.That(result, Is.Null);
         }
 
         /// <summary>
@@ -941,23 +951,25 @@ namespace UnitTests.Pages.Product
             // Arrange
             var mockFile = new Mock<IFormFile>();
 
+            PageModel.OnGet("test-laptop-1");
+
             // Act
-            PageModel.ImageFile = mockFile.Object;
+            PageModel.FormModel.ImageFile = mockFile.Object;
 
             // Reset
 
             // Assert
-            Assert.That(mockFile.Object, Is.EqualTo(PageModel.ImageFile));
+            Assert.That(mockFile.Object, Is.EqualTo(PageModel.FormModel.ImageFile));
         }
 
         /// <summary>
-        /// Test ImageFile property has BindProperty attribute
+        /// Test ImageFile property on FormModel does not have BindProperty attribute
         /// </summary>
         [Test]
-        public void ImageFile_Should_Have_BindProperty_Attribute()
+        public void FormModel_ImageFile_Should_Not_Have_BindProperty_Attribute()
         {
             // Arrange
-            var propertyInfo = typeof(UpdateModel).GetProperty("ImageFile");
+            var propertyInfo = typeof(ProductFormModel).GetProperty("ImageFile");
 
             // Act
             var attributes = propertyInfo.GetCustomAttributes(typeof(BindPropertyAttribute), false);
@@ -965,9 +977,86 @@ namespace UnitTests.Pages.Product
             // Reset
 
             // Assert
-            Assert.That(1, Is.EqualTo(attributes.Length));
+            Assert.That(0, Is.EqualTo(attributes.Length));
         }
 
         #endregion ImageFile
+
+        #region FormModel Placeholders
+
+        /// <summary>
+        /// Test OnGet sets BrandPlaceholder correctly
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_Should_Set_BrandPlaceholder()
+        {
+            // Arrange
+            var data = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(data);
+
+            // Reset
+
+            // Assert
+            Assert.That(PageModel.FormModel.BrandPlaceholder, Is.EqualTo("Update the brand of product"));
+        }
+
+        /// <summary>
+        /// Test OnGet sets ProductNamePlaceholder correctly
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_Should_Set_ProductNamePlaceholder()
+        {
+            // Arrange
+            var data = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(data);
+
+            // Reset
+
+            // Assert
+            Assert.That(PageModel.FormModel.ProductNamePlaceholder, Is.EqualTo("Update the product name"));
+        }
+
+        /// <summary>
+        /// Test OnGet sets DescriptionPlaceholder correctly
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_Should_Set_DescriptionPlaceholder()
+        {
+            // Arrange
+            var data = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(data);
+
+            // Reset
+
+            // Assert
+            Assert.That(PageModel.FormModel.DescriptionPlaceholder, Is.EqualTo("Update description here"));
+        }
+
+        /// <summary>
+        /// Test OnGet sets UrlPlaceholder correctly
+        /// </summary>
+        [Test]
+        public void OnGet_Valid_Should_Set_UrlPlaceholder()
+        {
+            // Arrange
+            var data = "test-laptop-1";
+
+            // Act
+            PageModel.OnGet(data);
+
+            // Reset
+
+            // Assert
+            Assert.That(PageModel.FormModel.UrlPlaceholder, Is.EqualTo("Update URL of product website"));
+        }
+
+        #endregion FormModel Placeholders
+
     }
 }
