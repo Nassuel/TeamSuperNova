@@ -588,6 +588,35 @@ mark {
     gap: 0.5rem;
 }
 
+/* Url validation alerting */
+.url-validation-alert {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    color: #856404;
+}
+
+[data-theme="dark"] .url-validation-alert {
+    background-color: #4a4025;
+    border: 1px solid #ffc107;
+    color: #ffc107;
+}
+
+.url-validation-success {
+    background-color: #d4edda;
+    border: 1px solid #28a745;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .url-validation-success {
+    background-color: #1e3d2a;
+    border: 1px solid #28a745;
+    color: var(--text-primary) !important;
+}
+
 /* ------------------------- Other classes ------------------------- */
 
 .checked {
