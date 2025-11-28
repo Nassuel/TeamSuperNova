@@ -1,4 +1,4 @@
-@using ContosoCrafts.WebSite.Enums
+﻿@using ContosoCrafts.WebSite.Enums
 @using ContosoCrafts.WebSite.Models
 
 @* Partial view for product form fields used in Create and Update pages *@
@@ -51,7 +51,12 @@
 
     <label class="col-form-label theme-label">Product Url:</label>
 
-    <input asp-for="Product.Url" class="form-control theme-input mb-2" placeholder="@Model.UrlPlaceholder" />
+    <div class="d-flex align-content-center justify-content-center mb-2">
+        <input id="FormModel-Product-Url" asp-for="Product.Url" class="form-control theme-input" placeholder="@Model.UrlPlaceholder" />
+        <button type="button" id="validate-url-btn" class="btn btn-secondary theme-btn-secondary ml-2">Validate</button>
+    </div>
+
+    <div id="url-validation-message" class="d-none"></div>
 
 </div>
 
@@ -68,15 +73,18 @@
 
 </div>
 
-<button type="submit" class="btn btn-primary">Save</button>
+<button type="submit" class="btn btn-primary theme-btn-primary">Save</button>
 
-<a asp-page="/Product/Read" asp-route-id="@Model.Product.Id" class="btn btn-secondary">Cancel</a>
+<a asp-page="/Product/Read" asp-route-id="@Model.Product.Id" class="btn btn-secondary theme-btn-secondary">Cancel</a>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <script>
 
     // Initialize character counter on page load
     document.addEventListener("DOMContentLoaded", function () {
 
+        /* TEXTAREA LENGTH COMPUTATION */
         // Get the description textarea element
         var descriptionTextarea = document.getElementById("FormModel-Product-ProductDescription");
 
@@ -126,6 +134,129 @@
 
         // Initialize count on page load
         updateCharacterCount();
+
+        /* URL VALIDATION CODE */
+        // Get the validate button element
+        var validateButton = document.getElementById("validate-url-btn");
+
+        // Get the URL input element
+        var urlInput = document.getElementById("FormModel-Product-Url");
+
+        // Get the validation message element
+        var validationMessage = document.getElementById("url-validation-message");
+
+        // Fast fail: Check if validate button exists
+        if (validateButton == null) {
+            return;
+        }
+
+        // Fast fail: Check if URL input exists
+        if (urlInput == null) {
+            return;
+        }
+
+        // Fast fail: Check if validation message element exists
+        if (validationMessage == null) {
+            return;
+        }
+
+        // Handle validate button click
+        validateButton.addEventListener("click", async function () {
+
+            // Get the URL value
+            var url = urlInput.value.trim();
+
+            // Fast fail: Check if URL is empty
+            if (url === "") {
+                showValidationMessage("Please enter a URL to validate.", false);
+                return;
+            }
+
+            // Fast fail: Check if URL has valid format
+            if (isValidUrlFormat(url) == false) {
+                showValidationMessage("Please enter a valid URL format (e.g., https://example.com).", false);
+                return;
+            }
+
+            // Show loading state
+            validateButton.disabled = true;
+            validateButton.textContent = "Validating...";
+
+            // Validate the URL
+            await validateUrl(url);
+
+            // Reset button state
+            validateButton.disabled = false;
+            validateButton.textContent = "Validate";
+        });
+
+        // Validate URL format
+        function isValidUrlFormat(url) {
+
+            // Check if URL starts with http or https
+            if (url.startsWith("http://") == false && url.startsWith("https://") == false) {
+                return false;
+            }
+
+            // Attempt to create URL object
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Validate URL by making a request
+        async function validateUrl(url) {
+
+            try {
+
+                // Make request to validation endpoint
+                var response = await fetch("/api/ValidateUrl?url=" + encodeURIComponent(url), {
+                    method: "GET"
+                });
+
+                // Parse response
+                var result = await response.json();
+
+                // Check if URL is valid
+                if (result.isValid) {
+                    showValidationMessage("URL is valid and accessible.", true);
+                }
+
+                // URL returned non-2xx status
+                if (result.isValid == false) {
+                    showValidationMessage("Warning: URL returned status code " + result.statusCode + ". Please double-check the link you have provided.", false);
+                }
+
+            } catch (error) {
+                // Request failed
+                showValidationMessage("Warning: Unable to validate URL. Please double-check the link you have provided. Error: " + error, false);
+            }
+        }
+
+        // Show validation message
+        function showValidationMessage(message, isSuccess) {
+
+            // Remove hidden class
+            validationMessage.classList.remove("d-none");
+
+            // Apply appropriate styling
+            if (isSuccess) {
+                validationMessage.classList.remove("alert", "theme-alert", "alert-warning", "text-danger", "url-validation-success");
+                validationMessage.classList.add("text-success", "mt-2", "url-validation-success");
+                validationMessage.innerHTML = '<i class="fa fa-check-square-o"></i> ' + message;
+            }
+
+            // Apply warning styling
+            if (isSuccess == false) {
+                validationMessage.classList.remove("text-success");
+                validationMessage.classList.add("alert", "theme-alert", "alert-warning", "mt-2", "url-validation-alert");
+                validationMessage.innerHTML = '<i class="fa fa-exclamation-triangle"></i> ' + message;
+            }
+        }
+
     });
 
 </script>
