@@ -1,0 +1,131 @@
+@using ContosoCrafts.WebSite.Enums
+@using ContosoCrafts.WebSite.Models
+
+@* Partial view for product form fields used in Create and Update pages *@
+@model ProductFormModel
+
+<input type="hidden" asp-for="Product.Id" />
+
+<div>
+
+    <label class="col-form-label theme-label">Product Brand:</label>
+
+    <input asp-for="Product.Brand" class="form-control theme-input mb-2" placeholder="@Model.BrandPlaceholder" />
+
+</div>
+
+<div>
+
+    <label class="col-form-label theme-label">Product Name:</label>
+
+    <input asp-for="Product.ProductName" class="form-control theme-input mb-2" placeholder="@Model.ProductNamePlaceholder" />
+
+</div>
+
+<div>
+    <label class="col-form-label theme-label">Upload Product Image:</label>
+    <input asp-for="ImageFile" type="file" class="form-control theme-input" accept="image/*" />
+
+    @if (string.IsNullOrEmpty(Model.Product.Image) == false)
+    {
+        <div class="d-flex flex-column">
+            <label class="col-form-label theme-label">Current Image:</label>
+            <img src="@Model.Product.Image" alt="Current product image" class="product-form-thumbnail" />
+            <small class="d-block text-muted theme-text-muted my-2">Current image location: @Model.Product.Image</small>
+        </div>
+    }
+
+</div>
+
+<div>
+
+    <label class="col-form-label theme-label">Product Description:</label>
+
+    <textarea id="FormModel-Product-ProductDescription" asp-for="Product.ProductDescription" class="form-control theme-input mb-2" placeholder="@Model.DescriptionPlaceholder" maxlength="5000" rows="10"></textarea>
+
+    <small id="char-count-display" class="text-muted theme-text-muted">0 / 5000 characters (5000 remaining)</small>
+
+</div>
+
+<div>
+
+    <label class="col-form-label theme-label">Product Url:</label>
+
+    <input asp-for="Product.Url" class="form-control theme-input mb-2" placeholder="@Model.UrlPlaceholder" />
+
+</div>
+
+<div>
+
+    <label class="col-form-label theme-label">Product Type:</label>
+
+    <select asp-for="Product.ProductType" class="form-control theme-input mb-2">
+        @foreach (var item in Enum.GetValues(typeof(ProductTypeEnum)))
+        {
+            <option value="@((int)item)">@(((ProductTypeEnum)item).DisplayName())</option>
+        }
+    </select>
+
+</div>
+
+<button type="submit" class="btn btn-primary">Save</button>
+
+<a asp-page="/Product/Read" asp-route-id="@Model.Product.Id" class="btn btn-secondary">Cancel</a>
+
+<script>
+
+    // Initialize character counter on page load
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Get the description textarea element
+        var descriptionTextarea = document.getElementById("FormModel-Product-ProductDescription");
+
+        // Get the character count display element
+        var charCountDisplay = document.getElementById("char-count-display");
+
+        // Fast fail: Check if textarea exists
+        if (descriptionTextarea == null) {
+            return;
+        }
+
+        // Fast fail: Check if display element exists
+        if (charCountDisplay == null) {
+            return;
+        }
+
+        // Maximum character limit for description
+        var maxLength = 5000;
+
+        // Update character count display
+        function updateCharacterCount() {
+
+            // Get current character count
+            var currentLength = descriptionTextarea.value.length;
+
+            // Calculate remaining characters
+            var remainingChars = maxLength - currentLength;
+
+            // Update display text
+            charCountDisplay.textContent = currentLength + " / " + maxLength + " characters (" + remainingChars + " remaining)";
+
+            // Add warning class if near limit
+            if (remainingChars <= 500) {
+                charCountDisplay.classList.add("text-danger");
+                charCountDisplay.classList.remove("text-muted", "theme-text-muted");
+            }
+
+            // Reset to normal styling if not near limit
+            if (remainingChars > 500) {
+                charCountDisplay.classList.remove("text-danger");
+                charCountDisplay.classList.add("text-muted", "theme-text-muted");
+            }
+        }
+
+        // Attach input event listener to textarea
+        descriptionTextarea.addEventListener("input", updateCharacterCount);
+
+        // Initialize count on page load
+        updateCharacterCount();
+    });
+
+</script>
