@@ -18,13 +18,9 @@ namespace ContosoCrafts.WebSite.Pages.Product
         // Service for handling product data operations
         public JsonFileProductService ProductService { get; }
 
-        // The product data to update, bound for post
+        // The form model containing product data and placeholders, bound for post
         [BindProperty]
-        public ProductModel Product { get; set; }
-
-        // The uploaded image file for the product
-        [BindProperty]
-        public IFormFile ImageFile { get; set; }
+        public ProductFormModel FormModel { get; set; }
 
         /// <summary>
         /// Constructor to initialize the UpdateModel with product service
@@ -52,13 +48,24 @@ namespace ContosoCrafts.WebSite.Pages.Product
             }
 
             // Retrieve product by ID
-            Product = ProductService.GetProducts().FirstOrDefault(x => x.Id.Equals(id));
+            var product = ProductService.GetProducts().FirstOrDefault(x => x.Id.Equals(id));
 
             // Fast fail: Check if product was not found
-            if (Product == null)
+            if (product == null)
             {
                 return RedirectToPage("/Product/Index");
             }
+
+            // Initialize form model with product data and update placeholders
+            FormModel = new ProductFormModel
+            {
+                Product = product,
+                ImageFile = null,
+                BrandPlaceholder = "Update the brand of product",
+                ProductNamePlaceholder = "Update the product name",
+                DescriptionPlaceholder = "Update description here",
+                UrlPlaceholder = "Update URL of product website"
+            };
 
             return Page();
 
@@ -72,8 +79,14 @@ namespace ContosoCrafts.WebSite.Pages.Product
         public async Task<IActionResult> OnPostAsync()
         {
 
+            // Fast fail: Check if form model is null
+            if (FormModel == null)
+            {
+                return RedirectToPage("/Product/Index");
+            }
+
             // Fast fail: Check if product is null
-            if (Product == null)
+            if (FormModel.Product == null)
             {
                 return RedirectToPage("/Product/Index");
             }
@@ -84,11 +97,14 @@ namespace ContosoCrafts.WebSite.Pages.Product
                 return Page();
             }
 
-            // Save uploaded image file and update product image path
-            Product.Image = await ProductService.SaveUploadedFileAsync(ImageFile);
+            // Save uploaded image file only if a new file was provided
+            if (FormModel.ImageFile != null)
+            {
+                FormModel.Product.Image = await ProductService.SaveUploadedFileAsync(FormModel.ImageFile);
+            }
 
             // Update product data in service
-            ProductService.UpdateData(Product);
+            ProductService.UpdateData(FormModel.Product);
 
             // Redirect to index page
             return RedirectToPage("/Product/Index");
