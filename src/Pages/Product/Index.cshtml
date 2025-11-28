@@ -12,12 +12,12 @@
     {
         <div class="card theme-card mb-3 page_enter">
             <div class="row g-0">
-                <div class="d-flex flex-column col-md-2 ml-2 mt-2">
+                <div class="d-flex flex-column col-2 ml-5 mt-4">
                     <img src="@product.Image" class="card-img-top rounded mb-2" alt="@product.Image" />
                     <a asp-page="/Product/Update" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-2">Update</a>
                     <a asp-page="/Product/Delete" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary text-danger float-right animate-up-2 btn-block mb-2">Delete</a>
                 </div>
-                <div class="col-md-9">
+                <div class="col-9">
                     <div class="card-body theme-card-body">
                         <h4 class="card-title theme-card-title">@product.Brand</h4>
                         <h6 class="card-subtitle theme-card-subtitle text-muted theme-text-muted mb-2">@(product.ProductType.DisplayName())</h6>
