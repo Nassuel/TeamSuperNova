@@ -757,6 +757,9 @@
         // Trigger UI update before opening modal
         StateHasChanged();
 
+        // Complete async operation
+        await Task.CompletedTask;
+
     }
 
     /// <summary>
