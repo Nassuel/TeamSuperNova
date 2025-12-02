@@ -203,6 +203,16 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<!-- Copy Link Toast -->
+@if (ShowCopyToast)
+{
+    <div class="toast-container">
+        <div class="alert alert-success copy-success-alert" role="alert">
+            <i class="fa fa-check-circle mr-2" aria-hidden="true"></i>
+            Link copied to clipboard!
+        </div>
+    </div>
+}
 
 
 @code
@@ -240,6 +250,9 @@
 
     // Text of the new comment being added
     string NewComment = string.Empty;
+
+    // Flag to show copy success toast notification
+    private bool ShowCopyToast = false;
 
     /// <summary>
     /// Returns filtered and sorted product list based on current filter criteria
