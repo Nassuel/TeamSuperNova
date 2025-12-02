@@ -12,11 +12,22 @@
     <div class="row">
         <!-- Search Box -->
         <div class="col-md-12 mb-3">
+            <div class="d-flex align-content-center">
             <input type="text"
                    class="form-control theme-input"
                    placeholder="Search Brands..."
                    @bind-value="SearchTerm"
                    @bind-value:event="oninput" />
+            @if (string.IsNullOrWhiteSpace(SearchTerm) == false)
+                {
+                    <button class="btn btn-secondary theme-btn-secondary ml-2"
+                            type="button"
+                            @onclick="ClearSearch"
+                            title="Clear search">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                }
+            </div>
         </div>
     </div>
     <div class="row">
@@ -265,6 +276,15 @@
 
     // Flag to show copy success toast notification
     private bool ShowCopyToast = false;
+
+    /// <summary>
+    /// Clears only the search field
+    /// </summary>
+    void ClearSearch()
+    {
+        // Reset search term only
+        SearchTerm = string.Empty;
+    }
 
     /// <summary>
     /// Lifecycle method that runs after component renders
