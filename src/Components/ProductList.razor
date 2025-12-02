@@ -275,7 +275,7 @@
     string NewComment = string.Empty;
 
     // Flag to show copy success toast notification
-    private bool ShowCopyToast = false;
+    public bool ShowCopyToast = false;
 
     /// <summary>
     /// Clears only the search field
@@ -713,7 +713,7 @@
     /// Checks URL for product parameter and opens modal if present
     /// </summary>
     /// <returns>Task representing async operation</returns>
-    private async Task OpenProductFromUrl()
+    public async Task OpenProductFromUrl()
     {
 
         // Get the current URI
