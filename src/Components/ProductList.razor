@@ -242,7 +242,7 @@
 {
 
     // Search term entered by user for filtering products
-    string SearchTerm = string.Empty;
+    public string SearchTerm = string.Empty;
 
     // Selected product type filter value
     string SelectedProductType = string.Empty;
@@ -280,7 +280,7 @@
     /// <summary>
     /// Clears only the search field
     /// </summary>
-    void ClearSearch()
+    public void ClearSearch()
     {
         // Reset search term only
         SearchTerm = string.Empty;
