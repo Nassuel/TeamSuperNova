@@ -272,6 +272,26 @@ namespace UnitTests.Pages.Components
             Assert.That("<mark>Mac</mark>intosh", Is.EqualTo(result));
         }
 
+        /// <summary>
+        /// Test search with valid brand filters products
+        /// </summary>
+        [Test]
+        public void Search_ClearSearch_Should_ResetSearchTerm_StringEmpty()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchInput = component.Find("input[placeholder='Search Brands...']");
+
+            // Act
+            searchInput.Input("TestBrand");
+            component.Instance.ClearSearch();
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SearchTerm, Is.EqualTo(String.Empty));
+        }
+
         #endregion Search
 
         #region Filter
