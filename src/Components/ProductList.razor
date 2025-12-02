@@ -131,7 +131,7 @@
                             <i class="fa fa-share-alt" aria-hidden="true"></i>
                         </button>
                         @* Close button *@
-                        <button type="button" class="close theme-close-btn" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close theme-close-btn" @onclick="CloseModal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -285,6 +285,16 @@
     {
         // Reset search term only
         SearchTerm = string.Empty;
+    }
+
+    /// <summary>
+    /// Closes the modal by clearing selected product
+    /// </summary>
+    public void CloseModal()
+    {
+        // Clear selected product to hide modal
+        SelectedProduct = null;
+        SelectedProductId = null;
     }
 
     /// <summary>
