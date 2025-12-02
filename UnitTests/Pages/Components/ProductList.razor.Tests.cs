@@ -3,13 +3,16 @@ using ContosoCrafts.WebSite.Components;
 using ContosoCrafts.WebSite.Enums;
 using ContosoCrafts.WebSite.Models;
 using ContosoCrafts.WebSite.Services;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Components.Web;
+using System.Threading.Tasks;
 
 namespace UnitTests.Pages.Components
 {
@@ -1857,6 +1860,781 @@ namespace UnitTests.Pages.Components
 
 
         #endregion StarRating
+
+        #region ShareFeature
+
+        /// <summary>
+        /// Test share button is rendered in modal header
+        /// </summary>
+        [Test]
+        public void ShareButton_Valid_Modal_Open_Should_Render_Share_Button()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[0].Click();
+
+            // Reset
+
+            // Assert
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+            Assert.That(shareButton, Is.Not.Null);
+
+        }
+
+        /// <summary>
+        /// Test share button has share icon
+        /// </summary>
+        [Test]
+        public void ShareButton_Valid_Modal_Open_Should_Have_Share_Icon()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[0].Click();
+
+            // Reset
+
+            // Assert
+            var shareIcon = component.FindAll("i.fa-share-alt");
+            Assert.That(shareIcon.Count, Is.GreaterThan(0));
+
+        }
+
+        /// <summary>
+        /// Test share button is not rendered when no product is selected
+        /// </summary>
+        [Test]
+        public void ShareButton_Invalid_No_Product_Selected_Should_Not_Render_Share_Button()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+            Assert.That(shareButton, Is.Null);
+
+        }
+
+        /// <summary>
+        /// Test clicking share button calls copyToClipboard JavaScript function
+        /// </summary>
+        [Test]
+        public void CopyShareLink_Valid_Click_Should_Call_CopyToClipboard_JS()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            // Setup for InvokeVoidAsync - use InvokeAsync with IJSVoidResult
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+
+            // Act
+            shareButton.Click();
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()),
+                Times.Once
+            );
+
+        }
+
+        /// <summary>
+        /// Test clicking share button copies correct URL format
+        /// </summary>
+        [Test]
+        public void CopyShareLink_Valid_Click_Should_Copy_Correct_URL_Format()
+        {
+
+            // Arrange
+            string capturedUrl = null;
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .Callback<string, object[]>((method, args) => capturedUrl = args[0]?.ToString())
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+
+            // Act
+            shareButton.Click();
+
+            // Reset
+
+            // Assert
+            Assert.That(capturedUrl, Does.Contain("?product=test-laptop-1"));
+
+        }
+
+        /// <summary>
+        /// Test clicking share button for second product copies correct product ID
+        /// </summary>
+        [Test]
+        public void CopyShareLink_Valid_Second_Product_Should_Copy_Correct_Product_ID()
+        {
+
+            // Arrange
+            string capturedUrl = null;
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .Callback<string, object[]>((method, args) => capturedUrl = args[0]?.ToString())
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[1].Click();
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+
+            // Act
+            shareButton.Click();
+
+            // Reset
+
+            // Assert
+            Assert.That(capturedUrl, Does.Contain("?product=test-keyboard-1"));
+
+        }
+
+        /// <summary>
+        /// Test toast notification appears after clicking share button
+        /// </summary>
+        [Test]
+        public async Task CopyShareLink_Valid_Click_Should_Show_Toast_Notification()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+
+            // Act
+            shareButton.Click();
+
+            // Wait for state to update
+            await Task.Delay(100);
+
+            // Reset
+
+            // Assert
+            var toast = component.FindAll(".toast-container");
+            Assert.That(toast.Count, Is.GreaterThan(0));
+
+        }
+
+        /// <summary>
+        /// Test toast notification contains success message
+        /// </summary>
+        [Test]
+        public async Task CopyShareLink_Valid_Click_Should_Show_Success_Message()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+
+            // Act
+            shareButton.Click();
+
+            // Wait for state to update
+            await Task.Delay(100);
+
+            // Reset
+
+            // Assert
+            var markup = component.Markup;
+            Assert.That(markup.Contains("Link copied to clipboard"), Is.True);
+
+        }
+
+        /// <summary>
+        /// Test toast notification has success styling
+        /// </summary>
+        [Test]
+        public async Task CopyShareLink_Valid_Click_Should_Show_Success_Alert_Style()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+
+            // Act
+            shareButton.Click();
+
+            // Wait for state to update
+            await Task.Delay(100);
+
+            // Reset
+
+            // Assert
+            var alert = component.FindAll(".alert-success");
+            Assert.That(alert.Count, Is.GreaterThan(0));
+
+        }
+
+        /// <summary>
+        /// Test BuildShareUrl returns correct format with product ID
+        /// </summary>
+        [Test]
+        public void BuildShareUrl_Valid_Product_Should_Return_Correct_Format()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Act
+            var result = component.Instance.BuildShareUrl();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Contain("/?product=test-laptop-1"));
+
+        }
+
+        /// <summary>
+        /// Test BuildShareUrl includes base URI
+        /// </summary>
+        [Test]
+        public void BuildShareUrl_Valid_Product_Should_Include_Base_URI()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Act
+            var result = component.Instance.BuildShareUrl();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.StartWith("http"));
+
+        }
+
+        /// <summary>
+        /// Test BuildShareUrl handles trailing slash in base URI
+        /// </summary>
+        [Test]
+        public void BuildShareUrl_Valid_Base_URI_With_Trailing_Slash_Should_Return_Clean_URL()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Act
+            var result = component.Instance.BuildShareUrl();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Not.Contain("//Product"));
+
+        }
+
+        /// <summary>
+        /// Test ShowCopyToast is initially false
+        /// </summary>
+        [Test]
+        public void ShowCopyToast_Valid_Initial_State_Should_Be_False()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var toastContainer = component.FindAll(".toast-container");
+            Assert.That(toastContainer.Count, Is.EqualTo(0));
+
+        }
+
+        /// <summary>
+        /// Test share button appears in correct position within modal header
+        /// </summary>
+        [Test]
+        public void ShareButton_Valid_Modal_Should_Appear_In_Header()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+
+            // Act
+            moreInfoButtons[0].Click();
+
+            // Reset
+
+            // Assert
+            var modalHeader = component.Find(".modal-header");
+            var shareButton = modalHeader.QuerySelector("button[title='Copy share link']");
+            Assert.That(shareButton, Is.Not.Null);
+
+        }
+
+        /// <summary>
+        /// Test CopyShareLink with null SelectedProduct does not throw exception
+        /// </summary>
+        [Test]
+        public void CopyShareLink_Invalid_Null_SelectedProduct_Should_Not_Throw()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+
+            // Act & Assert
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                await component.Instance.CopyShareLink();
+            });
+
+        }
+
+        /// <summary>
+        /// Test CopyShareLink with null SelectedProduct does not call JavaScript
+        /// </summary>
+        [Test]
+        public async Task CopyShareLink_Invalid_Null_SelectedProduct_Should_Not_Call_JS()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            await component.Instance.CopyShareLink();
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()),
+                Times.Never
+            );
+
+        }
+
+        #endregion ShareFeature
+
+        #region OpenProductFromUrl
+
+        /// <summary>
+        /// Test OpenProductFromUrl with valid product parameter selects product
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Valid_Product_Parameter_Should_Select_Product()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=test-laptop-1");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for OnAfterRenderAsync
+            await Task.Delay(200);
+
+            // Reset
+
+            // Assert
+            var modal = component.Find(".modal");
+            Assert.That(modal.TextContent.Contains("TestBrand"), Is.True);
+
+        }
+
+        /// <summary>
+        /// Test OpenProductFromUrl with valid product parameter calls openProductModal
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Valid_Product_Parameter_Should_Call_OpenProductModal()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=test-laptop-1");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for OnAfterRenderAsync
+            await Task.Delay(200);
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()),
+                Times.AtLeastOnce
+            );
+
+        }
+
+        /// <summary>
+        /// Test OpenProductFromUrl with empty product parameter does not open modal
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Invalid_Empty_Product_Parameter_Should_Not_Open_Modal()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for OnAfterRenderAsync
+            await Task.Delay(200);
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()),
+                Times.Never
+            );
+
+        }
+
+        /// <summary>
+        /// Test OpenProductFromUrl with no product parameter does not open modal
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Invalid_No_Product_Parameter_Should_Not_Open_Modal()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for OnAfterRenderAsync
+            await Task.Delay(200);
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()),
+                Times.Never
+            );
+
+        }
+
+        /// <summary>
+        /// Test OpenProductFromUrl with invalid product ID does not open modal
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Invalid_Product_ID_Should_Not_Open_Modal()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=nonexistent-product-id");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for OnAfterRenderAsync
+            await Task.Delay(200);
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()),
+                Times.Never
+            );
+
+        }
+
+        /// <summary>
+        /// Test OpenProductFromUrl with multiple query parameters still works
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Valid_Product_With_Other_Params_Should_Open_Modal()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?other=value&product=test-laptop-1&another=test");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for OnAfterRenderAsync
+            await Task.Delay(200);
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()),
+                Times.AtLeastOnce
+            );
+
+        }
+
+        /// <summary>
+        /// Test OnAfterRenderAsync only runs on first render
+        /// </summary>
+        [Test]
+        public async Task OnAfterRenderAsync_Valid_First_Render_Only_Should_Process_URL_Once()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=test-laptop-1");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for OnAfterRenderAsync
+            await Task.Delay(200);
+
+            // Force re-render
+            component.Render();
+
+            // Wait again
+            await Task.Delay(200);
+
+            // Reset
+
+            // Assert
+            mockJsRuntime.Verify(
+                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "openProductModal",
+                    It.IsAny<object[]>()),
+                Times.Once
+            );
+
+        }
+
+        #endregion OpenProductFromUrl
 
     }
 
