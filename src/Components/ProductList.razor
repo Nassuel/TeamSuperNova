@@ -757,12 +757,6 @@
         // Trigger UI update before opening modal
         StateHasChanged();
 
-        // Small delay to ensure DOM is ready
-        await Task.Delay(100);
-
-        // Open the modal via JavaScript interop
-        await JSRuntime.InvokeVoidAsync("openProductModal");
-
     }
 
     /// <summary>
