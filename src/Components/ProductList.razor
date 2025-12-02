@@ -1,8 +1,11 @@
-@using ContosoCrafts.WebSite.Enums
-@using ContosoCrafts.WebSite.Models
-@using ContosoCrafts.WebSite.Services
-@using Microsoft.AspNetCore.Components.Web
-@inject JsonFileProductService ProductService
+@using ContosoCrafts.WebSite.Enums;
+@using ContosoCrafts.WebSite.Models;
+@using ContosoCrafts.WebSite.Services;
+@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.JSInterop;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JSRuntime;
+@inject JsonFileProductService ProductService;
 
 <!-- Search and Filter Input Section -->
 <div class="container mb-4">
@@ -107,9 +110,19 @@
             <div class="modal-content theme-modal-content">
                 <div class="modal-header theme-modal-header">
                     <h5 class="modal-title theme-modal-title" id="productTitle">@SelectedProduct.Brand</h5>
-                    <button type="button" class="close theme-close-btn" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <div class="ml-auto d-flex align-items-center">
+                        @* Share button *@
+                        <button type="button"
+                                class="btn btn-sm theme-share-btn mr-2"
+                                @onclick="CopyShareLink"
+                                title="Copy share link">
+                            <i class="fa fa-share-alt" aria-hidden="true"></i>
+                        </button>
+                        @* Close button *@
+                        <button type="button" class="close theme-close-btn" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="modal-body theme-modal-body">
                     <!-- Main card body -->
@@ -214,7 +227,6 @@
     </div>
 }
 
-
 @code
 {
 
@@ -253,6 +265,25 @@
 
     // Flag to show copy success toast notification
     private bool ShowCopyToast = false;
+
+    /// <summary>
+    /// Lifecycle method that runs after component renders
+    /// </summary>
+    /// <param name="firstRender">True if this is the first render</param>
+    /// <returns>Task representing async operation</returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        // Fast fail: Only process on first render
+        if (firstRender == false)
+        {
+            return;
+        }
+
+        // Attempt to open product from URL
+        await OpenProductFromUrl();
+
+    }
 
     /// <summary>
     /// Returns filtered and sorted product list based on current filter criteria
@@ -657,5 +688,119 @@
     /// <param name="text">The input text to search and highlight (e.g., product brand).</param>
     /// <returns>HTML string with highlighted matches (safe to render as MarkupString).</returns>
     public string HighlightMatch(string text) => StringHighlighter.HighlightMatch(text, SearchTerm);
+
+    /// <summary>
+    /// Checks URL for product parameter and opens modal if present
+    /// </summary>
+    /// <returns>Task representing async operation</returns>
+    private async Task OpenProductFromUrl()
+    {
+
+        // Get the current URI
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+
+        // Parse query string parameters
+        var queryString = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        // Extract product ID from query string
+        var productId = queryString["product"];
+
+        // Fast fail: No product parameter in URL
+        if (string.IsNullOrEmpty(productId))
+        {
+            return;
+        }
+
+        // Check if product exists in data store
+        var product = ProductService.GetProducts().FirstOrDefault(p => p.Id == productId);
+
+        // Fast fail: Product not found
+        if (product == null)
+        {
+            return;
+        }
+
+        // Select the product to populate modal data
+        SelectProduct(productId);
+
+        // Trigger UI update before opening modal
+        StateHasChanged();
+
+        // Small delay to ensure DOM is ready
+        await Task.Delay(100);
+
+        // Open the modal via JavaScript interop
+        await JSRuntime.InvokeVoidAsync("openProductModal");
+
+    }
+
+    /// <summary>
+    /// Copies shareable product link to clipboard
+    /// </summary>
+    /// <returns>Task representing async operation</returns>
+    public async Task CopyShareLink()
+    {
+
+        // Fast fail: No product selected
+        if (SelectedProduct == null)
+        {
+            return;
+        }
+
+        // Build the share URL
+        var shareUrl = BuildShareUrl();
+
+        // Copy to clipboard via JavaScript interop
+        await JSRuntime.InvokeVoidAsync("copyToClipboard", shareUrl);
+
+        // Show success notification
+        await ShowCopyNotification();
+
+    }
+
+    /// <summary>
+    /// Builds the shareable URL for the selected product
+    /// </summary>
+    /// <returns>Complete shareable URL string</returns>
+    public string BuildShareUrl()
+    {
+
+        // Get the base URI
+        var baseUri = NavigationManager.BaseUri;
+
+        // Remove trailing slash if present
+        if (baseUri.EndsWith("/"))
+        {
+            baseUri = baseUri.TrimEnd('/');
+        }
+
+        // Construct and return full share URL
+        return $"{baseUri}/?product={SelectedProduct.Id}";
+
+    }
+
+    /// <summary>
+    /// Shows copy success notification and auto-hides after delay
+    /// </summary>
+    /// <returns>Task representing async operation</returns>
+    public async Task ShowCopyNotification()
+    {
+
+        // Show the toast notification
+        ShowCopyToast = true;
+
+        // Update UI to show toast
+        StateHasChanged();
+
+        // Wait 3 seconds
+        await Task.Delay(3000);
+
+        // Hide the toast notification
+        ShowCopyToast = false;
+
+        // Update UI to hide toast
+        StateHasChanged();
+
+    }
 
 }
