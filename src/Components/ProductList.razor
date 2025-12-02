@@ -97,7 +97,7 @@
                 <div class="card-footer theme-card-footer">
                     <small>
                         <button @onclick="(e => SelectProduct(product.Id))"
-                                data-toggle="modal" data-target="#productModal" class="btn btn-primary theme-btn-primary">
+                                class="btn btn-primary theme-btn-primary">
                             More Info
                         </button>
                     </small>
@@ -114,9 +114,10 @@
     </div>
 }
 
-@if (SelectedProduct != null)
+@if (SelectedProduct is not null)
 {
-    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productTitle" aria-hidden="true">
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog" aria-labelledby="productTitle">
         <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content theme-modal-content">
                 <div class="modal-header theme-modal-header">
