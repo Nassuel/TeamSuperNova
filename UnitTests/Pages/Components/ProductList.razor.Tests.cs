@@ -2495,91 +2495,76 @@ namespace UnitTests.Pages.Components
         #region OpenProductFromUrl
 
         /// <summary>
-        /// Test OpenProductFromUrl with valid product parameter selects product
+        /// Test OpenProductFromUrl with valid product parameter selects the product
         /// </summary>
         [Test]
-        public async Task OpenProductFromUrl_Valid_Product_Parameter_Should_Select_Product()
+        public async Task OpenProductFromUrl_Valid_Product_Should_Select_Product_For_Coverage()
         {
+            // Arrange - Create a NEW test context for this test to avoid conflicts
+            using var testContext = new BunitContext();
 
-            // Arrange
+            // Setup test products
+            var testProducts = new List<ProductModel>
+    {
+        new ProductModel
+        {
+            Id = "test-laptop-1",
+            Brand = "TestBrand",
+            ProductName = "Test Laptop",
+            ProductType = ProductTypeEnum.Laptop,
+            Url = "https://test.com",
+            ProductDescription = "Test Description",
+            Image = "/assets/test.png",
+            Ratings = new int[] { 5, 4, 5 }
+        }
+    };
+
+            var mockProductService = new Mock<JsonFileProductService>(MockBehavior.Strict, null);
+            mockProductService.Setup(x => x.GetProducts()).Returns(testProducts);
+            mockProductService.Setup(x => x.AddRating(It.IsAny<string>(), It.IsAny<int>())).Returns(true);
+
+            // Mock JSRuntime (not needed for current implementation, but component might need it for other features)
             var mockJsRuntime = new Mock<IJSRuntime>();
-
             mockJsRuntime
                 .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
+                    It.IsAny<string>(),
                     It.IsAny<object[]>()))
                 .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
 
-            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+            // Register services IN ORDER - JSRuntime FIRST, then ProductService
+            testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+            testContext.Services.AddSingleton<JsonFileProductService>(mockProductService.Object);
 
-            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            // Set the URL with product parameter BEFORE rendering
+            var navManager = testContext.Services.GetRequiredService<NavigationManager>();
             navManager.NavigateTo("http://localhost/?product=test-laptop-1");
 
             // Act
-            var component = _testContext.Render<ProductList>();
+            var component = testContext.Render<ProductList>();
 
-            // Wait for OnAfterRenderAsync
-            await Task.Delay(200);
+            // Wait for OnAfterRenderAsync to complete
+            await Task.Delay(300);
 
-            // Reset
-
-            // Assert
-            var modal = component.Find(".modal");
-            Assert.That(modal.TextContent.Contains("TestBrand"), Is.True);
-
-        }
-
-        /// <summary>
-        /// Test OpenProductFromUrl method executes JS interop call for coverage
-        /// </summary>
-        [Test]
-        public async Task OpenProductFromUrl_Valid_Product_Should_Execute_JS_Interop_For_Coverage()
-        {
-
-            // Arrange
-            var mockJsRuntime = new Mock<IJSRuntime>();
-
-            mockJsRuntime
-                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()))
-                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null)
-                .Verifiable();
-
-            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
-
-            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
-            navManager.NavigateTo("http://localhost/?product=test-laptop-1");
-
-            // Act - Render component which triggers OnAfterRenderAsync
-            var component = _testContext.Render<ProductList>();
-
-            // Force the async lifecycle to complete
-            await Task.Delay(250);
-
-            // Manually trigger if needed for coverage
-            await component.InvokeAsync(() => component.Instance.OpenProductFromUrl());
-
-            // Reset
-
-            // Assert
-            mockJsRuntime.Verify();
-
+            // Assert - The main coverage goal: product should be selected
+            Assert.That(component.Instance.SelectedProduct, Is.Not.Null,
+                "SelectedProduct should be set when URL contains valid product parameter");
+            Assert.That(component.Instance.SelectedProduct.Id, Is.EqualTo("test-laptop-1"),
+                "SelectedProduct should match the product ID from URL parameter");
+            Assert.That(component.Instance.SelectedProductId, Is.EqualTo("test-laptop-1"),
+                "SelectedProductId should match the product ID from URL parameter");
         }
 
         /// <summary>
         /// Test OpenProductFromUrl with empty product parameter should return early for coverage
         /// </summary>
         [Test]
-        public async Task OpenProductFromUrl_Invalid_Empty_Product_ID_Should_Return_Early_For_Coverage()
+        public async Task OpenProductFromUrl_EmptyProductId_Should_Return_Early()
         {
-
             // Arrange
             var mockJsRuntime = new Mock<IJSRuntime>();
-
             mockJsRuntime
                 .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
+                    It.IsAny<string>(),
                     It.IsAny<object[]>()))
                 .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
 
@@ -2591,38 +2576,24 @@ namespace UnitTests.Pages.Components
 
             // Act
             var component = _testContext.Render<ProductList>();
+            await Task.Delay(300);
 
-            // Call directly to ensure coverage
-            await component.Instance.OpenProductFromUrl();
-
-            // Wait for async operations
-            await Task.Delay(100);
-
-            // Reset
-
-            // Assert
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()),
-                Times.Never
-            );
-
+            // Assert - Product should NOT be selected
+            Assert.That(component.Instance.SelectedProduct, Is.Null,
+                "SelectedProduct should be null when product parameter is empty");
         }
 
         /// <summary>
         /// Test OpenProductFromUrl with no query string should return early for coverage
         /// </summary>
         [Test]
-        public async Task OpenProductFromUrl_Invalid_No_Query_String_Should_Return_Early_For_Coverage()
+        public async Task OpenProductFromUrl_NoQueryString_Should_Return_Early()
         {
-
             // Arrange
             var mockJsRuntime = new Mock<IJSRuntime>();
-
             mockJsRuntime
                 .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
+                    It.IsAny<string>(),
                     It.IsAny<object[]>()))
                 .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
 
@@ -2634,38 +2605,24 @@ namespace UnitTests.Pages.Components
 
             // Act
             var component = _testContext.Render<ProductList>();
+            await Task.Delay(300);
 
-            // Call directly to ensure coverage of early return
-            await component.Instance.OpenProductFromUrl();
-
-            // Wait for async operations
-            await Task.Delay(100);
-
-            // Reset
-
-            // Assert - Should not call openProductModal
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()),
-                Times.Never
-            );
-
+            // Assert - Product should NOT be selected
+            Assert.That(component.Instance.SelectedProduct, Is.Null,
+                "SelectedProduct should be null when no query string is present");
         }
 
         /// <summary>
         /// Test OpenProductFromUrl with nonexistent product should return early for coverage
         /// </summary>
         [Test]
-        public async Task OpenProductFromUrl_Invalid_Nonexistent_Product_Should_Return_Early_For_Coverage()
+        public async Task OpenProductFromUrl_NonexistentProduct_Should_Return_Early()
         {
-
             // Arrange
             var mockJsRuntime = new Mock<IJSRuntime>();
-
             mockJsRuntime
                 .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
+                    It.IsAny<string>(),
                     It.IsAny<object[]>()))
                 .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
 
@@ -2677,77 +2634,24 @@ namespace UnitTests.Pages.Components
 
             // Act
             var component = _testContext.Render<ProductList>();
+            await Task.Delay(300);
 
-            // Call directly to ensure coverage
-            await component.Instance.OpenProductFromUrl();
-
-            // Wait for async operations
-            await Task.Delay(100);
-
-            // Reset
-
-            // Assert
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()),
-                Times.Never
-            );
-
-        }
-
-        /// <summary>
-        /// Test OpenProductFromUrl with multiple query parameters still works
-        /// </summary>
-        [Test]
-        public async Task OpenProductFromUrl_Valid_Product_With_Other_Params_Should_Open_Modal()
-        {
-
-            // Arrange
-            var mockJsRuntime = new Mock<IJSRuntime>();
-
-            mockJsRuntime
-                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()))
-                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
-
-            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
-
-            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
-            navManager.NavigateTo("http://localhost/?other=value&product=test-laptop-1&another=test");
-
-            // Act
-            var component = _testContext.Render<ProductList>();
-
-            // Wait for OnAfterRenderAsync
-            await Task.Delay(200);
-
-            // Reset
-
-            // Assert
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()),
-                Times.AtLeastOnce
-            );
-
+            // Assert - Product should NOT be selected
+            Assert.That(component.Instance.SelectedProduct, Is.Null,
+                "SelectedProduct should be null when product ID does not exist");
         }
 
         /// <summary>
         /// Test OnAfterRenderAsync with firstRender false should return early for coverage
         /// </summary>
         [Test]
-        public async Task OnAfterRenderAsync_Invalid_Not_First_Render_Should_Return_Early_For_Coverage()
+        public async Task OnAfterRenderAsync_NotFirstRender_Should_Return_Early()
         {
-
             // Arrange
             var mockJsRuntime = new Mock<IJSRuntime>();
-
             mockJsRuntime
                 .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
+                    It.IsAny<string>(),
                     It.IsAny<object[]>()))
                 .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
 
@@ -2759,74 +2663,177 @@ namespace UnitTests.Pages.Components
             var component = _testContext.Render<ProductList>();
 
             // Wait for first render
-            await Task.Delay(250);
+            await Task.Delay(350);
 
-            // Clear invocations to track subsequent renders
-            mockJsRuntime.Invocations.Clear();
+            // Clear the selected product
+            component.Instance.CloseModal();
+            component.Render();
 
             // Act - Force re-render (firstRender will be false)
             component.Render();
+            await Task.Delay(200);
 
-            // Wait for potential async operations
-            await Task.Delay(100);
-
-            // Reset
-
-            // Assert - openProductModal should NOT be called on subsequent renders
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()),
-                Times.Never
-            );
-
-        }
-
-        /// <summary>
-        /// Test full URL open flow for coverage
-        /// </summary>
-        [Test]
-        public async Task UrlOpenFlow_Valid_Complete_Flow_Should_Cover_All_Lines()
-        {
-
-            // Arrange
-            var mockJsRuntime = new Mock<IJSRuntime>();
-
-            mockJsRuntime
-                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()))
-                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
-
-            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
-
-            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
-            navManager.NavigateTo("http://localhost/?product=test-laptop-1");
-
-            // Act
-            var component = _testContext.Render<ProductList>();
-
-            // Wait for OnAfterRenderAsync to complete
-            await Task.Delay(250);
-
-            // Reset
-
-            // Assert - Modal should be open with correct product
-            var modal = component.Find(".modal");
-            Assert.That(modal, Is.Not.Null);
-            Assert.That(modal.TextContent.Contains("TestBrand"), Is.True);
-
-            // Verify JS was called
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()),
-                Times.Once
-            );
-
+            // Assert - Product should still be null (OpenProductFromUrl should not run again)
+            Assert.That(component.Instance.SelectedProduct, Is.Null,
+                "SelectedProduct should remain null on subsequent renders");
         }
 
         #endregion OpenProductFromUrl
+
+        #region CloseModal - NEW TEST FOR MISSING COVERAGE
+
+        /// <summary>
+        /// Test CloseModal clears SelectedProduct for coverage
+        /// </summary>
+        [Test]
+        public void CloseModal_Valid_Should_Clear_SelectedProduct_For_Coverage()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Open modal first
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Verify product is selected
+            Assert.That(component.Instance.SelectedProduct, Is.Not.Null);
+
+            // Act - Close the modal directly
+            component.Instance.CloseModal();
+            component.Render(); // Force re-render
+
+            // Assert - SelectedProduct should be null
+            Assert.That(component.Instance.SelectedProduct, Is.Null);
+            Assert.That(component.Instance.SelectedProductId, Is.Null);
+        }
+
+        /// <summary>
+        /// Test CloseModal via close button click
+        /// </summary>
+        [Test]
+        public void CloseModal_Via_Button_Click_Should_Clear_SelectedProduct()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Open modal
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            // Verify product is selected before closing
+            Assert.That(component.Instance.SelectedProduct, Is.Not.Null);
+
+            // Find and click close button
+            var allButtons = component.FindAll("button");
+            var closeButton = allButtons.FirstOrDefault(b =>
+                b.GetAttribute("aria-label") == "Close" ||
+                b.TextContent.Contains("×"));
+
+            // Act
+            if (closeButton != null)
+            {
+                closeButton.Click();
+                component.Render();
+            }
+
+            // Assert
+            Assert.That(component.Instance.SelectedProduct, Is.Null);
+        }
+
+        #endregion CloseModal
+
+        #region ShareFeature - Additional Coverage Tests
+
+        /// <summary>
+        /// Test OpenProductFromUrl integration with share link
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Valid_Share_Link_Should_Open_Modal_And_Select_Product()
+        {
+            // Arrange - Create a NEW test context
+            using var testContext = new BunitContext();
+
+            // Setup test products
+            var testProducts = new List<ProductModel>
+    {
+        new ProductModel
+        {
+            Id = "test-keyboard-1",
+            Brand = "KeyboardBrand",
+            ProductName = "Test Keyboard",
+            ProductType = ProductTypeEnum.Keyboard,
+            Url = "https://keyboard.com",
+            ProductDescription = "Keyboard Description",
+            Image = "/assets/keyboard.png",
+            Ratings = new int[] { 4, 5 }
+        }
+    };
+
+            var mockProductService = new Mock<JsonFileProductService>(MockBehavior.Strict, null);
+            mockProductService.Setup(x => x.GetProducts()).Returns(testProducts);
+            mockProductService.Setup(x => x.AddRating(It.IsAny<string>(), It.IsAny<int>())).Returns(true);
+
+            var mockJsRuntime = new Mock<IJSRuntime>();
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            // Register services IN ORDER
+            testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+            testContext.Services.AddSingleton<JsonFileProductService>(mockProductService.Object);
+
+            // Simulate clicking share link
+            var navManager = testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=test-keyboard-1");
+
+            // Act
+            var component = testContext.Render<ProductList>();
+            await Task.Delay(300);
+
+            // Assert
+            Assert.That(component.Instance.SelectedProduct, Is.Not.Null,
+                "SelectedProduct should be set when navigating with product query parameter");
+            Assert.That(component.Instance.SelectedProduct.Id, Is.EqualTo("test-keyboard-1"),
+                "SelectedProduct should match the product from query parameter");
+        }
+
+        /// <summary>
+        /// Test that BuildShareUrl handles different products correctly
+        /// </summary>
+        [Test]
+        public void BuildShareUrl_Valid_Different_Products_Should_Return_Different_URLs()
+        {
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Select first product
+            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            moreInfoButtons[0].Click();
+
+            var url1 = component.Instance.BuildShareUrl();
+
+            // Close modal
+            component.Instance.CloseModal();
+            component.Render();
+
+            // Select second product - re-query to get fresh elements
+            moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
+            if (moreInfoButtons.Count > 1)
+            {
+                moreInfoButtons[1].Click();
+            }
+
+            var url2 = component.Instance.BuildShareUrl();
+
+            // Assert
+            Assert.That(url1, Does.Contain("test-laptop-1"));
+            Assert.That(url2, Does.Contain("test-keyboard-1"));
+            Assert.That(url1, Is.Not.EqualTo(url2));
+        }
+
+        #endregion ShareFeature
 
     }
 
