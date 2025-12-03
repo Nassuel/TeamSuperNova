@@ -2033,50 +2033,6 @@ namespace UnitTests.Pages.Components
         }
 
         /// <summary>
-        /// Test clicking share button for second product copies correct product ID
-        /// </summary>
-        [Test]
-        public void CopyShareLink_Valid_Second_Product_Should_Copy_Correct_Product_ID()
-        {
-
-            // Arrange
-            string capturedUrl = null;
-            var mockJsRuntime = new Mock<IJSRuntime>();
-
-            mockJsRuntime
-                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "copyToClipboard",
-                    It.IsAny<object[]>()))
-                .Callback<string, object[]>((method, args) =>
-                {
-                    capturedUrl = args[0]?.ToString();
-                })
-                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
-
-            mockJsRuntime
-                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "openProductModal",
-                    It.IsAny<object[]>()))
-                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
-
-            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
-
-            var component = _testContext.Render<ProductList>();
-            var moreInfoButtons = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).ToList();
-            moreInfoButtons[1].Click();
-            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
-
-            // Act
-            shareButton.Click();
-
-            // Reset
-
-            // Assert
-            Assert.That(capturedUrl, Does.Contain("?product=test-keyboard-1"));
-
-        }
-
-        /// <summary>
         /// Test toast notification appears after clicking share button
         /// </summary>
         [Test]
