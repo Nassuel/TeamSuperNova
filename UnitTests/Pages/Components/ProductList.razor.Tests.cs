@@ -2260,20 +2260,15 @@ namespace UnitTests.Pages.Components
         [Test]
         public async Task CopyShareLink_Invalid_No_Product_Selected_Should_Return_Early_For_Coverage()
         {
-
             // Arrange
             var mockJsRuntime = new Mock<IJSRuntime>();
-
             mockJsRuntime
                 .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
                     "copyToClipboard",
                     It.IsAny<object[]>()))
                 .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
-
             _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
-
             var component = _testContext.Render<ProductList>();
-
             // Do NOT select a product - SelectedProduct will be null
 
             // Act - Call CopyShareLink directly
@@ -2281,14 +2276,10 @@ namespace UnitTests.Pages.Components
 
             // Reset
 
-            // Assert - Should not call copyToClipboard because of Fast Fail
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "copyToClipboard",
-                    It.IsAny<object[]>()),
-                Times.Never
-            );
-
+            // Assert - Check that no invocations were made
+            int invocationCount = mockJsRuntime.Invocations.Count;
+            Assert.That(invocationCount, Is.EqualTo(0),
+                "No JS methods should be invoked when no product is selected");
         }
 
         /// <summary>
