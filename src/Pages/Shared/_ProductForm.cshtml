@@ -30,12 +30,9 @@
            class="form-control theme-input"
            accept="image/*"
            onchange="previewImage(this)" />
-
+    
     <div class="mt-3">
-        <img id="imagePreview"
-             src=""
-             alt="Image Preview"
-             style="display: none; max-width: 300px; max-height: 300px;" />
+        <img id="imagePreview" src="" alt="Image Preview" class="product-form-thumbnail" />
     </div>
 
     @if (string.IsNullOrEmpty(Model.Product.Image) == false)
