@@ -1156,3 +1156,36 @@ $.validator.addMethod( "ziprange", function( value, element ) {
 }, "Your ZIP-code must be in the range 902xx-xxxx to 905xx-xxxx" );
 return $;
 }));
+
+function previewImage(input) {
+	// Fast fail: Check if file input exists
+	if (input == null) {
+		return;
+	}
+
+	// Fast fail: Check if files exist
+	if (input.files == null) {
+		return;
+	}
+
+	// Fast fail: Check if file was selected
+	if (input.files[0] == null) {
+		return;
+	}
+
+	var reader = new FileReader();
+
+	reader.onload = function (e) {
+		var preview = document.getElementById('imagePreview');
+
+		// Fast fail: Check if preview element exists
+		if (preview == null) {
+			return;
+		}
+
+		preview.src = e.target.result;
+		preview.style.display = 'block';
+	};
+
+	reader.readAsDataURL(input.files[0]);
+}
