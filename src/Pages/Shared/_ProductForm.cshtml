@@ -32,6 +32,14 @@
            accept="image/*"
            onchange="previewImage(this)" />
 
+    <div class="mt-3">
+        <img id="imagePreview"
+             src=""
+             alt="Image Preview"
+             class="img-thumbnail"
+             style="display: none; max-width: 300px; max-height: 300px;" />
+    </div>
+
     @if (string.IsNullOrEmpty(Model.Product.Image) == false)
     {
         <div class="d-flex flex-column">
@@ -86,6 +94,40 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <script>
+
+    // Image preview function - defined globally before DOMContentLoaded
+    window.previewImage = function(input) {
+        // Fast fail: Check if input exists
+        if (input == null) {
+            return;
+        }
+
+        // Fast fail: Check if files exist
+        if (input.files == null) {
+            return;
+        }
+
+        // Fast fail: Check if file was selected
+        if (input.files[0] == null) {
+            return;
+        }
+
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            var preview = document.getElementById('imagePreview');
+
+            // Fast fail: Check if preview element exists
+            if (preview == null) {
+                return;
+            }
+
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    };
 
     // Initialize character counter on page load
     document.addEventListener("DOMContentLoaded", function () {
