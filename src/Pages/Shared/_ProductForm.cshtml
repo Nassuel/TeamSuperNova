@@ -24,7 +24,13 @@
 
 <div>
     <label class="col-form-label theme-label">Upload Product Image:</label>
-    <input asp-for="ImageFile" type="file" class="form-control theme-input" accept="image/*" />
+    @* <input asp-for="ImageFile" type="file" class="form-control theme-input" accept="image/*" /> *@
+
+    <input type="file"
+           asp-for="ImageFile"
+           class="form-control theme-input"
+           accept="image/*"
+           onchange="previewImage(this)" />
 
     @if (string.IsNullOrEmpty(Model.Product.Image) == false)
     {
