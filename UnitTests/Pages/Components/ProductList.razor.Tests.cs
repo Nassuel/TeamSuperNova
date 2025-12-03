@@ -2246,6 +2246,8 @@ namespace UnitTests.Pages.Components
 
             var component = _testContext.Render<ProductList>();
 
+            // Reset
+
             // Act & Assert
             Assert.DoesNotThrowAsync(async () =>
             {
