@@ -2386,12 +2386,11 @@ namespace UnitTests.Pages.Components
             Assert.That(toast.Count, Is.GreaterThan(0));
 
             // Verify JS was called
-            mockJsRuntime.Verify(
-                x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
-                    "copyToClipboard",
-                    It.IsAny<object[]>()),
-                Times.Once
-            );
+            var copyToClipboardCount = mockJsRuntime.Invocations
+                .Where(invocation => invocation.Method.Name == "InvokeAsync")
+                .Where(invocation => invocation.Arguments[0].ToString() == "copyToClipboard").Count();
+
+            Assert.That(copyToClipboardCount, Is.EqualTo(1));
 
         }
 
