@@ -258,10 +258,10 @@
     string SortBy = string.Empty;
 
     // Currently selected product for modal display
-    ProductModel SelectedProduct;
+    public ProductModel SelectedProduct;
 
     // ID of the selected product
-    string SelectedProductId;
+    public string SelectedProductId;
 
     // Current average rating of selected product
     int CurrentRating = 0;
@@ -276,7 +276,7 @@
     string NewComment = string.Empty;
 
     // Flag to show copy success toast notification
-    public bool ShowCopyToast = false;
+    public bool ShowCopyToast { get; set; }
 
     /// <summary>
     /// Clears only the search field
