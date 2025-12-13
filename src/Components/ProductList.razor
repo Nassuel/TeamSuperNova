@@ -13,12 +13,12 @@
         <!-- Search Box -->
         <div class="col-md-12 mb-3">
             <div class="d-flex align-content-center">
-            <input type="text"
-                   class="form-control theme-input"
-                   placeholder="Search Brands..."
-                   @bind-value="SearchTerm"
-                   @bind-value:event="oninput" />
-            @if (string.IsNullOrWhiteSpace(SearchTerm) == false)
+                <input type="text"
+                       class="form-control theme-input"
+                       placeholder="Search Brands..."
+                       @bind-value="SearchTerm"
+                       @bind-value:event="oninput" />
+                @if (string.IsNullOrWhiteSpace(SearchTerm) == false)
                 {
                     <button class="btn btn-secondary theme-btn-secondary ml-2"
                             type="button"
@@ -36,7 +36,7 @@
             <label class="col-form-label theme-label">Product Type</label>
             <select class="form-control theme-input" @bind="SelectedProductType">
                 <option value="">All Types</option>
-                @foreach (var productType in GetAllProductTypes())
+                @foreach (var productType in GetAvailableProductTypes())
                 {
                     <option value="@productType">@productType.DisplayName()</option>
                 }
@@ -47,7 +47,7 @@
             <label class="col-form-label theme-label">Brand</label>
             <select class="form-control theme-input" @bind="SelectedBrand">
                 <option value="">All Brands</option>
-                @foreach (var brand in GetAllBrands())
+                @foreach (var brand in GetAvailableBrands())
                 {
                     <option value="@brand">@brand</option>
                 }
@@ -185,7 +185,7 @@
                               placeholder="Type your comment..."
                               rows="2"
                               @onkeydown="@(e => UsingEnterKey(e))">
-                        </textarea>
+                            </textarea>
 
                     <button class="btn btn-primary theme-btn-primary" @onclick="AddComment">Submit Comment</button>
                 </div>
@@ -283,8 +283,10 @@
     /// </summary>
     public void ClearSearch()
     {
+
         // Reset search term only
         SearchTerm = string.Empty;
+
     }
 
     /// <summary>
@@ -292,9 +294,13 @@
     /// </summary>
     public void CloseModal()
     {
+
         // Clear selected product to hide modal
         SelectedProduct = null;
+
+        // Clear selected product ID
         SelectedProductId = null;
+
     }
 
     /// <summary>
@@ -348,31 +354,61 @@
     }
 
     /// <summary>
-    /// Gets all ProductType enum values excluding Undefined
+    /// Gets product types available based on other active filters excluding product type filter
     /// </summary>
-    /// <returns>Collection of all product types</returns>
-    IEnumerable<ProductTypeEnum> GetAllProductTypes()
+    /// <returns>Collection of product types present in filtered results</returns>
+    IEnumerable<ProductTypeEnum> GetAvailableProductTypes()
     {
 
-        // Get all enum values and filter out Undefined
-        return Enum.GetValues<ProductTypeEnum>()
+        // Get all products from service
+        var products = ProductService.GetProducts();
+
+        // Apply search filter
+        products = ApplySearchFilter(products);
+
+        // Apply brand filter
+        products = ApplyBrandFilter(products);
+
+        // Apply rating filter
+        products = ApplyRatingFilter(products);
+
+        // Extract unique product types from filtered results
+        var availableTypes = products
+            .Select(p => p.ProductType)
             .Where(pt => pt != ProductTypeEnum.Undefined)
+            .Distinct()
             .OrderBy(pt => pt.DisplayName());
+
+        return availableTypes;
 
     }
 
     /// <summary>
-    /// Gets all unique brands from the product catalog
+    /// Gets brands available based on other active filters excluding brand filter
     /// </summary>
-    /// <returns>Collection of unique brand names</returns>
-    IEnumerable<string> GetAllBrands()
+    /// <returns>Collection of brand names present in filtered results</returns>
+    IEnumerable<string> GetAvailableBrands()
     {
 
-        // Get all products, extract brands, remove duplicates, and sort
-        return ProductService.GetProducts()
+        // Get all products from service
+        var products = ProductService.GetProducts();
+
+        // Apply search filter
+        products = ApplySearchFilter(products);
+
+        // Apply product type filter
+        products = ApplyProductTypeFilter(products);
+
+        // Apply rating filter
+        products = ApplyRatingFilter(products);
+
+        // Extract unique brands from filtered results
+        var availableBrands = products
             .Select(p => p.Brand)
             .Distinct()
             .OrderBy(b => b);
+
+        return availableBrands;
 
     }
 
@@ -646,6 +682,7 @@
     /// </summary>
     public void AddComment()
     {
+
         // Fast fail: Check if new comment text is empty
         if (string.IsNullOrWhiteSpace(NewComment))
         {
@@ -654,7 +691,11 @@
 
         // Input sanitization to avoid cross-site scripting
         InputSanitizationService sanitizationService = new InputSanitizationService();
+
+        // Sanitize comment content
         NewComment = sanitizationService.SanitizeComment(NewComment);
+
+        // Remove dangerous patterns
         NewComment = sanitizationService.RemoveDangerousPatterns(NewComment);
 
         // Add the new comment to the selected product
@@ -677,16 +718,22 @@
     /// <param name="e">Keyboard event arguments</param>
     public void UsingEnterKey(KeyboardEventArgs e)
     {
-        // Check if Enter key is pressed
-        if (e.Key == "Enter")
+
+        // Fast fail: Check if Enter key is not pressed
+        if (e.Key != "Enter")
         {
-            // Check if Shift key is not pressed
-            if (e.ShiftKey == false)
-            {
-                // Submit the comment
-                AddComment();
-            }
+            return;
         }
+
+        // Fast fail: Check if Shift key is pressed
+        if (e.ShiftKey)
+        {
+            return;
+        }
+
+        // Submit the comment
+        AddComment();
+
     }
 
     /// <summary>
