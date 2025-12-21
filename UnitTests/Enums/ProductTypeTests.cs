@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace UnitTests.Pages.Enums
+namespace UnitTests.Enums
 {
     /// <summary>
     /// Unit tests for ProductTypeEnum and ProductTypeEnumExtensions

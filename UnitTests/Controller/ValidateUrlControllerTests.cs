@@ -9,7 +9,7 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 
-namespace UnitTests.Controllers
+namespace UnitTests.Controller
 {
     /// <summary>
     /// Unit tests for ValidateUrlController class

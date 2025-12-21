@@ -10,7 +10,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UnitTests.Pages.Components
+namespace UnitTests.Components
 {
     /// <summary>
     /// Unit tests for the ThemeToggle component

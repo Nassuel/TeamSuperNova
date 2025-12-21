@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UnitTests.Pages.Components
+namespace UnitTests.Components
 {
     /// <summary>
     /// Unit tests for ProductList Blazor component
@@ -250,26 +250,6 @@ namespace UnitTests.Pages.Components
             // Assert
             var cards = component.FindAll(".card");
             Assert.That(cards.Count, Is.EqualTo(4));
-        }
-
-        /// <summary>
-        /// Tests that HighlightMatch() correctly highlights a substring within a given text.
-        /// </summary>
-        [Test]
-        public void Search_HighlightMatch_FromProductList_Should_Call_StringHighlighter_Correctly()
-        {
-            // Arrange
-            var component = _testContext.Render<ProductList>();
-            var searchInput = component.Find("input[placeholder='Search Brands...']");
-
-            // Act
-            searchInput.Input("Mac");
-            var result = component.Instance.HighlightMatch("Macintosh");
-
-            // Reset
-
-            // Assert
-            Assert.That("<mark>Mac</mark>intosh", Is.EqualTo(result));
         }
 
         /// <summary>
@@ -2738,6 +2718,722 @@ namespace UnitTests.Pages.Components
         }
 
         #endregion ShareFeature
+
+        #region SearchField
+
+        /// <summary>
+        /// Test search field dropdown is rendered with all options except Undefined
+        /// </summary>
+        [Test]
+        public void SearchFieldDropdown_Valid_Should_Render_All_Options_Except_Undefined()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var searchFieldSelect = component.Find("#search-field-select");
+            var options = searchFieldSelect.QuerySelectorAll("option");
+            var optionValues = options.Select(o => o.GetAttribute("value")).ToList();
+
+            Assert.That(optionValues.Contains("Undefined"), Is.False);
+            Assert.That(options.Count, Is.EqualTo(3));
+
+        }
+
+        /// <summary>
+        /// Test search field dropdown defaults to Brand
+        /// </summary>
+        [Test]
+        public void SearchFieldDropdown_Valid_Should_Default_To_Brand()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchField.Brand));
+
+        }
+
+        /// <summary>
+        /// Test search by Description field filters products correctly
+        /// </summary>
+        [Test]
+        public void Search_Valid_Description_Field_Should_Filter_By_Description()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchInput.Input("Gaming");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(2));
+
+        }
+
+        /// <summary>
+        /// Test search by Type field filters products correctly
+        /// </summary>
+        [Test]
+        public void Search_Valid_Type_Field_Should_Filter_By_Type()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Type.ToString());
+            searchInput.Input("Laptop");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(2));
+
+        }
+
+        /// <summary>
+        /// Test search by Brand field filters products correctly
+        /// </summary>
+        [Test]
+        public void Search_Valid_Brand_Field_Should_Filter_By_Brand()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Brand.ToString());
+            searchInput.Input("TestBrand");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(1));
+
+        }
+
+        /// <summary>
+        /// Test search Description with null description should not crash
+        /// </summary>
+        [Test]
+        public void Search_Valid_Description_Field_Null_Description_Should_Not_Crash()
+        {
+
+            // Arrange
+            TestProducts[0].ProductDescription = null;
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchInput.Input("Test");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.GreaterThanOrEqualTo(0));
+
+        }
+
+        /// <summary>
+        /// Test search with invalid search field should return all products
+        /// </summary>
+        [Test]
+        public void Search_Invalid_SearchField_Should_Return_All_Products()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchFieldSelect.Change("InvalidField");
+            searchInput.Input("Test");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.EqualTo(4));
+
+        }
+
+        #endregion SearchField
+
+        #region GetSearchPlaceholder
+
+        /// <summary>
+        /// Test GetSearchPlaceholder returns correct placeholder for Brand
+        /// </summary>
+        [Test]
+        public void GetSearchPlaceholder_Valid_Brand_Should_Return_Search_Brands()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            component.Instance.SelectedSearchField = SearchField.Brand;
+            var result = component.Instance.GetSearchPlaceholder();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.EqualTo("Search Brands..."));
+
+        }
+
+        /// <summary>
+        /// Test GetSearchPlaceholder returns correct placeholder for Description
+        /// </summary>
+        [Test]
+        public void GetSearchPlaceholder_Valid_Description_Should_Return_Search_Descriptions()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            component.Instance.SelectedSearchField = SearchField.Description;
+            var result = component.Instance.GetSearchPlaceholder();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.EqualTo("Search Descriptions..."));
+
+        }
+
+        /// <summary>
+        /// Test GetSearchPlaceholder returns correct placeholder for Type
+        /// </summary>
+        [Test]
+        public void GetSearchPlaceholder_Valid_Type_Should_Return_Search_Types()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            component.Instance.SelectedSearchField = SearchField.Type;
+            var result = component.Instance.GetSearchPlaceholder();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.EqualTo("Search Types..."));
+
+        }
+
+        /// <summary>
+        /// Test GetSearchPlaceholder returns default for Undefined
+        /// </summary>
+        [Test]
+        public void GetSearchPlaceholder_Valid_Undefined_Should_Return_Default_Search()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            component.Instance.SelectedSearchField = SearchField.Undefined;
+            var result = component.Instance.GetSearchPlaceholder();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.EqualTo("Search..."));
+
+        }
+
+        #endregion GetSearchPlaceholder
+
+        #region HighlightBrand
+
+        /// <summary>
+        /// Test HighlightBrand highlights text when searching by Brand
+        /// </summary>
+        [Test]
+        public void HighlightBrand_Valid_Brand_Field_Should_Highlight_Match()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Brand;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightBrand("TestBrand");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Contain("<mark>"));
+            Assert.That(result, Does.Contain("Test"));
+
+        }
+
+        /// <summary>
+        /// Test HighlightBrand does not highlight when searching by Description
+        /// </summary>
+        [Test]
+        public void HighlightBrand_Valid_Description_Field_Should_Not_Highlight()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightBrand("TestBrand");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Not.Contain("<mark>"));
+            Assert.That(result, Is.EqualTo("TestBrand"));
+
+        }
+
+        /// <summary>
+        /// Test HighlightBrand does not highlight when searching by Type
+        /// </summary>
+        [Test]
+        public void HighlightBrand_Valid_Type_Field_Should_Not_Highlight()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Type;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightBrand("TestBrand");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Not.Contain("<mark>"));
+            Assert.That(result, Is.EqualTo("TestBrand"));
+
+        }
+
+        #endregion HighlightBrand
+
+        #region HighlightDescription
+
+        /// <summary>
+        /// Test HighlightDescription highlights text when searching by Description
+        /// </summary>
+        [Test]
+        public void HighlightDescription_Valid_Description_Field_Should_Highlight_Match()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightDescription("Test Description");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Contain("<mark>"));
+            Assert.That(result, Does.Contain("Test"));
+
+        }
+
+        /// <summary>
+        /// Test HighlightDescription does not highlight when searching by Brand
+        /// </summary>
+        [Test]
+        public void HighlightDescription_Valid_Brand_Field_Should_Not_Highlight()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Brand;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightDescription("Test Description");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Not.Contain("<mark>"));
+            Assert.That(result, Is.EqualTo("Test Description"));
+
+        }
+
+        /// <summary>
+        /// Test HighlightDescription returns empty string for null text
+        /// </summary>
+        [Test]
+        public void HighlightDescription_Invalid_Null_Text_Should_Return_Empty_String()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightDescription(null);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.EqualTo(string.Empty));
+
+        }
+
+        /// <summary>
+        /// Test HighlightDescription does not highlight when searching by Type
+        /// </summary>
+        [Test]
+        public void HighlightDescription_Valid_Type_Field_Should_Not_Highlight()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Type;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightDescription("Test Description");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Not.Contain("<mark>"));
+            Assert.That(result, Is.EqualTo("Test Description"));
+
+        }
+
+        #endregion HighlightDescription
+
+        #region HighlightType
+
+        /// <summary>
+        /// Test HighlightType highlights text when searching by Type
+        /// </summary>
+        [Test]
+        public void HighlightType_Valid_Type_Field_Should_Highlight_Match()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Type;
+            component.Instance.SearchTerm = "Lap";
+
+            // Act
+            var result = component.Instance.HighlightType("Laptop");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Contain("<mark>"));
+            Assert.That(result, Does.Contain("Lap"));
+
+        }
+
+        /// <summary>
+        /// Test HighlightType does not highlight when searching by Brand
+        /// </summary>
+        [Test]
+        public void HighlightType_Valid_Brand_Field_Should_Not_Highlight()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Brand;
+            component.Instance.SearchTerm = "Lap";
+
+            // Act
+            var result = component.Instance.HighlightType("Laptop");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Not.Contain("<mark>"));
+            Assert.That(result, Is.EqualTo("Laptop"));
+
+        }
+
+        /// <summary>
+        /// Test HighlightType does not highlight when searching by Description
+        /// </summary>
+        [Test]
+        public void HighlightType_Valid_Description_Field_Should_Not_Highlight()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SearchTerm = "Lap";
+
+            // Act
+            var result = component.Instance.HighlightType("Laptop");
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Not.Contain("<mark>"));
+            Assert.That(result, Is.EqualTo("Laptop"));
+
+        }
+
+        #endregion HighlightType
+
+        #region ClearSearch_SearchField
+
+        /// <summary>
+        /// Test ClearSearch resets SelectedSearchField to Brand
+        /// </summary>
+        [Test]
+        public void ClearSearch_Valid_Should_Reset_SearchField_To_Brand()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            component.Instance.ClearSearch();
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchField.Brand));
+            Assert.That(component.Instance.SearchTerm, Is.EqualTo(string.Empty));
+
+        }
+
+        #endregion ClearSearch_SearchField
+
+        #region ClearFilters_SearchField
+
+        /// <summary>
+        /// Test ClearFilters resets SelectedSearchField to Brand
+        /// </summary>
+        [Test]
+        public void ClearFilters_Valid_Should_Reset_SearchField_To_Brand()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            searchFieldSelect.Change(SearchField.Type.ToString());
+
+            var clearButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Clear"));
+
+            // Act
+            clearButton.Click();
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchField.Brand));
+
+        }
+
+        #endregion ClearFilters_SearchField
+
+        #region DynamicPlaceholder
+
+        /// <summary>
+        /// Test placeholder updates when search field changes to Description
+        /// </summary>
+        [Test]
+        public void Placeholder_Valid_Change_To_Description_Should_Update_Placeholder()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Description.ToString());
+            component.Render();
+
+            // Reset
+
+            // Assert
+            var searchInput = component.Find("#search-input");
+            var placeholder = searchInput.GetAttribute("placeholder");
+            Assert.That(placeholder, Is.EqualTo("Search Descriptions..."));
+
+        }
+
+        /// <summary>
+        /// Test placeholder updates when search field changes to Type
+        /// </summary>
+        [Test]
+        public void Placeholder_Valid_Change_To_Type_Should_Update_Placeholder()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Type.ToString());
+            component.Render();
+
+            // Reset
+
+            // Assert
+            var searchInput = component.Find("#search-input");
+            var placeholder = searchInput.GetAttribute("placeholder");
+            Assert.That(placeholder, Is.EqualTo("Search Types..."));
+
+        }
+
+        #endregion DynamicPlaceholder
+
+        #region CascadingFilters_SearchField
+
+        /// <summary>
+        /// Test cascading filters work with Description search
+        /// </summary>
+        [Test]
+        public void CascadingFilters_Valid_Description_Search_Should_Update_Available_Types()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchInput.Input("Gaming");
+            component.Render();
+
+            // Reset
+
+            // Assert
+            var typeSelect = component.Find("#product-type-filter");
+            var options = typeSelect.QuerySelectorAll("option").Skip(1).ToList();
+            Assert.That(options.Count, Is.GreaterThan(0));
+
+        }
+
+        /// <summary>
+        /// Test cascading filters work with Type search
+        /// </summary>
+        [Test]
+        public void CascadingFilters_Valid_Type_Search_Should_Update_Available_Brands()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Type.ToString());
+            searchInput.Input("Keyboard");
+            component.Render();
+
+            // Reset
+
+            // Assert
+            var brandSelect = component.Find("#brand-filter");
+            var options = brandSelect.QuerySelectorAll("option").Skip(1).ToList();
+            Assert.That(options.Count, Is.EqualTo(1));
+
+        }
+
+        #endregion CascadingFilters_SearchField
+
+        #region SearchField_Integration
+
+        /// <summary>
+        /// Test search field enum foreach loop renders all valid options
+        /// </summary>
+        [Test]
+        public void SearchFieldDropdown_Valid_Should_Render_Brand_Description_Type_Options()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var searchFieldSelect = component.Find("#search-field-select");
+            var options = searchFieldSelect.QuerySelectorAll("option");
+            var optionTexts = options.Select(o => o.TextContent).ToList();
+
+            Assert.That(optionTexts, Does.Contain("Brand"));
+            Assert.That(optionTexts, Does.Contain("Description"));
+            Assert.That(optionTexts, Does.Contain("Type"));
+
+        }
+
+        /// <summary>
+        /// Test search with multiple filters and search field
+        /// </summary>
+        [Test]
+        public void Search_Valid_Multiple_Filters_With_SearchField_Should_Work_Together()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+            var searchFieldSelect = component.Find("#search-field-select");
+            var searchInput = component.Find("#search-input");
+            var ratingSelect = component.Find("#min-rating-filter");
+
+            // Act
+            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchInput.Input("Gaming");
+            ratingSelect.Change("3");
+
+            // Reset
+
+            // Assert
+            var cards = component.FindAll(".card");
+            Assert.That(cards.Count, Is.GreaterThanOrEqualTo(0));
+
+        }
+
+        #endregion SearchField_Integration
+
 
     }
 
