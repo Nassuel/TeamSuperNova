@@ -21,4 +21,39 @@ namespace ContosoCrafts.WebSite.Enums
 
     }
 
+    /// <summary>
+    /// Extension methods for SearchFieldEnum to provide display-friendly names
+    /// </summary>
+    public static class SearchFieldEnumExtensions
+    {
+
+        /// <summary>
+        /// Returns a human-readable display name for the search field enum value
+        /// </summary>
+        /// <param name="searchField">The search field enum value</param>
+        /// <returns>Display-friendly string representation of the search field</returns>
+        public static string DisplayName(this SearchFieldEnum data)
+        {
+
+            // Fast fail: switch on search field to return display names
+            switch (data)
+            {
+                case SearchFieldEnum.Brand:
+                    return "Brand";
+
+                case SearchFieldEnum.Description:
+                    return "Description";
+
+                case SearchFieldEnum.Type:
+                    return "Type";
+
+                // Default for Undefined or unrecognized values
+                default:
+                    return "Unknown";
+            }
+
+        }
+
+    }
+
 }
