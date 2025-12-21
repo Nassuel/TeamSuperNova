@@ -4,7 +4,7 @@ namespace ContosoCrafts.WebSite.Enums
     /// <summary>
     /// Enum representing the available fields for product search functionality
     /// </summary>
-    public enum SearchField
+    public enum SearchFieldEnum
     {
 
         // Default undefined state
