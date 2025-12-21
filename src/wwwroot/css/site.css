@@ -684,6 +684,13 @@ mark {
     height: 100%;
 }
 
+.btn-md, .btn-group-md > .btn {
+    padding: 0.65rem 0.75rem !important;
+    font-size: 1.0625rem !important;
+    line-height: 1.5 !important;
+    border-radius: 0.425rem !important;
+}
+
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 .card-columns {
