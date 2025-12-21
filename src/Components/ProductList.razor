@@ -10,8 +10,9 @@
 <!-- Search and Filter Input Section -->
 <div class="container mb-4">
     <div class="row">
-        <!-- Search Box -->
+        <!-- Search Box with Field Selector -->
         <div class="col-md-12 mb-3">
+            <label id="search-label" class="col-form-label theme-label">Search Products</label>
             <div class="d-flex align-content-center">
                 <!-- Search Field Dropdown -->
                 <select class="form-control theme-input fmxw-150"
@@ -25,8 +26,9 @@
 
                 <!-- Search Input -->
                 <input type="text"
-                       class="form-control theme-input"
-                       placeholder="Search Brands..."
+                       class="form-control theme-input ml-2"
+                       aria-labelledby="search-label"
+                       placeholder="@GetSearchPlaceholder()"
                        @bind-value="SearchTerm"
                        @bind-value:event="oninput" />
                 @if (string.IsNullOrWhiteSpace(SearchTerm) == false)
@@ -44,7 +46,7 @@
     <div class="row">
         <!-- Product Type Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
-            <label class="col-form-label theme-label">Product Type</label>
+            <label for="product-type-filter" class="col-form-label theme-label">Product Type</label>
             <select id="product-type-filter" class="form-control theme-input" @bind="SelectedProductType">
                 <option value="">All Types</option>
                 @foreach (var productType in GetAvailableProductTypes())
@@ -55,8 +57,8 @@
         </div>
         <!-- Brand Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
-            <label class="col-form-label theme-label">Brand</label>
-            <select class="form-control theme-input" @bind="SelectedBrand">
+            <label for="brand-filter" class="col-form-label theme-label">Brand</label>
+            <select id="brand-filter" class="form-control theme-input" @bind="SelectedBrand">
                 <option value="">All Brands</option>
                 @foreach (var brand in GetAvailableBrands())
                 {
@@ -66,8 +68,8 @@
         </div>
         <!-- Min Rating Filter -->
         <div class="col-md-2 mb-2">
-            <label class="col-form-label theme-label">Min Rating</label>
-            <select class="form-control theme-input" @bind="MinRating">
+            <label for="min-rating-filter" class="col-form-label theme-label">Min Rating</label>
+            <select id="min-rating-filter" class="form-control theme-input" @bind="MinRating">
                 <option value="0">All Ratings</option>
                 <option value="1">1+ Stars</option>
                 <option value="2">2+ Stars</option>
@@ -78,8 +80,8 @@
         </div>
         <!-- Sort By -->
         <div class="col-md-2 mb-2">
-            <label class="col-form-label theme-label">Sort By</label>
-            <select class="form-control theme-input" @bind="SortBy">
+            <label for="sort-by-filter" class="col-form-label theme-label">Sort By</label>
+            <select id="sort-by-filter" class="form-control theme-input" @bind="SortBy">
                 <option value="">Default</option>
                 <option value="BrandAZ">Brand: A-Z</option>
                 <option value="BrandZA">Brand: Z-A</option>
@@ -191,12 +193,13 @@
                 </div>
 
                 <div class="modal-footer theme-modal-footer">
-                    <textarea class="form-control theme-input"
+                    <textarea id="new-comment-input"
+                              class="form-control theme-input"
                               @bind="NewComment"
                               placeholder="Type your comment..."
                               rows="2"
                               @onkeydown="@(e => UsingEnterKey(e))">
-                            </textarea>
+                                    </textarea>
 
                     <button class="btn btn-primary theme-btn-primary" @onclick="AddComment">Submit Comment</button>
                 </div>
@@ -555,7 +558,7 @@
         // Fast fail: Search by Type field
         if (SelectedSearchField == SearchField.Type)
         {
-        return products.Where(p =>
+            return products.Where(p =>
                 p.ProductType.DisplayName().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -837,7 +840,7 @@
         if (SelectedSearchField != SearchField.Description)
         {
             return text;
-    }
+        }
 
         return StringHighlighter.HighlightMatch(text, SearchTerm);
 
