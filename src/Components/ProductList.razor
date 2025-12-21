@@ -141,7 +141,8 @@
                                 class="btn btn-md theme-share-btn mr-2"
                                 @onclick="CopyShareLink"
                                 title="Copy share link">
-                            <i class="fa fa-share-alt" aria-hidden="true"></i>
+                            @* Warning: Need span here due to nested css class in neumorphism.css *@
+                            <span class="fa fa-share-alt" aria-hidden="true"></span>
                         </button>
                         @* Close button *@
                         <button type="button" class="close theme-close-btn" @onclick="CloseModal" aria-label="Close">
