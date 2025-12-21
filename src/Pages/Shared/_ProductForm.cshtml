@@ -8,29 +8,28 @@
 
 <div>
 
-    <label class="col-form-label theme-label">Product Brand:</label>
+    <label for="product-brand" class="col-form-label theme-label">Product Brand:</label>
+    <input id="product-brand" asp-for="Product.Brand" class="form-control theme-input mb-2" placeholder="@Model.BrandPlaceholder" />
 
-    <input asp-for="Product.Brand" class="form-control theme-input mb-2" placeholder="@Model.BrandPlaceholder" />
+</div>
+
+<div>
+
+    <label for="product-name" class="col-form-label theme-label">Product Name:</label>
+    <input id="product-name" asp-for="Product.ProductName" class="form-control theme-input mb-2" placeholder="@Model.ProductNamePlaceholder" />
 
 </div>
 
 <div>
 
-    <label class="col-form-label theme-label">Product Name:</label>
-
-    <input asp-for="Product.ProductName" class="form-control theme-input mb-2" placeholder="@Model.ProductNamePlaceholder" />
-
-</div>
-
-<div>
-    <label class="col-form-label theme-label">Upload Product Image:</label>
-
-    <input type="file"
+    <label for="product-image-file" class="col-form-label theme-label">Upload Product Image:</label>
+    <input id="product-image-file"
+           type="file"
            asp-for="ImageFile"
            class="form-control theme-input"
            accept="image/*"
            onchange="previewImage(this)" />
-    
+
     <div class="mt-3">
         <img id="imagePreview" src="" alt="Image Preview" class="product-form-thumbnail" />
     </div>
@@ -48,9 +47,8 @@
 
 <div>
 
-    <label class="col-form-label theme-label">Product Description:</label>
-
-    <textarea id="FormModel-Product-ProductDescription" asp-for="Product.ProductDescription" class="form-control theme-input mb-2" placeholder="@Model.DescriptionPlaceholder" maxlength="5000" rows="10"></textarea>
+    <label for="product-description" class="col-form-label theme-label">Product Description:</label>
+    <textarea id="product-description" asp-for="Product.ProductDescription" class="form-control theme-input mb-2" placeholder="@Model.DescriptionPlaceholder" maxlength="5000" rows="10"></textarea>
 
     <small id="char-count-display" class="text-muted theme-text-muted">0 / 5000 characters (5000 remaining)</small>
 
@@ -58,10 +56,9 @@
 
 <div>
 
-    <label class="col-form-label theme-label">Product Url:</label>
-
+    <label for="product-url" class="col-form-label theme-label">Product Url:</label>
     <div class="d-flex align-content-center justify-content-center mb-2">
-        <input id="FormModel-Product-Url" asp-for="Product.Url" class="form-control theme-input" placeholder="@Model.UrlPlaceholder" />
+        <input id="product-url" asp-for="Product.Url" class="form-control theme-input" placeholder="@Model.UrlPlaceholder" />
         <button type="button" id="validate-url-btn" class="btn btn-secondary theme-btn-secondary ml-2">Validate</button>
     </div>
 
@@ -71,9 +68,8 @@
 
 <div>
 
-    <label class="col-form-label theme-label">Product Type:</label>
-
-    <select asp-for="Product.ProductType" class="form-control theme-input mb-2">
+    <label for="product-type" class="col-form-label theme-label">Product Type:</label>
+    <select id="product-type" asp-for="Product.ProductType" class="form-control theme-input mb-2">
         @foreach (var item in Enum.GetValues(typeof(ProductTypeEnum)))
         {
             <option value="@((int)item)">@(((ProductTypeEnum)item).DisplayName())</option>
@@ -83,7 +79,6 @@
 </div>
 
 <button type="submit" class="btn btn-primary theme-btn-primary">Save</button>
-
 <a asp-page="/Product/Read" asp-route-id="@Model.Product.Id" class="btn btn-secondary theme-btn-secondary">Cancel</a>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
