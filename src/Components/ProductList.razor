@@ -13,6 +13,17 @@
         <!-- Search Box -->
         <div class="col-md-12 mb-3">
             <div class="d-flex align-content-center">
+                <!-- Search Field Dropdown -->
+                <select class="form-control theme-input fmxw-150"
+                        @bind="SelectedSearchField"
+                        aria-labelledby="search-label">
+                    @foreach (var field in Enum.GetValues<SearchField>().Where(f => f != SearchField.Undefined))
+                    {
+                        <option value="@field">@field</option>
+                    }
+                </select>
+
+                <!-- Search Input -->
                 <input type="text"
                        class="form-control theme-input"
                        placeholder="Search Brands..."
@@ -34,7 +45,7 @@
         <!-- Product Type Filter - DYNAMICALLY POPULATED -->
         <div class="col-md-3 mb-2">
             <label class="col-form-label theme-label">Product Type</label>
-            <select class="form-control theme-input" @bind="SelectedProductType">
+            <select id="product-type-filter" class="form-control theme-input" @bind="SelectedProductType">
                 <option value="">All Types</option>
                 @foreach (var productType in GetAvailableProductTypes())
                 {
@@ -91,8 +102,8 @@
                 <div class="card-img" style="background-image: url('@product.Image');">
                 </div>
                 <div class="card-body theme-card-body">
-                    <h4 class="card-title theme-card-title">@((MarkupString)HighlightMatch(product.Brand))</h4>
-                    <h6 class="card-subtitle theme-card-subtitle">@(product.ProductType.DisplayName())</h6>
+                    <h4 class="card-title theme-card-title">@((MarkupString)HighlightBrand(product.Brand))</h4>
+                    <h6 class="card-subtitle theme-card-subtitle">@((MarkupString)HighlightType(product.ProductType.DisplayName()))</h6>
                 </div>
                 <div class="card-footer theme-card-footer">
                     <small>
@@ -142,7 +153,7 @@
                         <div class="card-img" style="background-image: url('@SelectedProduct.Image');">
                         </div>
                         <div class="card-body theme-card-body">
-                            <p class="card-text theme-card-text">@SelectedProduct.ProductDescription</p>
+                            <p class="card-text theme-card-text">@((MarkupString)HighlightDescription(SelectedProduct.ProductDescription))</p>
                         </div>
                     </div>
 
@@ -245,6 +256,9 @@
     // Search term entered by user for filtering products
     public string SearchTerm = string.Empty;
 
+    // Selected field to search within
+    public SearchField SelectedSearchField = SearchField.Brand;
+
     // Selected product type filter value
     string SelectedProductType = string.Empty;
 
@@ -286,6 +300,9 @@
 
         // Reset search term only
         SearchTerm = string.Empty;
+
+        // Reset search field to default
+        SelectedSearchField = SearchField.Brand;
 
     }
 
@@ -488,6 +505,9 @@
         // Reset search term
         SearchTerm = string.Empty;
 
+        // Reset search field to default
+        SelectedSearchField = SearchField.Brand;
+
         // Reset product type filter
         SelectedProductType = string.Empty;
 
@@ -503,7 +523,7 @@
     }
 
     /// <summary>
-    /// Applies search term filter to product list
+    /// Applies search term filter to product list based on selected search field
     /// </summary>
     /// <param name="products">Products to filter</param>
     /// <returns>Filtered product list</returns>
@@ -516,9 +536,31 @@
             return products;
         }
 
-        // Filter products by brand name containing search term
+        // Fast fail: Search by Brand field
+        if (SelectedSearchField == SearchField.Brand)
+        {
+
+            return products.Where(p => p.Brand.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+
+        }
+
+        // Fast fail: Search by Description field
+        if (SelectedSearchField == SearchField.Description)
+        {
+            return products.Where(p =>
+                p.ProductDescription != null &&
+                p.ProductDescription.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Fast fail: Search by Type field
+        if (SelectedSearchField == SearchField.Type)
+        {
         return products.Where(p =>
-            p.Brand.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+                p.ProductType.DisplayName().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Return unfiltered if search field not recognized
+        return products;
 
     }
 
@@ -760,12 +802,94 @@
     }
 
     /// <summary>
-    /// Returns HTML where occurrences of the current search term in the provided text are wrapped/highlighted.
-    /// Delegates to `StringHighlighter.HighlightMatch` and uses the component's `SearchTerm` as the query.
+    /// Highlights brand text when searching by Brand field
     /// </summary>
-    /// <param name="text">The input text to search and highlight (e.g., product brand).</param>
-    /// <returns>HTML string with highlighted matches (safe to render as MarkupString).</returns>
-    public string HighlightMatch(string text) => StringHighlighter.HighlightMatch(text, SearchTerm);
+    /// <param name="text">The brand text to potentially highlight</param>
+    /// <returns>HTML string with highlighted matches if searching by Brand</returns>
+    public string HighlightBrand(string text)
+    {
+
+        // Fast fail: Only highlight when searching by Brand
+        if (SelectedSearchField != SearchField.Brand)
+        {
+            return text;
+        }
+
+        return StringHighlighter.HighlightMatch(text, SearchTerm);
+
+    }
+
+    /// <summary>
+    /// Highlights description text when searching by Description field
+    /// </summary>
+    /// <param name="text">The description text to potentially highlight</param>
+    /// <returns>HTML string with highlighted matches if searching by Description</returns>
+    public string HighlightDescription(string text)
+    {
+
+        // Fast fail: Check if text is null
+        if (text == null)
+        {
+            return string.Empty;
+        }
+
+        // Fast fail: Only highlight when searching by Description
+        if (SelectedSearchField != SearchField.Description)
+        {
+            return text;
+    }
+
+        return StringHighlighter.HighlightMatch(text, SearchTerm);
+
+    }
+
+    /// <summary>
+    /// Highlights type text when searching by Type field
+    /// </summary>
+    /// <param name="text">The type display name to potentially highlight</param>
+    /// <returns>HTML string with highlighted matches if searching by Type</returns>
+    public string HighlightType(string text)
+    {
+
+        // Fast fail: Only highlight when searching by Type
+        if (SelectedSearchField != SearchField.Type)
+        {
+            return text;
+        }
+
+        return StringHighlighter.HighlightMatch(text, SearchTerm);
+
+    }
+
+    /// <summary>
+    /// Gets the appropriate placeholder text based on selected search field
+    /// </summary>
+    /// <returns>Placeholder string for search input</returns>
+    public string GetSearchPlaceholder()
+    {
+
+        // Fast fail: Return Brand placeholder
+        if (SelectedSearchField == SearchField.Brand)
+        {
+            return "Search Brands...";
+        }
+
+        // Fast fail: Return Description placeholder
+        if (SelectedSearchField == SearchField.Description)
+        {
+            return "Search Descriptions...";
+        }
+
+        // Fast fail: Return Type placeholder
+        if (SelectedSearchField == SearchField.Type)
+        {
+            return "Search Types...";
+        }
+
+        // Default placeholder
+        return "Search...";
+
+    }
 
     /// <summary>
     /// Checks URL for product parameter and opens modal if present
