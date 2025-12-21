@@ -44,50 +44,34 @@
         public static string DisplayName(this ProductTypeEnum data)
         {
 
-            // Fast fail: Check if data is Undefined
-            if (data == ProductTypeEnum.Undefined)
+            // Fast fail: switch on product type to return display names
+            switch (data)
             {
-                return "Undefined";
-            }
+                case ProductTypeEnum.Undefined:
+                    return "Undefined";
 
-            // Fast fail: Check if data is Laptop
-            if (data == ProductTypeEnum.Laptop)
-            {
-                return "Laptop";
-            }
+                case ProductTypeEnum.Laptop:
+                    return "Laptop";
 
-            // Fast fail: Check if data is Keyboard
-            if (data == ProductTypeEnum.Keyboard)
-            {
-                return "Keyboard";
-            }
+                case ProductTypeEnum.Keyboard:
+                    return "Keyboard";
 
-            // Fast fail: Check if data is Mice
-            if (data == ProductTypeEnum.Mice)
-            {
-                return "Mice";
-            }
+                case ProductTypeEnum.Mice:
+                    return "Mice";
 
-            // Fast fail: Check if data is Headset
-            if (data == ProductTypeEnum.Headset)
-            {
-                return "Headset";
-            }
+                case ProductTypeEnum.Headset:
+                    return "Headset";
 
-            // Fast fail: Check if data is VrHeadsets
-            if (data == ProductTypeEnum.VrHeadsets)
-            {
-                return "VR Headsets";
-            }
+                case ProductTypeEnum.VrHeadsets:
+                    return "VR Headsets";
 
-            // Fast fail: Check if data is Printer3D
-            if (data == ProductTypeEnum.Printer3D)
-            {
-                return "3D Printer";
-            }
+                case ProductTypeEnum.Printer3D:
+                    return "3D Printer";
 
-            // Return empty string for unknown product types
-            return "";
+                // Return empty string for unknown product types
+                default:
+                    return "";
+            }
 
         }
 
