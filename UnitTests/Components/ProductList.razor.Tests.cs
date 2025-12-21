@@ -2760,7 +2760,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchField.Brand));
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchFieldEnum.Brand));
 
         }
 
@@ -2777,7 +2777,7 @@ namespace UnitTests.Components
             var searchInput = component.Find("#search-input");
 
             // Act
-            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Description.ToString());
             searchInput.Input("Gaming");
 
             // Reset
@@ -2801,7 +2801,7 @@ namespace UnitTests.Components
             var searchInput = component.Find("#search-input");
 
             // Act
-            searchFieldSelect.Change(SearchField.Type.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Type.ToString());
             searchInput.Input("Laptop");
 
             // Reset
@@ -2825,7 +2825,7 @@ namespace UnitTests.Components
             var searchInput = component.Find("#search-input");
 
             // Act
-            searchFieldSelect.Change(SearchField.Brand.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Brand.ToString());
             searchInput.Input("TestBrand");
 
             // Reset
@@ -2850,7 +2850,7 @@ namespace UnitTests.Components
             var searchInput = component.Find("#search-input");
 
             // Act
-            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Description.ToString());
             searchInput.Input("Test");
 
             // Reset
@@ -2900,7 +2900,7 @@ namespace UnitTests.Components
             var component = _testContext.Render<ProductList>();
 
             // Act
-            component.Instance.SelectedSearchField = SearchField.Brand;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Brand;
             var result = component.Instance.GetSearchPlaceholder();
 
             // Reset
@@ -2921,7 +2921,7 @@ namespace UnitTests.Components
             var component = _testContext.Render<ProductList>();
 
             // Act
-            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Description;
             var result = component.Instance.GetSearchPlaceholder();
 
             // Reset
@@ -2942,7 +2942,7 @@ namespace UnitTests.Components
             var component = _testContext.Render<ProductList>();
 
             // Act
-            component.Instance.SelectedSearchField = SearchField.Type;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Type;
             var result = component.Instance.GetSearchPlaceholder();
 
             // Reset
@@ -2963,7 +2963,7 @@ namespace UnitTests.Components
             var component = _testContext.Render<ProductList>();
 
             // Act
-            component.Instance.SelectedSearchField = SearchField.Undefined;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Undefined;
             var result = component.Instance.GetSearchPlaceholder();
 
             // Reset
@@ -2986,7 +2986,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Brand;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Brand;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3009,7 +3009,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Description;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3032,7 +3032,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Type;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Type;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3059,7 +3059,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Description;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3082,7 +3082,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Brand;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Brand;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3105,7 +3105,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Description;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3127,7 +3127,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Type;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Type;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3154,7 +3154,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Type;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Type;
             component.Instance.SearchTerm = "Lap";
 
             // Act
@@ -3177,7 +3177,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Brand;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Brand;
             component.Instance.SearchTerm = "Lap";
 
             // Act
@@ -3200,7 +3200,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Description;
             component.Instance.SearchTerm = "Lap";
 
             // Act
@@ -3227,7 +3227,7 @@ namespace UnitTests.Components
 
             // Arrange
             var component = _testContext.Render<ProductList>();
-            component.Instance.SelectedSearchField = SearchField.Description;
+            component.Instance.SelectedSearchField = SearchFieldEnum.Description;
             component.Instance.SearchTerm = "Test";
 
             // Act
@@ -3236,7 +3236,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchField.Brand));
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchFieldEnum.Brand));
             Assert.That(component.Instance.SearchTerm, Is.EqualTo(string.Empty));
 
         }
@@ -3255,7 +3255,7 @@ namespace UnitTests.Components
             // Arrange
             var component = _testContext.Render<ProductList>();
             var searchFieldSelect = component.Find("#search-field-select");
-            searchFieldSelect.Change(SearchField.Type.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Type.ToString());
 
             var clearButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Clear"));
 
@@ -3265,7 +3265,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchField.Brand));
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchFieldEnum.Brand));
 
         }
 
@@ -3285,7 +3285,7 @@ namespace UnitTests.Components
             var searchFieldSelect = component.Find("#search-field-select");
 
             // Act
-            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Description.ToString());
             component.Render();
 
             // Reset
@@ -3309,7 +3309,7 @@ namespace UnitTests.Components
             var searchFieldSelect = component.Find("#search-field-select");
 
             // Act
-            searchFieldSelect.Change(SearchField.Type.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Type.ToString());
             component.Render();
 
             // Reset
@@ -3338,7 +3338,7 @@ namespace UnitTests.Components
             var searchInput = component.Find("#search-input");
 
             // Act
-            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Description.ToString());
             searchInput.Input("Gaming");
             component.Render();
 
@@ -3364,7 +3364,7 @@ namespace UnitTests.Components
             var searchInput = component.Find("#search-input");
 
             // Act
-            searchFieldSelect.Change(SearchField.Type.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Type.ToString());
             searchInput.Input("Keyboard");
             component.Render();
 
@@ -3420,7 +3420,7 @@ namespace UnitTests.Components
             var ratingSelect = component.Find("#min-rating-filter");
 
             // Act
-            searchFieldSelect.Change(SearchField.Description.ToString());
+            searchFieldSelect.Change(SearchFieldEnum.Description.ToString());
             searchInput.Input("Gaming");
             ratingSelect.Change("3");
 

@@ -18,7 +18,7 @@
                 <select class="form-control theme-input fmxw-150"
                         @bind="SelectedSearchField"
                         aria-labelledby="search-label">
-                    @foreach (var field in Enum.GetValues<SearchField>().Where(f => f != SearchField.Undefined))
+                    @foreach (var field in Enum.GetValues<SearchFieldEnum>().Where(f => f != SearchFieldEnum.Undefined))
                     {
                         <option value="@field">@field</option>
                     }
@@ -199,7 +199,7 @@
                               placeholder="Type your comment..."
                               rows="2"
                               @onkeydown="@(e => UsingEnterKey(e))">
-                                    </textarea>
+                                        </textarea>
 
                     <button class="btn btn-primary theme-btn-primary" @onclick="AddComment">Submit Comment</button>
                 </div>
@@ -260,7 +260,7 @@
     public string SearchTerm = string.Empty;
 
     // Selected field to search within
-    public SearchField SelectedSearchField = SearchField.Brand;
+    public SearchFieldEnum SelectedSearchField = SearchFieldEnum.Brand;
 
     // Selected product type filter value
     string SelectedProductType = string.Empty;
@@ -305,7 +305,7 @@
         SearchTerm = string.Empty;
 
         // Reset search field to default
-        SelectedSearchField = SearchField.Brand;
+        SelectedSearchField = SearchFieldEnum.Brand;
 
     }
 
@@ -509,7 +509,7 @@
         SearchTerm = string.Empty;
 
         // Reset search field to default
-        SelectedSearchField = SearchField.Brand;
+        SelectedSearchField = SearchFieldEnum.Brand;
 
         // Reset product type filter
         SelectedProductType = string.Empty;
@@ -540,7 +540,7 @@
         }
 
         // Fast fail: Search by Brand field
-        if (SelectedSearchField == SearchField.Brand)
+        if (SelectedSearchField == SearchFieldEnum.Brand)
         {
 
             return products.Where(p => p.Brand.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
@@ -548,7 +548,7 @@
         }
 
         // Fast fail: Search by Description field
-        if (SelectedSearchField == SearchField.Description)
+        if (SelectedSearchField == SearchFieldEnum.Description)
         {
             return products.Where(p =>
                 p.ProductDescription != null &&
@@ -556,7 +556,7 @@
         }
 
         // Fast fail: Search by Type field
-        if (SelectedSearchField == SearchField.Type)
+        if (SelectedSearchField == SearchFieldEnum.Type)
         {
             return products.Where(p =>
                 p.ProductType.DisplayName().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
@@ -813,7 +813,7 @@
     {
 
         // Fast fail: Only highlight when searching by Brand
-        if (SelectedSearchField != SearchField.Brand)
+        if (SelectedSearchField != SearchFieldEnum.Brand)
         {
             return text;
         }
@@ -837,7 +837,7 @@
         }
 
         // Fast fail: Only highlight when searching by Description
-        if (SelectedSearchField != SearchField.Description)
+        if (SelectedSearchField != SearchFieldEnum.Description)
         {
             return text;
         }
@@ -855,7 +855,7 @@
     {
 
         // Fast fail: Only highlight when searching by Type
-        if (SelectedSearchField != SearchField.Type)
+        if (SelectedSearchField != SearchFieldEnum.Type)
         {
             return text;
         }
@@ -872,19 +872,19 @@
     {
 
         // Fast fail: Return Brand placeholder
-        if (SelectedSearchField == SearchField.Brand)
+        if (SelectedSearchField == SearchFieldEnum.Brand)
         {
             return "Search Brands...";
         }
 
         // Fast fail: Return Description placeholder
-        if (SelectedSearchField == SearchField.Description)
+        if (SelectedSearchField == SearchFieldEnum.Description)
         {
             return "Search Descriptions...";
         }
 
         // Fast fail: Return Type placeholder
-        if (SelectedSearchField == SearchField.Type)
+        if (SelectedSearchField == SearchFieldEnum.Type)
         {
             return "Search Types...";
         }
