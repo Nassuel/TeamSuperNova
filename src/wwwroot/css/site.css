@@ -684,7 +684,7 @@ mark {
     height: 100%;
 }
 
-.btn-md, .btn-group-md > .btn {
+.btn-md, [data-theme="dark"] .btn-md, .btn-group-md > .btn {
     padding: 0.65rem 0.75rem !important;
     font-size: 1.0625rem !important;
     line-height: 1.5 !important;
