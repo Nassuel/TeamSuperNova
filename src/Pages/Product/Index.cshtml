@@ -6,27 +6,31 @@
     ViewData["Title"] = "Index page";
 }
                 
-<div>
-    @foreach (var product in Model.Products)
-    {
-        <div class="card theme-card mb-3 page-enter">
-            <div class="row g-0">
-                <div class="d-flex flex-column col-2 ml-5 mt-4">
-                    <img src="@product.Image" class="card-img-top rounded mb-2" alt="@product.Image" />
-                    <a asp-page="/Product/Update" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-2">Update</a>
-                    <a asp-page="/Product/Delete" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary text-danger float-right animate-up-2 btn-block mb-2">Delete</a>
-                </div>
-                <div class="col-9">
-                    <div class="card-body theme-card-body">
-                        <h4 class="card-title theme-card-title">@product.Brand</h4>
-                        <h6 class="card-subtitle theme-card-subtitle text-muted theme-text-muted mb-2">@(product.ProductType.DisplayName())</h6>
-                        <p class="card-text theme-card-text">@product.ProductDescription</p>
-                        <a asp-page="/Product/Read" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary float-right animate-up-2 btn-block mb-4">Read</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+<div class="jumbotron theme-jumbotron">
+    <h1 class="theme-heading">Admin View</h1>
+    <table class="table table-hover shadow-inset rounded">
+        <thead>
+            <tr>
+                <th>Brand</th>
+                <th>Product Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>@product.ProductName</td>
+                    <td>@(product.ProductType.DisplayName())</td>
+                    <td>
+                        <a asp-page="/Product/Read" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary">Read</a>
+                        <a asp-page="/Product/Update" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary">Update</a>
+                        <a asp-page="/Product/Delete" asp-route-id="@product.Id" class="btn btn-primary theme-btn-primary text-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
     <a asp-page="Create" class="btn btn-pill btn-success position-fixed z-9 bottom-lg right-lg">
         <i class="fa fa-plus"></i> Create
     </a>
