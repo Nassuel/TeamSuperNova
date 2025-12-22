@@ -6,8 +6,7 @@
     ViewData["Title"] = "Index page";
 }
                 
-<div class="">
-    <a asp-page="Create" class="btn btn-success mb-3">Create New Product</a>
+<div>
     @foreach (var product in Model.Products)
     {
         <div class="card theme-card mb-3 page-enter">
@@ -28,4 +27,7 @@
             </div>
         </div>
     }
+    <a asp-page="Create" class="btn btn-pill btn-success position-fixed z-9 bottom-lg right-lg">
+        <i class="fa fa-plus"></i> Create
+    </a>
 </div>
