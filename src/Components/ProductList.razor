@@ -15,17 +15,19 @@
             <label id="search-label" class="col-form-label theme-label">Search Products</label>
             <div class="d-flex align-content-center">
                 <!-- Search Field Dropdown -->
-                <select class="form-control theme-input fmxw-150"
+                <select id="search-field-select"
+                        class="form-control theme-input fmxw-150"
                         @bind="SelectedSearchField"
                         aria-labelledby="search-label">
                     @foreach (var field in Enum.GetValues<SearchFieldEnum>().Where(f => f != SearchFieldEnum.Undefined))
                     {
-                        <option value="@field">@field</option>
+                        <option value="@field">@field.DisplayName()</option>
                     }
                 </select>
 
                 <!-- Search Input -->
-                <input type="text"
+                <input id="search-input"
+                       type="text"
                        class="form-control theme-input ml-2"
                        aria-labelledby="search-label"
                        placeholder="@GetSearchPlaceholder()"
