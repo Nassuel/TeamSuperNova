@@ -313,16 +313,16 @@ body {
 
 /* Table styling for dark theme */
 [data-theme="dark"] .table {
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
 }
 
     [data-theme="dark"] .table thead th {
-        border-color: var(--border-color);
+        border-color: var(--border-color) !important;
     }
 
     [data-theme="dark"] .table td,
     [data-theme="dark"] .table th {
-        border-color: var(--border-color);
+        border-color: var(--border-color) !important;
     }
 
 /* Form validation states */
