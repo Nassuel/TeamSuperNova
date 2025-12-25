@@ -3410,6 +3410,1777 @@ namespace UnitTests.Components
 
         #endregion SearchField_Integration
 
+        #region ClearSearchButton_Conditional_Rendering
+
+        /// <summary>
+        /// Test clear search button renders when SearchTerm has value
+        /// Covers: string.IsNullOrWhiteSpace(SearchTerm) == false branch true
+        /// </summary>
+        [Test]
+        public void ClearSearchButton_Valid_SearchTerm_Has_Value_Should_Render_Button()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // search input element
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchInput.Input("TestBrand");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll("button").Where(b => b.GetAttribute("title") == "Clear search").ToList();
+            Assert.That(data.Count, Is.EqualTo(1));
+
+        }
+
+        /// <summary>
+        /// Test clear search button hidden when SearchTerm is empty
+        /// Covers: string.IsNullOrWhiteSpace(SearchTerm) == false branch false
+        /// </summary>
+        [Test]
+        public void ClearSearchButton_Invalid_Empty_SearchTerm_Should_Not_Render_Button()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll("button").Where(b => b.GetAttribute("title") == "Clear search").ToList();
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        /// <summary>
+        /// Test clear search button hidden when SearchTerm is whitespace only
+        /// Covers: string.IsNullOrWhiteSpace returns true for whitespace
+        /// </summary>
+        [Test]
+        public void ClearSearchButton_Invalid_Whitespace_SearchTerm_Should_Not_Render_Button()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // search input element
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchInput.Input("   ");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll("button").Where(b => b.GetAttribute("title") == "Clear search").ToList();
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        /// <summary>
+        /// Test clear search button click resets SearchTerm
+        /// Covers: ClearSearch method execution
+        /// </summary>
+        [Test]
+        public void ClearSearchButton_Valid_Click_Should_Reset_SearchTerm_And_Field()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // search input element
+            var searchInput = component.Find("#search-input");
+            searchInput.Input("TestBrand");
+
+            // clear button element
+            var clearButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Clear search");
+
+            // Act
+            clearButton.Click();
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SearchTerm, Is.EqualTo(string.Empty));
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchFieldEnum.Brand));
+
+        }
+
+        #endregion ClearSearchButton_Conditional_Rendering
+
+        #region ApplySearchFilter_All_Branches
+
+        /// <summary>
+        /// Test ApplySearchFilter returns all products when SearchTerm is null
+        /// Covers: string.IsNullOrWhiteSpace(SearchTerm) true branch
+        /// </summary>
+        [Test]
+        public void ApplySearchFilter_Valid_Null_SearchTerm_Should_Return_All_Products()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Set SearchTerm to null directly
+            component.Instance.SearchTerm = null;
+
+            // Act
+            component.Render();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        /// <summary>
+        /// Test ApplySearchFilter with Undefined field returns all products
+        /// Covers: Default return at end of ApplySearchFilter method
+        /// </summary>
+        [Test]
+        public void ApplySearchFilter_Invalid_Undefined_Field_Should_Return_All_Products()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Set search field to Undefined
+            component.Instance.SelectedSearchField = SearchFieldEnum.Undefined;
+
+            // Set search term to trigger filter logic
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            component.Render();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        #endregion ApplySearchFilter_All_Branches
+
+        #region GetCurrentRating_All_Branches
+
+        /// <summary>
+        /// Test GetCurrentRating with null ratings sets values to zero
+        /// Covers: SelectedProduct.Ratings == null branch true
+        /// </summary>
+        [Test]
+        public void GetCurrentRating_Invalid_Null_Ratings_Should_Set_Zero_Values()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = null;
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".modal-footer")[1];
+            Assert.That(data.TextContent.Contains("Be the first to vote!"), Is.True);
+
+        }
+
+        #endregion GetCurrentRating_All_Branches
+
+        #region VoteLabel_Conditional_Logic
+
+        /// <summary>
+        /// Test VoteLabel displays singular Vote for exactly one rating
+        /// Covers: VoteCount > 1 branch false
+        /// </summary>
+        [Test]
+        public void VoteLabel_Valid_Single_Vote_Should_Display_Singular_Vote()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 5 };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".modal-footer")[1];
+            Assert.That(data.TextContent.Contains("1 Vote"), Is.True);
+            Assert.That(data.TextContent.Contains("1 Votes"), Is.False);
+
+        }
+
+        /// <summary>
+        /// Test VoteLabel displays plural Votes for more than one rating
+        /// Covers: VoteCount > 1 branch true
+        /// </summary>
+        [Test]
+        public void VoteLabel_Valid_Multiple_Votes_Should_Display_Plural_Votes()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 4, 5 };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".modal-footer")[1];
+            Assert.That(data.TextContent.Contains("2 Votes"), Is.True);
+
+        }
+
+        #endregion VoteLabel_Conditional_Logic
+
+        #region VoteCount_Conditional_Rendering
+
+        /// <summary>
+        /// Test VoteCount == 0 renders first vote message
+        /// Covers: @if (VoteCount == 0) branch true
+        /// </summary>
+        [Test]
+        public void VoteCount_Valid_Zero_Should_Display_First_Vote_Message()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = null;
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".modal-footer")[1];
+            Assert.That(data.TextContent.Contains("Be the first to vote!"), Is.True);
+
+        }
+
+        /// <summary>
+        /// Test VoteCount > 0 renders vote count with label
+        /// Covers: @if (VoteCount > 0) branch true
+        /// </summary>
+        [Test]
+        public void VoteCount_Valid_Greater_Than_Zero_Should_Display_Count()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 5, 4, 3 };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".modal-footer")[1];
+            Assert.That(data.TextContent.Contains("3 Votes"), Is.True);
+
+        }
+
+        #endregion VoteCount_Conditional_Rendering
+
+        #region StarRating_Loop_Both_Branches
+
+        /// <summary>
+        /// Test star rating loop renders checked stars when i <= CurrentRating
+        /// Covers: @if (i <= CurrentRating) branch true
+        /// </summary>
+        [Test]
+        public void StarRating_Valid_Should_Render_Checked_Stars_For_Rating()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 4, 4, 4 };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll("span.fa-star.checked");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        /// <summary>
+        /// Test star rating loop renders unchecked stars when i > CurrentRating
+        /// Covers: @if (i > CurrentRating) branch true
+        /// </summary>
+        [Test]
+        public void StarRating_Valid_Should_Render_Unchecked_Stars_Above_Rating()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 2, 2, 2 };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var checkedStars = component.FindAll("span.fa-star.checked");
+            var uncheckedStars = component.FindAll("span.fa-star:not(.checked)");
+            Assert.That(checkedStars.Count, Is.EqualTo(2));
+            Assert.That(uncheckedStars.Count, Is.EqualTo(3));
+
+        }
+
+        /// <summary>
+        /// Test clicking checked star submits correct rating value
+        /// Covers: Star onclick with currentStar variable capture
+        /// </summary>
+        [Test]
+        public void StarRating_Valid_Click_Checked_Star_Should_Submit_Rating()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 4, 4, 4 };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+            moreInfoButton.Click();
+
+            // checked star element
+            var checkedStars = component.FindAll("span.fa-star.checked");
+
+            // Act
+            checkedStars[1].Click();
+
+            // Reset
+
+            // Assert
+            var result = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddRating" &&
+                                    (int)invocation.Arguments[1] == 2);
+            Assert.That(result, Is.EqualTo(1));
+
+        }
+
+        /// <summary>
+        /// Test clicking unchecked star submits correct rating value
+        /// Covers: Star onclick with currentStar variable capture for unchecked
+        /// </summary>
+        [Test]
+        public void StarRating_Valid_Click_Unchecked_Star_Should_Submit_Rating()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 2, 2, 2 };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+            moreInfoButton.Click();
+
+            // unchecked star element
+            var uncheckedStars = component.FindAll("span.fa-star:not(.checked)");
+
+            // Act
+            uncheckedStars[0].Click();
+
+            // Reset
+
+            // Assert
+            var result = MockProductService.Invocations
+                .Count(invocation => invocation.Method.Name == "AddRating" &&
+                                    (int)invocation.Arguments[1] == 3);
+            Assert.That(result, Is.EqualTo(1));
+
+        }
+
+        #endregion StarRating_Loop_Both_Branches
+
+        #region HasComments_All_Branches
+
+        /// <summary>
+        /// Test HasComments returns true when CommentList has items
+        /// Covers: Both null and empty checks pass, return true
+        /// </summary>
+        [Test]
+        public void HasComments_Valid_CommentList_Has_Items_Should_Return_True()
+        {
+
+            // Arrange
+            TestProducts[0].CommentList = new List<CommentModel>
+            {
+                new CommentModel { Comment = "Test comment", CreatedAt = DateTime.Now }
+            };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".list-group-item");
+            Assert.That(data.Count, Is.EqualTo(1));
+
+        }
+
+        #endregion HasComments_All_Branches
+
+        #region ApplyRatingFilter_All_Branches
+
+        /// <summary>
+        /// Test ApplyRatingFilter returns false for null ratings
+        /// Covers: p.Ratings == null branch true returns false
+        /// </summary>
+        [Test]
+        public void ApplyRatingFilter_Invalid_Null_Ratings_Should_Exclude_Product()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = null;
+            TestProducts[1].Ratings = null;
+            TestProducts[2].Ratings = null;
+            TestProducts[3].Ratings = null;
+
+            var component = _testContext.Render<ProductList>();
+
+            // rating select element
+            var ratingSelect = component.Find("#min-rating-filter");
+
+            // Act
+            ratingSelect.Change("1");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        /// <summary>
+        /// Test ApplyRatingFilter returns false for empty ratings array
+        /// Covers: p.Ratings.Length == 0 branch true returns false
+        /// </summary>
+        [Test]
+        public void ApplyRatingFilter_Invalid_Empty_Ratings_Should_Exclude_Product()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { };
+            TestProducts[1].Ratings = new int[] { };
+            TestProducts[2].Ratings = new int[] { };
+            TestProducts[3].Ratings = new int[] { };
+
+            var component = _testContext.Render<ProductList>();
+
+            // rating select element
+            var ratingSelect = component.Find("#min-rating-filter");
+
+            // Act
+            ratingSelect.Change("1");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        /// <summary>
+        /// Test ApplyRatingFilter returns false when avgRating < MinRating
+        /// Covers: avgRating >= MinRating returns false
+        /// </summary>
+        [Test]
+        public void ApplyRatingFilter_Invalid_Below_Minimum_Should_Exclude_Product()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 1, 1, 1 };
+            TestProducts[1].Ratings = new int[] { 1, 1, 1 };
+            TestProducts[2].Ratings = new int[] { 1, 1, 1 };
+            TestProducts[3].Ratings = new int[] { 1, 1, 1 };
+
+            var component = _testContext.Render<ProductList>();
+
+            // rating select element
+            var ratingSelect = component.Find("#min-rating-filter");
+
+            // Act
+            ratingSelect.Change("5");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        /// <summary>
+        /// Test ApplyRatingFilter returns true when avgRating >= MinRating
+        /// Covers: avgRating >= MinRating returns true
+        /// </summary>
+        [Test]
+        public void ApplyRatingFilter_Valid_Meets_Minimum_Should_Include_Product()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 5, 5, 5 };
+            TestProducts[1].Ratings = new int[] { 5, 5, 5 };
+            TestProducts[2].Ratings = new int[] { 5, 5, 5 };
+            TestProducts[3].Ratings = new int[] { 5, 5, 5 };
+
+            var component = _testContext.Render<ProductList>();
+
+            // rating select element
+            var ratingSelect = component.Find("#min-rating-filter");
+
+            // Act
+            ratingSelect.Change("5");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        #endregion ApplyRatingFilter_All_Branches
+
+        #region GetAverageRating_All_Branches
+
+        /// <summary>
+        /// Test GetAverageRating returns 0 for null ratings
+        /// Covers: product.Ratings == null branch true
+        /// </summary>
+        [Test]
+        public void GetAverageRating_Invalid_Null_Ratings_Should_Return_Zero()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 5, 5, 5 };
+            TestProducts[1].Ratings = null;
+            TestProducts[2].Ratings = new int[] { 3, 3, 3 };
+            TestProducts[3].Ratings = new int[] { };
+
+            var component = _testContext.Render<ProductList>();
+
+            // sort select element
+            var sortSelect = component.Find("#sort-by-filter");
+
+            // Act
+            sortSelect.Change("RatingLowHigh");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card-title").Select(c => c.TextContent.Trim()).ToList();
+
+            // Null and empty ratings should be first (0 rating)
+            Assert.That(data[0], Is.EqualTo("KeyboardBrand").Or.EqualTo("MouseBrand"));
+
+        }
+
+        /// <summary>
+        /// Test GetAverageRating returns 0 for empty ratings array
+        /// Covers: product.Ratings.Length == 0 branch true
+        /// </summary>
+        [Test]
+        public void GetAverageRating_Invalid_Empty_Ratings_Should_Return_Zero()
+        {
+
+            // Arrange
+            TestProducts[0].Ratings = new int[] { 5, 5, 5 };
+            TestProducts[1].Ratings = new int[] { 1, 1, 1 };
+            TestProducts[2].Ratings = new int[] { };
+            TestProducts[3].Ratings = null;
+
+            var component = _testContext.Render<ProductList>();
+
+            // sort select element
+            var sortSelect = component.Find("#sort-by-filter");
+
+            // Act
+            sortSelect.Change("RatingHighLow");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card-title").Select(c => c.TextContent.Trim()).ToList();
+
+            // Highest rated should be first
+            Assert.That(data[0], Is.EqualTo("TestBrand"));
+
+        }
+
+        #endregion GetAverageRating_All_Branches
+
+        #region ShowCopyNotification_Full_Lifecycle
+
+        /// <summary>
+        /// Test ShowCopyNotification shows and then hides toast
+        /// Covers: Full method execution with Task.Delay
+        /// </summary>
+        [Test]
+        public async Task ShowCopyNotification_Valid_Should_Show_Then_Hide_Toast()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            // Setup mock JS runtime
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            var task = component.InvokeAsync(() => component.Instance.ShowCopyNotification());
+
+            // Verify toast shown immediately
+            Assert.That(component.Instance.ShowCopyToast, Is.True);
+
+            // Wait for delay to complete
+            await task;
+            await Task.Delay(3100);
+            component.Render();
+
+            // Reset
+
+            // Assert
+            var result = component.Instance.ShowCopyToast;
+            Assert.That(result, Is.False);
+
+        }
+
+        #endregion ShowCopyNotification_Full_Lifecycle
+
+        #region BuildShareUrl_Trailing_Slash
+
+        /// <summary>
+        /// Test BuildShareUrl removes trailing slash from base URI
+        /// Covers: baseUri.EndsWith("/") branch true
+        /// </summary>
+        [Test]
+        public void BuildShareUrl_Valid_With_Trailing_Slash_Should_Remove_Slash()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+            moreInfoButton.Click();
+
+            // Act
+            var result = component.Instance.BuildShareUrl();
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Does.Contain("/?product="));
+
+        }
+
+        #endregion BuildShareUrl_Trailing_Slash
+
+        #region SelectedProduct_Url_Conditional
+
+        /// <summary>
+        /// Test View Product link renders when URL is not empty
+        /// Covers: string.IsNullOrEmpty(SelectedProduct.Url) == false branch true
+        /// </summary>
+        [Test]
+        public void ViewProductLink_Valid_Url_Present_Should_Render_Link()
+        {
+
+            // Arrange
+            TestProducts[0].Url = "https://example.com";
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll("a").FirstOrDefault(a => a.TextContent.Contains("View Product"));
+            Assert.That(data, Is.Not.Null);
+            Assert.That(data.GetAttribute("href"), Is.EqualTo("https://example.com"));
+
+        }
+
+        /// <summary>
+        /// Test View Product link hidden when URL is null
+        /// Covers: string.IsNullOrEmpty(SelectedProduct.Url) == false branch false (null)
+        /// </summary>
+        [Test]
+        public void ViewProductLink_Invalid_Null_Url_Should_Not_Render_Link()
+        {
+
+            // Arrange
+            TestProducts[0].Url = null;
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll("a").FirstOrDefault(a => a.TextContent.Contains("View Product"));
+            Assert.That(data, Is.Null);
+
+        }
+
+        /// <summary>
+        /// Test View Product link hidden when URL is empty string
+        /// Covers: string.IsNullOrEmpty(SelectedProduct.Url) == false branch false (empty)
+        /// </summary>
+        [Test]
+        public void ViewProductLink_Invalid_Empty_Url_Should_Not_Render_Link()
+        {
+
+            // Arrange
+            TestProducts[0].Url = string.Empty;
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll("a").FirstOrDefault(a => a.TextContent.Contains("View Product"));
+            Assert.That(data, Is.Null);
+
+        }
+
+        #endregion SelectedProduct_Url_Conditional
+
+        #region CommentList_Null_Message
+
+        /// <summary>
+        /// Test No comments yet message renders when CommentList is null
+        /// Covers: @if (SelectedProduct.CommentList == null) branch true
+        /// </summary>
+        [Test]
+        public void CommentList_Invalid_Null_Should_Display_No_Comments_Message()
+        {
+
+            // Arrange
+            TestProducts[0].CommentList = null;
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.Find(".modal-body");
+            Assert.That(data.TextContent.Contains("No comments yet — be the first!"), Is.True);
+
+        }
+
+        #endregion CommentList_Null_Message
+
+        #region ShowCopyToast_Conditional
+
+        /// <summary>
+        /// Test toast container renders when ShowCopyToast is true
+        /// Covers: @if (ShowCopyToast) branch true
+        /// </summary>
+        [Test]
+        public async Task ShowCopyToast_Valid_True_Should_Render_Toast()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            // Setup mock JS runtime
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+            moreInfoButton.Click();
+
+            // share button element
+            var shareButton = component.FindAll("button").FirstOrDefault(b => b.GetAttribute("title") == "Copy share link");
+
+            // Act
+            shareButton.Click();
+            await Task.Delay(100);
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".toast-container");
+            Assert.That(data.Count, Is.GreaterThan(0));
+
+        }
+
+        /// <summary>
+        /// Test toast container hidden when ShowCopyToast is false
+        /// Covers: @if (ShowCopyToast) branch false
+        /// </summary>
+        [Test]
+        public void ShowCopyToast_Invalid_False_Should_Not_Render_Toast()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".toast-container");
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        #endregion ShowCopyToast_Conditional
+
+        #region ModalBackdrop_And_Modal
+
+        /// <summary>
+        /// Test modal backdrop renders when SelectedProduct is not null
+        /// Covers: @if (SelectedProduct is not null) branch true for backdrop
+        /// </summary>
+        [Test]
+        public void ModalBackdrop_Valid_Product_Selected_Should_Render()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".modal-backdrop");
+            Assert.That(data.Count, Is.EqualTo(1));
+
+        }
+
+        /// <summary>
+        /// Test modal backdrop hidden when SelectedProduct is null
+        /// Covers: @if (SelectedProduct is not null) branch false
+        /// </summary>
+        [Test]
+        public void ModalBackdrop_Invalid_No_Product_Should_Not_Render()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".modal-backdrop");
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        #endregion ModalBackdrop_And_Modal
+
+        #region CurrentProductList_Zero_Count
+
+        /// <summary>
+        /// Test no products alert renders when CurrentProductList is empty
+        /// Covers: @if (CurrentProductList.Count() == 0) branch true
+        /// </summary>
+        [Test]
+        public void NoProductsAlert_Valid_Empty_List_Should_Render_Alert()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // search input element
+            var searchInput = component.Find("#search-input");
+
+            // Act
+            searchInput.Input("NonExistentProduct12345");
+
+            // Reset
+
+            // Assert
+            var data = component.Find(".alert");
+            Assert.That(data.TextContent.Contains("No products are found"), Is.True);
+
+        }
+
+        /// <summary>
+        /// Test no products alert hidden when CurrentProductList has items
+        /// Covers: @if (CurrentProductList.Count() == 0) branch false
+        /// </summary>
+        [Test]
+        public void NoProductsAlert_Invalid_Has_Products_Should_Not_Render_Alert()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".alert.theme-alert");
+            Assert.That(data.Count, Is.EqualTo(0));
+
+        }
+
+        #endregion CurrentProductList_Zero_Count
+
+        #region GetAvailableProductTypes_Undefined_Filter
+
+        /// <summary>
+        /// Test GetAvailableProductTypes excludes Undefined enum value
+        /// Covers: .Where(pt => pt != ProductTypeEnum.Undefined)
+        /// </summary>
+        [Test]
+        public void GetAvailableProductTypes_Valid_Should_Exclude_Undefined()
+        {
+
+            // Arrange
+            TestProducts.Add(new ProductModel
+            {
+                Id = "test-undefined",
+                Brand = "UndefinedBrand",
+                ProductName = "Undefined Product",
+                ProductType = ProductTypeEnum.Undefined,
+                ProductDescription = "Undefined",
+                Image = "/assets/undefined.png"
+            });
+
+            var component = _testContext.Render<ProductList>();
+
+            // Act
+            var typeSelect = component.Find("#product-type-filter");
+
+            // Reset
+
+            // Assert
+            var data = typeSelect.QuerySelectorAll("option");
+            var result = data.Select(o => o.GetAttribute("value")).ToList();
+            Assert.That(result.Contains("Undefined"), Is.False);
+
+        }
+
+        #endregion GetAvailableProductTypes_Undefined_Filter
+
+        #region SearchFieldEnum_Foreach_Undefined_Filter
+
+        /// <summary>
+        /// Test SearchField dropdown excludes Undefined enum value
+        /// Covers: Enum.GetValues.Where(f => f != SearchFieldEnum.Undefined)
+        /// </summary>
+        [Test]
+        public void SearchFieldDropdown_Valid_Should_Exclude_Undefined()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var searchFieldSelect = component.Find("#search-field-select");
+            var data = searchFieldSelect.QuerySelectorAll("option");
+            var result = data.Select(o => o.GetAttribute("value")).ToList();
+            Assert.That(result.Contains("Undefined"), Is.False);
+
+        }
+
+        #endregion SearchFieldEnum_Foreach_Undefined_Filter
+
+        #region Comment_Foreach_Loop
+
+        /// <summary>
+        /// Test comment list foreach loop renders all comments
+        /// Covers: @foreach (var comment in SelectedProduct.CommentList)
+        /// </summary>
+        [Test]
+        public void CommentList_Valid_Multiple_Comments_Should_Render_All()
+        {
+
+            // Arrange
+            TestProducts[0].CommentList = new List<CommentModel>
+            {
+                new CommentModel { Comment = "First comment", CreatedAt = new DateTime(2024, 1, 15, 10, 30, 0) },
+                new CommentModel { Comment = "Second comment", CreatedAt = new DateTime(2024, 1, 16, 14, 45, 0) }
+            };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".list-group-item");
+            Assert.That(data.Count, Is.EqualTo(2));
+            Assert.That(component.Markup.Contains("First comment"), Is.True);
+            Assert.That(component.Markup.Contains("Second comment"), Is.True);
+
+        }
+
+        /// <summary>
+        /// Test comment timestamp renders correctly
+        /// Covers: comment.CreatedAt.ToShortDateString() + ToShortTimeString()
+        /// </summary>
+        [Test]
+        public void Comment_Valid_Should_Display_Timestamp()
+        {
+
+            // Arrange
+            var testDate = new DateTime(2024, 6, 15, 14, 30, 45);
+            TestProducts[0].CommentList = new List<CommentModel>
+            {
+                new CommentModel { Comment = "Test comment", CreatedAt = testDate }
+            };
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert
+            var data = component.Find(".list-group-item");
+            Assert.That(data.TextContent.Contains(testDate.ToShortDateString()), Is.True);
+            Assert.That(data.TextContent.Contains(testDate.ToShortTimeString()), Is.True);
+
+        }
+
+        #endregion Comment_Foreach_Loop
+
+        #region Product_Foreach_Loop
+
+        /// <summary>
+        /// Test product card foreach loop renders all products
+        /// Covers: @foreach (var product in CurrentProductList)
+        /// </summary>
+        [Test]
+        public void ProductList_Valid_Should_Render_All_Product_Cards()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        /// <summary>
+        /// Test product card image style renders correctly
+        /// Covers: style="background-image: url('@product.Image')"
+        /// </summary>
+        [Test]
+        public void ProductCard_Valid_Should_Render_Background_Image_Style()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card-img");
+            var result = data[0].GetAttribute("style");
+            Assert.That(result, Does.Contain("background-image: url"));
+            Assert.That(result, Does.Contain(TestProducts[0].Image));
+
+        }
+
+        #endregion Product_Foreach_Loop
+
+        #region ProductType_Foreach_Loop
+
+        /// <summary>
+        /// Test product type foreach loop renders all available types
+        /// Covers: @foreach (var productType in GetAvailableProductTypes())
+        /// </summary>
+        [Test]
+        public void ProductTypeDropdown_Valid_Should_Render_Available_Types()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var typeSelect = component.Find("#product-type-filter");
+            var data = typeSelect.QuerySelectorAll("option").Skip(1).ToList();
+            Assert.That(data.Count, Is.GreaterThan(0));
+
+        }
+
+        #endregion ProductType_Foreach_Loop
+
+        #region Brand_Foreach_Loop
+
+        /// <summary>
+        /// Test brand foreach loop renders all available brands
+        /// Covers: @foreach (var brand in GetAvailableBrands())
+        /// </summary>
+        [Test]
+        public void BrandDropdown_Valid_Should_Render_Available_Brands()
+        {
+
+            // Arrange
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+
+            // Reset
+
+            // Assert
+            var brandSelect = component.Find("#brand-filter");
+            var data = brandSelect.QuerySelectorAll("option").Skip(1).ToList();
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        #endregion Brand_Foreach_Loop
+
+        #region OnAfterRenderAsync_FirstRender_False
+
+        /// <summary>
+        /// Test OnAfterRenderAsync returns early when firstRender is false
+        /// Covers: if (firstRender == false) return branch true
+        /// </summary>
+        [Test]
+        public async Task OnAfterRenderAsync_Invalid_Not_FirstRender_Should_Return_Early()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            // Setup mock JS runtime
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            // Navigate with product parameter
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=test-laptop-1");
+
+            var component = _testContext.Render<ProductList>();
+
+            // Wait for first render
+            await Task.Delay(350);
+
+            // Close modal
+            component.Instance.CloseModal();
+
+            // Act - Force second render
+            component.Render();
+            await Task.Delay(100);
+
+            // Reset
+
+            // Assert - Product should remain null (not re-opened)
+            var result = component.Instance.SelectedProduct;
+            Assert.That(result, Is.Null);
+
+        }
+
+        #endregion OnAfterRenderAsync_FirstRender_False
+
+        #region CopyShareLink_Null_Product
+
+        /// <summary>
+        /// Test CopyShareLink returns early when SelectedProduct is null
+        /// Covers: if (SelectedProduct == null) return branch true
+        /// </summary>
+        [Test]
+        public async Task CopyShareLink_Invalid_Null_Product_Should_Return_Early()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            // Setup mock JS runtime
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    "copyToClipboard",
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            var component = _testContext.Render<ProductList>();
+
+            // Do not select a product
+
+            // Act
+            await component.Instance.CopyShareLink();
+
+            // Reset
+
+            // Assert - No JS calls should be made
+            var result = mockJsRuntime.Invocations.Count;
+            Assert.That(result, Is.EqualTo(0));
+
+        }
+
+        #endregion CopyShareLink_Null_Product
+
+        #region OpenProductFromUrl_All_Branches
+
+        /// <summary>
+        /// Test OpenProductFromUrl returns early when productId is empty
+        /// Covers: string.IsNullOrEmpty(productId) branch true
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Invalid_Empty_ProductId_Should_Return_Early()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            // Setup mock JS runtime
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            // Navigate without product parameter
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+            await Task.Delay(300);
+
+            // Reset
+
+            // Assert
+            var result = component.Instance.SelectedProduct;
+            Assert.That(result, Is.Null);
+
+        }
+
+        /// <summary>
+        /// Test OpenProductFromUrl returns early when product not found
+        /// Covers: product == null branch true
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Invalid_Product_Not_Found_Should_Return_Early()
+        {
+
+            // Arrange
+            var mockJsRuntime = new Mock<IJSRuntime>();
+
+            // Setup mock JS runtime
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            _testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+
+            // Navigate with nonexistent product
+            var navManager = _testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=nonexistent-12345");
+
+            // Act
+            var component = _testContext.Render<ProductList>();
+            await Task.Delay(300);
+
+            // Reset
+
+            // Assert
+            var result = component.Instance.SelectedProduct;
+            Assert.That(result, Is.Null);
+
+        }
+
+        /// <summary>
+        /// Test OpenProductFromUrl selects product when valid parameter provided
+        /// Covers: Full successful execution path
+        /// </summary>
+        [Test]
+        public async Task OpenProductFromUrl_Valid_Product_Found_Should_Select_Product()
+        {
+
+            // Arrange
+            using var testContext = new BunitContext();
+
+            // Create test products
+            var testProducts = new List<ProductModel>
+            {
+                new ProductModel
+                {
+                    Id = "test-laptop-1",
+                    Brand = "TestBrand",
+                    ProductName = "Test Laptop",
+                    ProductType = ProductTypeEnum.Laptop,
+                    Url = "https://test.com",
+                    ProductDescription = "Test Description",
+                    Image = "/assets/test.png",
+                    Ratings = new int[] { 5, 4, 5 }
+                }
+            };
+
+            // Setup mock product service
+            var mockProductService = new Mock<JsonFileProductService>(MockBehavior.Strict, null);
+            mockProductService.Setup(x => x.GetProducts()).Returns(testProducts);
+            mockProductService.Setup(x => x.AddRating(It.IsAny<string>(), It.IsAny<int>())).Returns(true);
+
+            // Setup mock JS runtime
+            var mockJsRuntime = new Mock<IJSRuntime>();
+            mockJsRuntime
+                .Setup(x => x.InvokeAsync<Microsoft.JSInterop.Infrastructure.IJSVoidResult>(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>()))
+                .ReturnsAsync((Microsoft.JSInterop.Infrastructure.IJSVoidResult)null);
+
+            // Register services
+            testContext.Services.AddSingleton<IJSRuntime>(mockJsRuntime.Object);
+            testContext.Services.AddSingleton<JsonFileProductService>(mockProductService.Object);
+
+            // Navigate with valid product parameter
+            var navManager = testContext.Services.GetRequiredService<NavigationManager>();
+            navManager.NavigateTo("http://localhost/?product=test-laptop-1");
+
+            // Act
+            var component = testContext.Render<ProductList>();
+            await Task.Delay(300);
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SelectedProduct, Is.Not.Null);
+            Assert.That(component.Instance.SelectedProduct.Id, Is.EqualTo("test-laptop-1"));
+
+        }
+
+        #endregion OpenProductFromUrl_All_Branches
+
+        #region HighlightDescription_Null_Text
+
+        /// <summary>
+        /// Test HighlightDescription returns empty string for null text
+        /// Covers: if (text == null) return string.Empty branch true
+        /// </summary>
+        [Test]
+        public void HighlightDescription_Invalid_Null_Text_Should_Return_Empty()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Set search field to Description
+            component.Instance.SelectedSearchField = SearchFieldEnum.Description;
+
+            // Set search term
+            component.Instance.SearchTerm = "Test";
+
+            // Act
+            var result = component.Instance.HighlightDescription(null);
+
+            // Reset
+
+            // Assert
+            Assert.That(result, Is.EqualTo(string.Empty));
+
+        }
+
+        #endregion HighlightDescription_Null_Text
+
+        #region CloseModal_Method
+
+        /// <summary>
+        /// Test CloseModal clears SelectedProduct and SelectedProductId
+        /// Covers: Full CloseModal method execution
+        /// </summary>
+        [Test]
+        public void CloseModal_Valid_Should_Clear_Selected_Product()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+            moreInfoButton.Click();
+
+            // Verify product is selected
+            Assert.That(component.Instance.SelectedProduct, Is.Not.Null);
+
+            // Act
+            component.Instance.CloseModal();
+            component.Render();
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SelectedProduct, Is.Null);
+            Assert.That(component.Instance.SelectedProductId, Is.Null);
+
+        }
+
+        #endregion CloseModal_Method
+
+        #region ClearFilters_Method
+
+        /// <summary>
+        /// Test ClearFilters resets all filter values
+        /// Covers: Full ClearFilters method execution
+        /// </summary>
+        [Test]
+        public void ClearFilters_Valid_Should_Reset_All_Values()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // Set all filters
+            var searchFieldSelect = component.Find("#search-field-select");
+            searchFieldSelect.Change(SearchFieldEnum.Description.ToString());
+
+            var searchInput = component.Find("#search-input");
+            searchInput.Input("Test");
+
+            var typeSelect = component.Find("#product-type-filter");
+            typeSelect.Change(ProductTypeEnum.Laptop.ToString());
+
+            var brandSelect = component.Find("#brand-filter");
+            brandSelect.Change("TestBrand");
+
+            var ratingSelect = component.Find("#min-rating-filter");
+            ratingSelect.Change("3");
+
+            var sortSelect = component.Find("#sort-by-filter");
+            sortSelect.Change("BrandAZ");
+
+            // clear button element
+            var clearButton = component.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Clear All"));
+
+            // Act
+            clearButton.Click();
+
+            // Reset
+
+            // Assert
+            Assert.That(component.Instance.SearchTerm, Is.EqualTo(string.Empty));
+            Assert.That(component.Instance.SelectedSearchField, Is.EqualTo(SearchFieldEnum.Brand));
+
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        #endregion ClearFilters_Method
+
+        #region Console_WriteLine_Coverage
+
+        /// <summary>
+        /// Test GetCurrentRating Console.WriteLine executes
+        /// Covers: System.Console.WriteLine in GetCurrentRating
+        /// </summary>
+        [Test]
+        public void GetCurrentRating_Valid_Should_Execute_Console_WriteLine()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+
+            // Act
+            moreInfoButton.Click();
+
+            // Reset
+
+            // Assert - Method completes without exception
+            var result = component.Instance.SelectedProduct;
+            Assert.That(result, Is.Not.Null);
+
+        }
+
+        /// <summary>
+        /// Test SubmitRating Console.WriteLine executes
+        /// Covers: System.Console.WriteLine in SubmitRating
+        /// </summary>
+        [Test]
+        public void SubmitRating_Valid_Should_Execute_Console_WriteLine()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // moreInfo button element
+            var moreInfoButton = component.FindAll("button").Where(b => b.TextContent.Contains("More Info")).First();
+            moreInfoButton.Click();
+
+            // star element
+            var data = component.FindAll("span.fa-star");
+
+            // Act
+            data[2].Click();
+
+            // Reset
+
+            // Assert - Method completes without exception
+            var result = MockProductService.Invocations.Count(i => i.Method.Name == "AddRating");
+            Assert.That(result, Is.GreaterThan(0));
+
+        }
+
+        #endregion Console_WriteLine_Coverage
+
+        #region ApplySorting_BrandZA
+
+        /// <summary>
+        /// Test ApplySorting with BrandZA sorts products in reverse alphabetical order
+        /// Covers: if (SortBy == "BrandZA") branch true
+        /// </summary>
+        [Test]
+        public void ApplySorting_Valid_BrandZA_Should_Order_Products_Reverse_Alphabetically()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // sort select element
+            var sortSelect = component.Find("#sort-by-filter");
+
+            // Act
+            sortSelect.Change("BrandZA");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card-title").Select(c => c.TextContent.Trim()).ToList();
+            Assert.That(data[0], Is.EqualTo("TestBrand"));
+            Assert.That(data[1], Is.EqualTo("MouseBrand"));
+            Assert.That(data[2], Is.EqualTo("MonitorNature"));
+            Assert.That(data[3], Is.EqualTo("KeyboardBrand"));
+
+        }
+
+        /// <summary>
+        /// Test ApplySorting with BrandZA value directly verifies descending order
+        /// Covers: return products.OrderByDescending(p => p.Brand)
+        /// </summary>
+        [Test]
+        public void ApplySorting_Valid_BrandZA_Should_Place_Z_Brands_First()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // sort select element
+            var sortSelect = component.Find("#sort-by-filter");
+
+            // Act
+            sortSelect.Change("BrandZA");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card-title").Select(c => c.TextContent.Trim()).ToList();
+
+            // Verify first brand starts with letter later in alphabet than last
+            var firstBrand = data.First();
+            var lastBrand = data.Last();
+            Assert.That(string.Compare(firstBrand, lastBrand), Is.GreaterThan(0));
+
+        }
+
+        #endregion ApplySorting_BrandZA
+
+        #region ApplyProductTypeFilter_ParseUnsuccessful
+
+        /// <summary>
+        /// Test ApplyProductTypeFilter returns all products when parse fails
+        /// Covers: if (parseSuccessful == false) branch true
+        /// </summary>
+        [Test]
+        public void ApplyProductTypeFilter_Invalid_Parse_Failed_Should_Return_All_Products()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // product type select element
+            var typeSelect = component.Find("#product-type-filter");
+
+            // Act - Set an invalid enum value that cannot be parsed
+            typeSelect.Change("InvalidProductType");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        /// <summary>
+        /// Test ApplyProductTypeFilter with gibberish string fails parse
+        /// Covers: Enum.TryParse returns false for invalid string
+        /// </summary>
+        [Test]
+        public void ApplyProductTypeFilter_Invalid_Gibberish_String_Should_Return_All_Products()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // product type select element
+            var typeSelect = component.Find("#product-type-filter");
+
+            // Act - Set a completely invalid string
+            typeSelect.Change("NotARealEnumValue12345");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        /// <summary>
+        /// Test ApplyProductTypeFilter with special characters fails parse
+        /// Covers: parseSuccessful == false for special character string
+        /// </summary>
+        [Test]
+        public void ApplyProductTypeFilter_Invalid_Special_Characters_Should_Return_All_Products()
+        {
+
+            // Arrange
+            var component = _testContext.Render<ProductList>();
+
+            // product type select element
+            var typeSelect = component.Find("#product-type-filter");
+
+            // Act - Set a string with special characters
+            typeSelect.Change("@#$%^&*");
+
+            // Reset
+
+            // Assert
+            var data = component.FindAll(".card");
+            Assert.That(data.Count, Is.EqualTo(4));
+
+        }
+
+        #endregion ApplyProductTypeFilter_ParseUnsuccessful
 
     }
 
