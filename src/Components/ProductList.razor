@@ -144,7 +144,7 @@
                                 @onclick="CopyShareLink"
                                 title="Copy share link">
                             @* Warning: Need span here due to nested css class in neumorphism.css *@
-                            <span class="fa fa-share-alt" aria-hidden="true"></span>
+                            <span class="fa fa-share-nodes" aria-hidden="true"></span>
                         </button>
                         @* Close button *@
                         <button type="button" class="close theme-close-btn" @onclick="CloseModal" aria-label="Close">
@@ -167,7 +167,7 @@
                     <div class="row">
                         <div class="col">
                             <h5 class="theme-heading">
-                                <i class="fa fa-commenting-o mr-2" aria-hidden="true"></i>
+                                <i class="fa fa-comment-dots mr-2" aria-hidden="true"></i>
                                 Comments
                             </h5>
                         </div>
@@ -242,8 +242,6 @@
         </div>
     </div>
 }
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!-- Copy Link Toast -->
 @if (ShowCopyToast)
