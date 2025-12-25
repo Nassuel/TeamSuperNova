@@ -4210,15 +4210,15 @@ namespace UnitTests.Components
         }
 
         /// <summary>
-        /// Test View Product link hidden when URL is empty string
-        /// Covers: string.IsNullOrEmpty(SelectedProduct.Url) == false branch false (empty)
+        /// Test View Product link hidden when URL is null
+        /// Covers: string.IsNullOrEmpty(SelectedProduct.Url) == false branch false (null)
         /// </summary>
         [Test]
-        public void ViewProductLink_Invalid_Empty_Url_Should_Not_Render_Link()
+        public void ViewProductLink_Invalid_Null_Url_Should_Not_Render_Link()
         {
 
             // Arrange
-            TestProducts[0].Url = string.Empty;
+            TestProducts[0].Url = null;
             var component = _testContext.Render<ProductList>();
 
             // moreInfo button element
@@ -4227,11 +4227,30 @@ namespace UnitTests.Components
             // Act
             moreInfoButton.Click();
 
+            // Wait for modal to render
+            component.WaitForAssertion(() =>
+            {
+
+                // modal element
+                var modal = component.FindAll(".modal");
+                Assert.That(modal.Count, Is.GreaterThan(0));
+
+            });
+
             // Reset
 
-            // Assert
-            var data = component.FindAll("a").FirstOrDefault(a => a.TextContent.Contains("View Product"));
-            Assert.That(data, Is.Null);
+            // Assert - Check that no anchor with View Product text exists in modal
+            var modalFooters = component.FindAll(".modal-footer");
+
+            // second modal footer element
+            var secondFooter = modalFooters[1];
+
+            // inner HTML of footer
+            var footerHtml = secondFooter.InnerHtml;
+
+            // check that View Product link is not present
+            var result = footerHtml.Contains("View Product");
+            Assert.That(result, Is.False);
 
         }
 
