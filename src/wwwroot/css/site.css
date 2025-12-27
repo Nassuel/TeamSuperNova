@@ -732,9 +732,9 @@ img.card-img-product,
     max-width: none !important; /* override img-fluid */
 }
 
-/* Modal background-style card image (keep as background, not an <img>) */
-.modal .card-img {
-    height: 500px;
+/* Modal background-style image */
+.modal .img {
+    height: 350px;
     vertical-align: bottom;
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Do not repeat the image */
