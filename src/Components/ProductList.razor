@@ -137,7 +137,6 @@
 
 @if (SelectedProduct is not null)
 {
-    <div class="modal-backdrop fade show"></div>
     <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog" aria-labelledby="productTitle">
         <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content theme-modal-content">
@@ -160,12 +159,9 @@
                 </div>
                 <div class="modal-body theme-modal-body">
                     <!-- Main card body -->
-                    <div class="card theme-card">
-                        <div class="card-img" style="background-image: url('@SelectedProduct.Image');">
-                        </div>
-                        <div class="card-body theme-card-body">
-                            <p class="card-text theme-card-text">@((MarkupString)HighlightDescription(SelectedProduct.ProductDescription))</p>
-                        </div>
+                    <img src="@SelectedProduct.Image" />
+                    <div class="card-body theme-card-body">
+                        <p class="card-text theme-card-text">@((MarkupString)HighlightDescription(SelectedProduct.ProductDescription))</p>
                     </div>
 
                     <!-- Comments -->
@@ -208,7 +204,7 @@
                               placeholder="Type your comment..."
                               rows="2"
                               @onkeydown="@(e => UsingEnterKey(e))">
-                                        </textarea>
+                                            </textarea>
 
                     <button class="btn btn-primary theme-btn-primary" @onclick="AddComment">Submit Comment</button>
                 </div>
