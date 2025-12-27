@@ -129,6 +129,12 @@
     </div>
 }
 
+<div class="position-fixed z-9 bottom-lg right-lg">
+    <span class="badge badge-secondary heading-section">
+        @CurrentProductList.Count() products found
+    </span>
+</div>
+
 @if (SelectedProduct is not null)
 {
     <div class="modal-backdrop fade show"></div>
