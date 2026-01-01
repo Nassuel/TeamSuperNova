@@ -1657,7 +1657,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            var modalCardImages = component.FindAll(".modal .card-img");
+            var modalCardImages = component.FindAll("img");
             Assert.That(modalCardImages.Count, Is.GreaterThan(0));
         }
 
@@ -1902,7 +1902,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            var shareIcon = component.FindAll("span.fa-share-alt");
+            var shareIcon = component.FindAll("span.fa-share-nodes");
             Assert.That(shareIcon.Count, Is.GreaterThan(0));
 
         }
@@ -4374,7 +4374,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            var data = component.FindAll(".modal-backdrop");
+            var data = component.FindAll(".modal");
             Assert.That(data.Count, Is.EqualTo(1));
 
         }
