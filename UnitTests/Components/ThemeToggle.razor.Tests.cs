@@ -182,10 +182,10 @@ namespace UnitTests.Components
             var result = TestContext.Render<ThemeToggle>();
 
             // Wait for component to initialize
-            result.WaitForState(() => result.Find("i.fa-moon-o") != null);
+            result.WaitForState(() => result.Find("i.fa-moon") != null);
 
             // Get icon element
-            var iconElement = result.Find("i.fa-moon-o");
+            var iconElement = result.Find("i.fa-moon");
 
             // Reset
 
@@ -206,10 +206,10 @@ namespace UnitTests.Components
             var result = TestContext.Render<ThemeToggle>();
 
             // Wait for component to initialize
-            result.WaitForState(() => result.Find("i.fa-sun-o") != null);
+            result.WaitForState(() => result.Find("i.fa-sun") != null);
 
             // Get icon element
-            var iconElement = result.Find("i.fa-sun-o");
+            var iconElement = result.Find("i.fa-sun");
 
             // Reset
 
@@ -254,7 +254,7 @@ namespace UnitTests.Components
             var component = TestContext.Render<ThemeToggle>();
 
             // Wait for initialization
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Get button
             var buttonElement = component.Find("button");
@@ -285,7 +285,7 @@ namespace UnitTests.Components
             var component = TestContext.Render<ThemeToggle>();
 
             // Wait for initialization
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Get button
             var buttonElement = component.Find("button");
@@ -294,10 +294,10 @@ namespace UnitTests.Components
             buttonElement.Click();
 
             // Wait for icon to change
-            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+            component.WaitForState(() => component.Find("i.fa-sun") != null);
 
             // Get result icon
-            var result = component.Find("i.fa-sun-o");
+            var result = component.Find("i.fa-sun");
 
             // Reset
 
@@ -318,7 +318,7 @@ namespace UnitTests.Components
             var component = TestContext.Render<ThemeToggle>();
 
             // Wait for initial render
-            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+            component.WaitForState(() => component.Find("i.fa-sun") != null);
 
             // Get button
             var buttonElement = component.Find("button");
@@ -327,10 +327,10 @@ namespace UnitTests.Components
             buttonElement.Click();
 
             // Wait for icon to change
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Get result icon
-            var result = component.Find("i.fa-moon-o");
+            var result = component.Find("i.fa-moon");
 
             // Reset
 
@@ -351,7 +351,7 @@ namespace UnitTests.Components
             var result = TestContext.Render<ThemeToggle>();
 
             // Wait for initialization
-            result.WaitForState(() => result.Find("i.fa-moon-o") != null);
+            result.WaitForState(() => result.Find("i.fa-moon") != null);
 
             // Reset
 
@@ -387,7 +387,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Set IsToggling to true directly
             component.Instance.IsToggling = true;
@@ -415,7 +415,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
             MockJSRuntime.Invocations.Clear();
             component.Instance.IsToggling = false;
 
@@ -461,7 +461,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("dark");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+            component.WaitForState(() => component.Find("i.fa-sun") != null);
 
             // Act
             var result = component.Instance.GetThemeName();
@@ -481,7 +481,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Act
             var result = component.Instance.GetThemeName();
@@ -505,7 +505,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("dark");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+            component.WaitForState(() => component.Find("i.fa-sun") != null);
 
             // Act
             var result = await component.Instance.LoadSavedTheme();
@@ -549,7 +549,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Act
             component.Instance.UpdateServiceTheme("dark");
@@ -558,7 +558,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            var iconElement = component.Find("i.fa-sun-o");
+            var iconElement = component.Find("i.fa-sun");
             Assert.That(iconElement, Is.Not.Null);
         }
 
@@ -571,7 +571,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("dark");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-sun-o") != null);
+            component.WaitForState(() => component.Find("i.fa-sun") != null);
 
             // Act
             component.Instance.UpdateServiceTheme("light");
@@ -580,7 +580,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            var iconElement = component.Find("i.fa-moon-o");
+            var iconElement = component.Find("i.fa-moon");
             Assert.That(iconElement, Is.Not.Null);
         }
 
@@ -593,7 +593,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Act
             component.Instance.UpdateServiceTheme(null);
@@ -602,7 +602,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert - Should still be light theme (moon icon)
-            var iconElement = component.Find("i.fa-moon-o");
+            var iconElement = component.Find("i.fa-moon");
             Assert.That(iconElement, Is.Not.Null);
         }
 
@@ -615,7 +615,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Act
             component.Instance.UpdateServiceTheme(string.Empty);
@@ -624,7 +624,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            var iconElement = component.Find("i.fa-moon-o");
+            var iconElement = component.Find("i.fa-moon");
             Assert.That(iconElement, Is.Not.Null);
         }
 
@@ -637,7 +637,7 @@ namespace UnitTests.Components
             // Arrange
             SetupMockJSRuntime("light");
             var component = TestContext.Render<ThemeToggle>();
-            component.WaitForState(() => component.Find("i.fa-moon-o") != null);
+            component.WaitForState(() => component.Find("i.fa-moon") != null);
 
             // Act
             component.Instance.UpdateServiceTheme("   ");
@@ -646,7 +646,7 @@ namespace UnitTests.Components
             // Reset
 
             // Assert
-            var iconElement = component.Find("i.fa-moon-o");
+            var iconElement = component.Find("i.fa-moon");
             Assert.That(iconElement, Is.Not.Null);
         }
 
