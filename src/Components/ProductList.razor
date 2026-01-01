@@ -193,7 +193,7 @@
 
                     @if (SelectedProduct.CommentList == null)
                     {
-                        <p class="theme-text">No comments yet — be the first!</p>
+                        <p class="theme-text">No comments yet â€” be the first!</p>
                     }
                 </div>
 
@@ -296,7 +296,7 @@
     string NewComment = string.Empty;
 
     // Flag to show copy success toast notification
-    public bool ShowCopyToast { get; set; }
+    public bool ShowCopyToast { get; private set; }
 
     /// <summary>
     /// Clears only the search field
