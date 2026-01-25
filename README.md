@@ -8,6 +8,7 @@ This project demonstrates modern web development practices, Agile methodologies,
 
 ## Table of Contents
 
+- [License](#license)
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
@@ -21,6 +22,10 @@ This project demonstrates modern web development practices, Agile methodologies,
 - [License](#license)
 
 ---
+
+## License
+This project is licensed under the GPL-3.0 License.
+Unauthorized use without attribution is prohibited.
 
 ## Project Overview
 
