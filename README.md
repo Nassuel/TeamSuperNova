@@ -27,6 +27,8 @@ This project demonstrates modern web development practices, Agile methodologies,
 This project is licensed under the GPL-3.0 License.
 Unauthorized use without attribution is prohibited.
 
+---
+
 ## Project Overview
 
 ContosoCrafts/SuperNova is a full-featured e-commerce web application built using ASP.NET Core Blazor Server. The application showcases product management, advanced search capabilities, user interaction features, and a polished neumorphic user interface design.
